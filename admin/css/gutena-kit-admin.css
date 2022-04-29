@@ -1,0 +1,78 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+ 
+ /*Demo Import Page: START*/
+ /*Wp Button*/
+ .gutenakit-demo-import-page .button, 
+ .gutenakit-demo-import-page .button-primary{
+    font-weight: 500;
+    padding: 0 20px;
+ }
+
+.appearance_page_gutenakit_demo_import #wpcontent{
+    padding: 0;
+}
+
+/*Header*/
+.gutenakit-demo-import-page .gutenakit-header{
+    background: #ffffff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    padding: 20px;
+}
+
+.gutenakit-demo-import-page .gutenakit-header .gutenakit-admin-logo img{
+    max-width: 182px;
+}
+
+/*Body*/
+.gutenakit-demo-import-page .gutenakit-admin-container{
+    max-width: 1200px;
+}
+
+.gutenakit-demo-import-page .gutenakit-admin-body .gutenakit-admin-container{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-gap:40px;
+    margin: auto;
+    padding-top: 50px;
+}
+
+.gutenakit-demo-import-page .gutenakit-admin-body .gutenakit-demo-card{
+    background: #ffffff;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.05);
+}
+
+.gutenakit-demo-import-page .gutenakit-admin-body .gutenakit-demo-card .gutenakit-demo-card-img img{
+   width: 100%;
+}
+
+.gutenakit-demo-import-page .gutenakit-admin-body .gutenakit-demo-card .gutenakit-demo-card-footer{
+    border-top: 1px solid rgba(29, 35, 39, 0.1);
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 14px 12px 26px;
+}
+
+.gutenakit-demo-import-page .gutenakit-admin-body .gutenakit-demo-card .gutenakit-demo-card-footer .gutenakit-demo-title{
+    align-items: center;
+    color: #1D2327;
+    /*vertical align*/
+    display: inline-flex;
+    font-size: 14px;
+    line-height: 1.357;
+    font-weight: 600;  
+}
+
+@media (max-width: 768px){
+    .gutenakit-demo-import-page .gutenakit-admin-container{
+        max-width: 720px;
+    }
+    .gutenakit-demo-import-page .gutenakit-admin-body .gutenakit-admin-container{
+       grid-template-columns: repeat(2,1fr);
+       grid-gap:20px;
+    }
+}
+ /*Demo Import Page: END*/

@@ -1,0 +1,262 @@
+<?php
+/**
+ * The admin-specific functionality of the plugin.
+ * @package    Gutena_Kit
+ * @subpackage Gutena_Kit/admin
+ */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+class Gutena_Kit_Admin {
+
+	/**
+	 * The ID of this plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $gutena_kit    The ID of this plugin.
+	 */
+	private $gutena_kit;
+
+	/**
+	 * The version of this plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $version    The current version of this plugin.
+	 */
+	private $version;
+
+	/**
+	 * Initialize the class and set its properties.
+	 *
+	 * @since    1.0.0
+	 * @param      string    $gutena_kit       The name of this plugin.
+	 * @param      string    $version    The version of this plugin.
+	 */
+	public function __construct( $gutena_kit, $version ) {
+
+		$this->gutena_kit = $gutena_kit;
+		$this->version = $version;
+		$this->load_dependencies();
+	}
+
+	/**
+	 * Load the required dependencies for admin area.
+	 */
+	private function load_dependencies() {
+		/**
+		 * Admin helper functions
+		 */
+		require_once GUTENA_KIT_DIR_PATH . 'includes/helpers/admin-helpers.php';
+		require_once GUTENA_KIT_DIR_PATH . 'includes/demo-import/merlin/vendor/autoload.php';
+		require_once GUTENA_KIT_DIR_PATH . 'includes/demo-import/merlin/class-merlin.php';
+		require_once GUTENA_KIT_DIR_PATH . 'includes/demo-import/class-gutenakit-demosetup.php';
+		require_once GUTENA_KIT_DIR_PATH . 'includes/demo-import/tgmpa/class-tgm-plugin-activation.php';
+		if ( class_exists( 'TGM_Plugin_Activation' ) ) {
+			add_action( 'tgmpa_register',array( $this, 'gutena_kit_register_required_plugins' ));
+		}
+		if ( ! class_exists( 'Merlin' ) || ! class_exists( 'GutenakitDemoSetup' ) ) {
+			return;
+		}
+		/**
+		 * Set directory locations, text strings, and settings.
+		 */
+		global $gutenakit_merlin_class;
+		$gutenakit_merlin_class = new GutenakitDemoSetup(
+		
+			$config = array(
+				'base_path'                 => GUTENA_KIT_DIR_PATH . 'includes/demo-import',
+				'base_url'                  => GUTENA_KIT_PLUGIN_URL.'includes/demo-import',
+				'directory'                 => 'merlin', //where Merlin WP is placed.
+				'merlin_url'                => 'merlin', // The wp-admin page slug where Merlin WP loads.
+				'parent_slug'               => 'options.php', // The wp-admin parent page slug for the admin menu item.
+				'capability'                => 'manage_options', // The capability required for this menu to be displayed to the user.
+				'child_action_btn_url'      => '', // URL for the 'child-action-link'.
+				'dev_mode'                  => true, // Enable development mode for testing.
+				'license_step'              => false, // EDD license activation step.
+				'license_required'          => false, // Require the license activation step.
+				'license_help_url'          => '', // URL for the 'license-tooltip'.
+				'edd_remote_api_url'        => '', // EDD_Theme_Updater_Admin remote_api_url.
+				'edd_item_name'             => '', // EDD_Theme_Updater_Admin item_name.
+				'edd_theme_slug'            => '', // EDD_Theme_Updater_Admin item_slug.
+				'ready_big_button_url'      => function_exists( 'get_bloginfo' ) ? get_bloginfo( 'url' ) : '', // Link for the big button on the ready step.
+				//Added key values by gutenakit
+				'child_theme_step_enabled'  => false,
+				'is_gutena_theme_activated' => is_gutena_theme_activated(),
+			),
+			$strings = array(
+				'admin-menu'               => esc_html__( 'Demo Setup', 'gutena-kit' ),
+		
+				/* translators: 1: Title Tag 2: Theme Name 3: Closing Title Tag */
+				'title%s%s%s%s'            => esc_html__( '%1$s%2$s Demo &lsaquo; Demo Setup: %3$s%4$s', 'gutena-kit' ),
+				'return-to-dashboard'      => esc_html__( 'Return to the dashboard', 'gutena-kit' ),
+				'ignore'                   => esc_html__( 'Disable this wizard', 'gutena-kit' ),
+		
+				'btn-skip'                 => esc_html__( 'Skip', 'gutena-kit' ),
+				'btn-next'                 => esc_html__( 'Next', 'gutena-kit' ),
+				'btn-start'                => esc_html__( 'Start', 'gutena-kit' ),
+				'btn-no'                   => esc_html__( 'Cancel', 'gutena-kit' ),
+				'btn-plugins-install'      => esc_html__( 'Install', 'gutena-kit' ),
+				'btn-child-install'        => esc_html__( 'Install', 'gutena-kit' ),
+				'btn-content-install'      => esc_html__( 'Install', 'gutena-kit' ),
+				'btn-import'               => esc_html__( 'Import', 'gutena-kit' ),
+				'btn-license-activate'     => esc_html__( 'Activate', 'gutena-kit' ),
+				'btn-license-skip'         => esc_html__( 'Later', 'gutena-kit' ),
+		
+				/* translators: Theme Name */
+				'license-header%s'         => esc_html__( 'Activate %s', 'gutena-kit' ),
+				/* translators: Theme Name */
+				'license-header-success%s' => esc_html__( '%s is Activated', 'gutena-kit' ),
+				/* translators: Theme Name */
+				'license%s'                => esc_html__( 'Enter your license key to enable remote updates and theme support.', 'gutena-kit' ),
+				'license-label'            => esc_html__( 'License key', 'gutena-kit' ),
+				'license-success%s'        => esc_html__( 'The theme is already registered, so you can go to the next step!', 'gutena-kit' ),
+				'license-json-success%s'   => esc_html__( 'Your theme is activated! Remote updates and theme support are enabled.', 'gutena-kit' ),
+				'license-tooltip'          => esc_html__( 'Need help?', 'gutena-kit' ),
+		
+				/* translators: Theme Name */
+				'welcome-header%s'         => esc_html__( 'Welcome to %s', 'gutena-kit' ),
+				'welcome-header-success%s' => esc_html__( 'Welcome to Gutena Kit', 'gutena-kit' ),
+				'welcome%s'                => esc_html__( 'This wizard will set up your theme, install plugins, and import content. It is optional & should take only a few minutes.', 'gutena-kit' ),
+				'welcome-success%s'        => esc_html__( 'You may have already run this demo setup wizard. If you would like to proceed anyway, click on the "Start" button below.', 'gutena-kit' ),
+		
+				'child-header'             => esc_html__( 'Install Child Theme', 'gutena-kit' ),
+				'child-header-success'     => esc_html__( 'You\'re good to go!', 'gutena-kit' ),
+				'child'                    => esc_html__( 'Let\'s build & activate a child theme so you may easily make theme changes.', 'gutena-kit' ),
+				'child-success%s'          => esc_html__( 'Your child theme has already been installed and is now activated, if it wasn\'t already.', 'gutena-kit' ),
+				'child-action-link'        => esc_html__( 'Learn about child themes', 'gutena-kit' ),
+				'child-json-success%s'     => esc_html__( 'Awesome. Your child theme has already been installed and is now activated.', 'gutena-kit' ),
+				'child-json-already%s'     => esc_html__( 'Awesome. Your child theme has been created and is now activated.', 'gutena-kit' ),
+		
+				'plugins-header'           => esc_html__( 'Install Plugins', 'gutena-kit' ),
+				'plugins-header-success'   => esc_html__( 'You\'re up to speed!', 'gutena-kit' ),
+				'plugins'                  => esc_html__( 'Let\'s install some essential WordPress plugins to get your site up to speed.', 'gutena-kit' ),
+				'plugins-success%s'        => esc_html__( 'The required WordPress plugins are all installed and up to date. Press "Next" to continue the setup wizard.', 'gutena-kit' ),
+				'plugins-action-link'      => esc_html__( 'Advanced', 'gutena-kit' ),
+		
+				'import-header'            => esc_html__( 'Import Content', 'gutena-kit' ),
+				'import'                   => esc_html__( 'Let\'s import content to your website, to help you get familiar with the theme.', 'gutena-kit' ),
+				'import-action-link'       => esc_html__( 'Advanced', 'gutena-kit' ),
+		
+				'ready-header'             => esc_html__( 'All done. Have fun!', 'gutena-kit' ),
+		
+				/* translators: Theme Author */
+				'ready%s'                  => esc_html__( 'Your demo has been all set up. Enjoy your new demo by %s.', 'gutena-kit' ),
+				'ready-action-link'        => esc_html__( 'Extras', 'gutena-kit' ),
+				'ready-big-button'         => esc_html__( 'View your website', 'gutena-kit' ),
+				'ready-link-1'             => sprintf( '<a href="%1$s" target="_blank">%2$s</a>', 'https://wordpress.org/support/', esc_html__( 'Explore WordPress', 'gutena-kit' ) ),
+				'ready-link-2'             => sprintf( '<a href="%1$s" target="_blank">%2$s</a>', 'https://wordpress.org/support/theme/gutena/', esc_html__( 'Get Theme Support', 'gutena-kit' ) ),
+				'ready-link-3'             => sprintf( '<a href="%1$s">%2$s</a>', admin_url( 'customize.php' ), esc_html__( 'Start Customizing', 'gutena-kit' ) ),
+			)
+		);
+	}
+
+
+	/**
+	 * Register the stylesheets for the admin area.
+	 *
+	 * @since    1.0.0
+	 */
+	public function enqueue_styles() {
+		wp_enqueue_style( $this->gutena_kit, plugin_dir_url( __FILE__ ) . 'css/gutena-kit-admin.css', array(), $this->version, 'all' );
+	}
+
+	/**
+	 * Register the JavaScript for the admin area.
+	 *
+	 * @since    1.0.0
+	 */
+	public function enqueue_scripts( $hook_suffix ) {
+		wp_enqueue_script( $this->gutena_kit, GUTENA_KIT_PLUGIN_URL . 'admin/js/gutena-kit-admin.js', array(), $this->version, false );
+	}
+
+	public function add_admin_menu(){
+		add_submenu_page( 'themes.php', 'Gutena Kit', 'Gutena Kit', 'manage_options', 'gutenakit_demo_import', array( $this, 'demo_import_page' ));
+	}
+
+	public function admin_dashboard_page(){
+		require_once GUTENA_KIT_DIR_PATH. 'admin/partials/admin-dashboard.php';
+	}
+
+	/**
+	 * List Demos and Import
+	 */
+	public function demo_import_page(){
+		require_once GUTENA_KIT_DIR_PATH. 'admin/partials/demo-import-page.php';
+	}
+	/**
+	 * Gutena Kit addition with block editor
+	 */
+	public function add_blocks_and_settings(){
+		wp_enqueue_script( 'gutena-kit-block-editor', GUTENA_KIT_PLUGIN_URL.'public/block_editor/build/index.js', array( 'wp-block-editor', 'wp-blocks', 'wp-hooks', 'wp-components', 'wp-compose', 'wp-element', 'wp-i18n' ), $this->version );
+	}
+
+	public function save_post_settings_and_styles( $post_id, $post, $update ) {
+		static $exit_counter = 0;//for exit in case of loop
+		if ( empty( $post_id) || empty( $post) || ! function_exists( 'parse_blocks' ) || ! in_array( $post->post_type, array( 'post', 'page' ), true ) ) {
+			return;
+		}
+     	//developer.wordpress.org/reference/functions/parse_blocks/
+		$block_res = gutendkit_extract_css_from_block( parse_blocks( $post->post_content ) );
+
+		//exit in case of loop
+		if ( $exit_counter > 0 ) {
+			return;
+		}
+		++$exit_counter;
+		
+		if ( ! empty( $block_res['gutenakit_css'] ) && is_array( $block_res['gutenakit_ids'] ) ) {
+			//Save post styles data in post meta
+			update_post_meta(
+				$post_id,
+				'gutenakit_post_config',
+				array(
+					'gutenakit_ids' => array_map( 'sanitize_text_field', $block_res['gutenakit_ids'] ),
+					'gutenakit_css' => sanitize_text_field( $block_res['gutenakit_css'] ),
+				)
+			);
+		}
+		
+		
+		if ( ! empty( $block_res['duplicate_blocks'] ) ) {
+			wp_send_json( array(
+				'msg'              => 'duplicate block ids exist', 
+				'duplicate_blocks' => $duplicate_blocks,
+			) );
+		}
+		
+	}
+
+	public function gutena_kit_register_required_plugins(){
+		if ( ! function_exists( 'tgmpa' ) ) {
+			return;
+		}
+		$plugins = array(
+			array(
+				'name'     => 'Gutenberg',
+				'slug'     => 'gutenberg',
+				'required' => false,
+			),
+		);
+
+		$config = array(
+			'id'           => 'gutena-kit',                 // Unique ID for hashing notices for multiple instances of TGMPA.
+			'default_path' => '',                      // Default absolute path to bundled plugins.
+			'menu'         => 'tgmpa-install-plugins', // Menu slug.
+			'parent_slug'  => 'plugins.php',            // Parent menu slug.
+			'capability'   => 'manage_options',    // Capability needed to view plugin install page, should be a capability associated with the parent menu used.
+			'has_notices'  => false,                    // Show admin notices or not.
+			'dismissable'  => true,                    // If false, a user cannot dismiss the nag message.
+			'dismiss_msg'  => '',                      // If 'dismissable' is false, this message will be output at top of nag.
+			'is_automatic' => false,                   // Automatically activate plugins after installation or not.
+			'message'      => '',                      // Message to output right before the plugins table.
+
+		);
+
+		tgmpa( $plugins, $config );
+	}
+}

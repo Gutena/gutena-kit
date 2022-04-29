@@ -1,0 +1,4 @@
+.DS_Store
+node_modules/
+build/
+public/block_editor/node_modules/
