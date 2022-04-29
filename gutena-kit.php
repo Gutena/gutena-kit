@@ -5,10 +5,10 @@
  * @package           Gutena_Kit
  * @author            ExpressTech
  * @copyright         2022 ExpressTech
- * @license           GPL-3.0-or-later
+ * @license           GPL-3.0
  * 
  * Plugin Name:       Gutena Kit
- * Plugin URI:        https://example.com/plugins/the-basics/
+ * Plugin URI:        https://Gutena.io
  * Description:       Add typography, spacing supports to editor blocks and demo import.
  * Version:           1.0.0
  * Requires at least: 5.8
@@ -16,7 +16,7 @@
  * Author:            ExpressTech
  * Author URI:        https://expresstech.io
  * License:           GPL v3
- * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:       gutena-kit
  */
 
