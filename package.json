@@ -1,12 +1,12 @@
 {
-  "name": "tatsu-pro",
+  "name": "gutena-kit",
   "version": "1.0.0",
-  "description": "Tatsu Pro Page Builder",
+  "description": "wordpress block editor additional tools and blocks",
   "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "brandexponents",
+  "author": "expresstech",
   "license": "ISC",
   "devDependencies": {
     "autoprefixer": "^10.4.2",

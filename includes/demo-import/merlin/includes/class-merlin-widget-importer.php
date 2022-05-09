@@ -69,18 +69,18 @@ class Merlin_Widget_Importer {
 		if ( ! file_exists( $file ) ) {
 			return new \WP_Error(
 				'widget_import_file_not_found',
-				__( 'Error: Widget import file could not be found.', 'merlin-wp' )
+				__( 'Error: Widget import file could not be found.', 'gutena-kit' )
 			);
 		}
 
 		// Get file contents and decode.
-		$data = file_get_contents( $file );
+		$data = gutenakit_file_get_contents( $file );
 
 		// Return from this function if there was an error.
 		if ( empty( $data ) ) {
 			return new \WP_Error(
 				'widget_import_file_missing_content',
-				__( 'Error: Widget import file does not have any content in it.', 'merlin-wp' )
+				__( 'Error: Widget import file does not have any content in it.', 'gutena-kit' )
 			);
 		}
 
@@ -102,7 +102,7 @@ class Merlin_Widget_Importer {
 		if ( empty( $data ) || ! is_object( $data ) ) {
 			return new \WP_Error(
 				'corrupted_widget_import_data',
-				__( 'Error: Widget import data could not be read. Please try a different file.', 'merlin-wp' )
+				__( 'Error: Widget import data could not be read. Please try a different file.', 'gutena-kit' )
 			);
 		}
 
@@ -126,7 +126,7 @@ class Merlin_Widget_Importer {
 		// Loop import data's sidebars.
 		foreach ( $data as $sidebar_id => $widgets ) {
 			// Skip inactive widgets (should not be in export file).
-			if ( 'wp_inactive_widgets' == $sidebar_id ) {
+			if ( 'wp_inactive_widgets' === $sidebar_id ) {
 				continue;
 			}
 
@@ -141,7 +141,7 @@ class Merlin_Widget_Importer {
 				$sidebar_available    = false;
 				$use_sidebar_id       = 'wp_inactive_widgets'; // Add to inactive if sidebar does not exist in theme.
 				$sidebar_message_type = 'error';
-				$sidebar_message      = __( 'Sidebar does not exist in theme (moving widget to Inactive)', 'merlin-wp' );
+				$sidebar_message      = __( 'Sidebar does not exist in theme (moving widget to Inactive)', 'gutena-kit' );
 			}
 
 			// Result for sidebar.
@@ -162,7 +162,7 @@ class Merlin_Widget_Importer {
 				if ( ! $fail && ! isset( $available_widgets[ $id_base ] ) ) {
 					$fail                = true;
 					$widget_message_type = 'error';
-					$widget_message      = __( 'Site does not support widget', 'merlin-wp' ); // Explain why widget not imported.
+					$widget_message      = __( 'Site does not support widget', 'gutena-kit' ); // Explain why widget not imported.
 				}
 
 				// Filter to modify settings object before conversion to array and import.
@@ -175,7 +175,7 @@ class Merlin_Widget_Importer {
 				// Without this, they are imported as objects and cause fatal error on Widgets page.
 				// If this creates problems for plugins that do actually intend settings in objects then may need to consider other approach: https://wordpress.org/support/topic/problem-with-array-of-arrays.
 				// It is probably much more likely that arrays are used than objects, however.
-				$widget = json_decode( json_encode( $widget ), true );
+				$widget = json_decode( wp_json_encode( $widget ), true );
 
 				// Filter to modify settings array.
 				// This is preferred over the older wie_widget_settings filter above.
@@ -192,10 +192,10 @@ class Merlin_Widget_Importer {
 					$single_widget_instances = ! empty( $widget_instances[ $id_base ] ) ? $widget_instances[ $id_base ] : array();
 					foreach ( $single_widget_instances as $check_id => $check_widget ) {
 						// Is widget in same sidebar and has identical settings?
-						if ( in_array( "$id_base-$check_id", $sidebar_widgets ) && (array) $widget == $check_widget ) {
+						if ( in_array( "$id_base-$check_id", $sidebar_widgets, true ) && (array) $widget == $check_widget ) {
 							$fail                = true;
 							$widget_message_type = 'warning';
-							$widget_message      = __( 'Widget already exists', 'merlin-wp' ); // Explain why widget not imported.
+							$widget_message      = __( 'Widget already exists', 'gutena-kit' ); // Explain why widget not imported.
 
 							break;
 						}
@@ -253,17 +253,17 @@ class Merlin_Widget_Importer {
 					// Success message.
 					if ( $sidebar_available ) {
 						$widget_message_type = 'success';
-						$widget_message      = __( 'Imported', 'merlin-wp' );
+						$widget_message      = __( 'Imported', 'gutena-kit' );
 					}
 					else {
 						$widget_message_type = 'warning';
-						$widget_message      = __( 'Imported to Inactive', 'merlin-wp' );
+						$widget_message      = __( 'Imported to Inactive', 'gutena-kit' );
 					}
 				}
 
 				// Result for widget instance.
 				$results[ $sidebar_id ]['widgets'][ $widget_instance_id ]['name']         = isset( $available_widgets[ $id_base ]['name'] ) ? $available_widgets[ $id_base ]['name'] : $id_base; // Widget name or ID if name not available (not supported by site).
-				$results[ $sidebar_id ]['widgets'][ $widget_instance_id ]['title']        = ! empty( $widget['title'] ) ? $widget['title'] : __( 'No Title', 'merlin-wp' ); // Show "No Title" if widget instance is untitled.
+				$results[ $sidebar_id ]['widgets'][ $widget_instance_id ]['title']        = ! empty( $widget['title'] ) ? $widget['title'] : __( 'No Title', 'gutena-kit' ); // Show "No Title" if widget instance is untitled.
 				$results[ $sidebar_id ]['widgets'][ $widget_instance_id ]['message_type'] = $widget_message_type;
 				$results[ $sidebar_id ]['widgets'][ $widget_instance_id ]['message']      = $widget_message;
 
@@ -325,7 +325,7 @@ class Merlin_Widget_Importer {
 	 */
 	private static function format_results_for_log( $results ) {
 		if ( empty( $results ) ) {
-			esc_html_e( 'No results for widget import!', 'merlin-wp' );
+			esc_html_e( 'No results for widget import!', 'gutena-kit' );
 		}
 
 		// Loop sidebars.
