@@ -4,6 +4,7 @@
 /node_modules
 /public/block_editor/package.json
 /public/block_editor/package-lock.json
+/public/block_editor/node_modules
 
 .distignore
 .gitignore
