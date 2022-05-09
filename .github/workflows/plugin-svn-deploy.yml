@@ -15,7 +15,7 @@ jobs:
         gulp
         cd public/block_editor
         npm install
-        npm wp-scripts build
+        npm run build
     - name: WordPress Plugin Deploy
       uses: 10up/action-wordpress-plugin-deploy@stable
       env:
