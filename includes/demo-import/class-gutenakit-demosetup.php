@@ -174,7 +174,21 @@ class GutenakitDemoSetup extends Merlin{
 		<form action="" method="post" class="<?php echo esc_attr( $multi_import ); ?>">
 
 			<ul class="merlin__drawer merlin__drawer--import-content js-merlin-drawer-import-content">
-				<?php echo  $this->get_import_steps_html( $import_info ); ?>
+				<?php foreach ( $import_info as $slug => $available ) : ?>
+					<?php
+					if ( ! $available ) {
+						continue;
+					}
+					?>
+
+					<li class="merlin__drawer--import-content__list-item status status--Pending" data-content="<?php echo esc_attr( $slug ); ?>">
+						<input type="checkbox" name="default_content[<?php echo esc_attr( $slug ); ?>]" class="checkbox checkbox-<?php echo esc_attr( $slug ); ?>" id="default_content_<?php echo esc_attr( $slug ); ?>" value="1" checked>
+						<label for="default_content_<?php echo esc_attr( $slug ); ?>">
+							<i></i><span><?php echo esc_html( ucfirst( str_replace( '_', ' ', $slug ) ) ); ?></span>
+						</label>
+					</li>
+
+				<?php endforeach; ?>
 			</ul>
 			
 			<p><?php 
@@ -224,20 +238,23 @@ class GutenakitDemoSetup extends Merlin{
 	/*After Demo Import Set Home Page*/
     public function after_import_setup( $index ) {
 	   $demo = gutendkit_demo_deatils_list( $index );
-	   $main_menu = empty( $demo['main_menu'] ) ? 'Main Menu' : $demo['main_menu'];
-	   $home_page = empty( $demo['home_page'] ) ? 'Home' : $demo['home_page'];
-	   $blog_page = empty( $demo['blog_page'] ) ? 'Blog' : $demo['blog_page'];
-	   $site_logo = empty( $demo['site_logo'] ) ? 'logo' : $demo['site_logo'];
+	   $main_menu = empty( $demo['main_menu'] ) ? 'Main Menu' : sanitize_text_field( $demo['main_menu'] );
+	   $home_page = empty( $demo['home_page'] ) ? 'Home' : sanitize_text_field( $demo['home_page'] );
+	   $blog_page = empty( $demo['blog_page'] ) ? 'Blog' : sanitize_text_field( $demo['blog_page'] );
+	   $site_logo = empty( $demo['site_logo'] ) ? 'logo' : sanitize_text_field( $demo['site_logo'] );
 	   
        // Assign menus to their locations.
        $main_menu = get_term_by( 'name', $main_menu, 'nav_menu' );
    
-       set_theme_mod(
-           'nav_menu_locations', array(
-			   'main_nav'  => $main_menu->term_id,
-               'main-menu' => $main_menu->term_id,
-           )
-       );
+	   if ( ! empty( $main_menu ) && ! empty( $main_menu->term_id ) ) {
+			set_theme_mod(
+				'nav_menu_locations', array(
+					'main_nav'  => $main_menu->term_id,
+					'main-menu' => $main_menu->term_id,
+				)
+			);
+		}
+
 	   if ( ! empty( $demo['site_logo'] ) ) {
 			$site_logo = get_page_by_title( $demo['site_logo'], OBJECT, 'attachment' );
 			if ( ! empty( $site_logo ) && ! empty( $site_logo->ID ) ) {
@@ -250,8 +267,14 @@ class GutenakitDemoSetup extends Merlin{
        $blog_page  = get_page_by_title( $blog_page );
    
        update_option( 'show_on_front', 'page' );
-       update_option( 'page_on_front', $home_page->ID );
-       update_option( 'page_for_posts', $blog_page->ID );
+
+	   if ( ! empty( $home_page ) && ! empty( $home_page->ID ) ) {
+			update_option( 'page_on_front', (int) $home_page->ID );
+	   }
+       
+	   if ( ! empty( $blog_page ) && ! empty( $blog_page->ID ) ) {
+       		update_option( 'page_for_posts', (int) $blog_page->ID );
+	   }
 
 	   //Set global styles
 	   if ( ! empty( $demo['style_variation'] ) ) {
@@ -268,7 +291,9 @@ class GutenakitDemoSetup extends Merlin{
 	    */
 		require_once( ABSPATH . "wp-includes/class-wp-theme-json-resolver.php" );
 		$style_post = WP_Theme_JSON_Resolver::get_user_data_from_wp_global_styles( wp_get_theme() );
+
 		$post_content = json_decode( $style_post['post_content'] , true );
+		
 		if ( ! empty( $style_post ) && ! empty( $style_post['ID'] ) && is_numeric( $style_post['ID']) && $style_post['ID'] > 0 && ! empty( $style_post['post_type'] ) && 'wp_global_styles' === $style_post['post_type'] ) {
 			if ( ! empty( $style_content) ) {
 				//Set
@@ -276,7 +301,7 @@ class GutenakitDemoSetup extends Merlin{
 					'ID'           => $style_post['ID'],
 					'post_content' => sanitize_text_field( $style_content ),
 				));
-			}elseif ( ! empty( $post_content['settings'] ) && $this->is_gutena_theme_activated ) {
+			} elseif ( ! empty( $post_content['settings'] ) && $this->is_gutena_theme_activated ) {
 				//Reset
 				$post_content['settings'] = array();
 				wp_update_post( array(

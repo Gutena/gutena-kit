@@ -52,10 +52,10 @@ class Gutena_Kit_Admin {
 		 * Admin helper functions
 		 */
 		require_once GUTENA_KIT_DIR_PATH . 'includes/helpers/admin-helpers.php';
-		require_once GUTENA_KIT_DIR_PATH . 'includes/demo-import/merlin/vendor/autoload.php';
+		require_once GUTENA_KIT_DIR_PATH . 'includes/demo-import/tgmpa/class-tgm-plugin-activation.php';
 		require_once GUTENA_KIT_DIR_PATH . 'includes/demo-import/merlin/class-merlin.php';
 		require_once GUTENA_KIT_DIR_PATH . 'includes/demo-import/class-gutenakit-demosetup.php';
-		require_once GUTENA_KIT_DIR_PATH . 'includes/demo-import/tgmpa/class-tgm-plugin-activation.php';
+		
 		if ( class_exists( 'TGM_Plugin_Activation' ) ) {
 			add_action( 'tgmpa_register',array( $this, 'gutena_kit_register_required_plugins' ));
 		}

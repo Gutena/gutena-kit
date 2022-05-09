@@ -44,7 +44,7 @@ if ( ! function_exists( 'gutendkit_extract_css_from_block' ) ) {
 }
 
 if ( ! function_exists( 'gutendkit_categorize_demo_list' ) ) {
-	function gutendkit_categorize_demo_list(){
+	function gutendkit_categorize_demo_list() {
 		$demo_site = 'https://demo.gutena.io/wp-content/uploads/demo-files/';
 		return array(
 			'agency'   => array(
@@ -87,8 +87,41 @@ if ( ! function_exists( 'gutendkit_demo_deatils_list' ) ) {
 
 //Check if gutena theme activated
 if ( ! function_exists( 'is_gutena_theme_activated' ) ) {
-	function is_gutena_theme_activated(){
+	function is_gutena_theme_activated() {
 		$theme = wp_get_theme();
 		return ! ( false === stripos( $theme->get( 'Name' ), 'gutena' ) );
+	}
+}
+
+//file_get_contents
+if ( ! function_exists( 'gutenakit_file_get_contents' ) ) {
+	function gutenakit_file_get_contents( $url ) {
+		$response = wp_remote_get( esc_url_raw( $url ) );
+		return ( ! is_wp_error( $response ) ) ? wp_remote_retrieve_body( $response ) : '';
+	}
+}
+
+//file_put_contents
+if ( ! function_exists( 'gutenakit_file_put_contents' ) ) {
+	function gutenakit_file_put_contents( $file_path, $contents ) {
+
+		if ( 'direct' === get_filesystem_method() )
+		{
+			/* you can safely run request_filesystem_credentials() without any issues and don't need to worry about passing in a URL */
+			$creds = request_filesystem_credentials( wp_nonce_url( admin_url() ), '', false, false, array() );
+		
+			/* initialize the API */
+			if ( ! WP_Filesystem( $creds ) ) {
+				/* any problems and we exit */
+				return false;
+			}   
+		
+			global $wp_filesystem;
+			/* do our file manipulations below */
+			return $wp_filesystem->put_contents( $file_path, $contents );
+
+		} else {
+			return false;
+		}
 	}
 }
