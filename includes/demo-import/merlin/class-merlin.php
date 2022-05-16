@@ -697,10 +697,11 @@ if ( ! class_exists( 'Merlin' ) ) {
 		public function loading_spinner() {
 
 			// Define the spinner file.
-			$spinner = $this->directory . '/assets/images/spinner';
-
+			$spinner = trailingslashit( $this->base_path ) . $this->directory . '/assets/images/spinner.php';
 			// Retrieve the spinner.
-			get_template_part( apply_filters( 'merlin_loading_spinner', $spinner ) );
+			if ( file_exists( $spinner ) ) {
+				require_once $spinner;
+			}
 		}
 
 		/**
