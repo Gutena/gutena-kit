@@ -75,4 +75,13 @@
        grid-gap:20px;
     }
 }
+
+/*Merlin : start*/
+.merlin__content--transition svg{
+    max-width: 150px;
+    margin: auto;
+}
+
+/*Merlin : end*/
  /*Demo Import Page: END*/
+ 

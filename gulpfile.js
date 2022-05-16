@@ -11,7 +11,25 @@ const gulp = require( 'gulp' ),
     zip = require( 'gulp-zip' );
 const {series, parallel} = require('gulp');
 
-var zipPath = [ './', './**', '!./node_modules', '!./node_modules/**', '!./build', '!./build/**', '!./gulpfile.js', '!./package.json', '!./package-lock.json', '!./phpcs.xml','!./LICENSE','!./README.md','!./public/block_editor/package.json','!./public/block_editor/package-lock.json' ,'!./public/block_editor/node_modules','!./public/block_editor/node_modules/**','!./public/block_editor/src','!./public/block_editor/src/**'];
+var zipPath = [ 
+    './', 
+    './**', 
+    '!./node_modules', 
+    '!./node_modules/**', 
+    '!./build', 
+    '!./build/**', 
+    '!./gulpfile.js', 
+    '!./package.json', 
+    '!./package-lock.json', 
+    '!./phpcs.xml',
+    '!./LICENSE',
+    '!./README.md',
+    '!./public/block_editor/package.json',
+    '!./public/block_editor/package-lock.json',
+    '!./public/block_editor/node_modules',
+    '!./public/block_editor/node_modules/**',
+    '!./public/block_editor/src','!./public/block_editor/src/**'
+];
 //Clean CSS, JS and zip
 function clean_files(){
     let cleanPath = ['./build/gutena-kit.zip','./public/js/**/*.min.js', './public/css/**/*.min.css'];
