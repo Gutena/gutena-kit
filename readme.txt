@@ -16,7 +16,7 @@ Add typography, spacing supports and settings to editor blocks and demo import.
 
 **feature**
 
-* Demo Import: Appearance > Demo Import
+* Demo Import: Appearance > Gutena Kit
 * Typography and spacing supports to editor blocks
 * Grid Gap settings for Media & Text Block
 
@@ -48,7 +48,11 @@ Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtab
 
 == Changelog ==
 
-= 1.0.0 =
+= 1.0.1 | 17th May 2022 =
+* Fixed demo import dashboard SVG alignment and spinner
+* Added demo preview url 
+
+= 1.0.0 | 9th May 2022 =
 * Demo Import Added for gutena theme
 * Typography and spacing supports added to editor blocks
 * Grid Gap settings added to Media & Text Block

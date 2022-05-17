@@ -57,10 +57,14 @@ class Gutena_Kit_Admin {
 		require_once GUTENA_KIT_DIR_PATH . 'includes/demo-import/class-gutenakit-demosetup.php';
 		
 		if ( class_exists( 'TGM_Plugin_Activation' ) ) {
-			add_action( 'tgmpa_register',array( $this, 'gutena_kit_register_required_plugins' ));
+			add_action( 'tgmpa_register', array( $this, 'gutena_kit_register_required_plugins' ) );
 		}
 		if ( ! class_exists( 'Merlin' ) || ! class_exists( 'GutenakitDemoSetup' ) ) {
 			return;
+		}
+		//add admin gutena kit stylesheet on merlin demo import page
+		if ( isset( $_GET['page'] ) && 'merlin' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) ) {
+			add_action( 'admin_print_styles', array( $this, 'enqueue_styles' ) );
 		}
 		/**
 		 * Set directory locations, text strings, and settings.
@@ -162,7 +166,7 @@ class Gutena_Kit_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-		wp_enqueue_style( $this->gutena_kit, plugin_dir_url( __FILE__ ) . 'css/gutena-kit-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->gutena_kit, GUTENA_KIT_PLUGIN_URL . 'admin/css/gutena-kit-admin.css', array(), $this->version, 'all' );
 	}
 
 	/**

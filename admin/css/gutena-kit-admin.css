@@ -66,6 +66,10 @@
     font-weight: 600;  
 }
 
+.gutenakit-demo-card .gutenakit-demo-card-footer .gutenakit-demo-title a {
+    text-decoration: none;
+}
+
 @media (max-width: 768px){
     .gutenakit-demo-import-page .gutenakit-admin-container{
         max-width: 720px;
@@ -75,4 +79,13 @@
        grid-gap:20px;
     }
 }
+
+/*Merlin : start*/
+.merlin__content--transition svg{
+    max-width: 150px;
+    margin: auto;
+}
+
+/*Merlin : end*/
  /*Demo Import Page: END*/
+ 
