@@ -50,6 +50,7 @@ Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtab
 
 = 1.0.1 | (Beta) =
 * Fixed demo import dashboard SVG alignment and spinner
+* Added demo preview url 
 
 = 1.0.0 | 9th May 2022 =
 * Demo Import Added for gutena theme
