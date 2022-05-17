@@ -32,7 +32,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
                 <div class="gutenakit-demo-card-footer">
                     <div class="gutenakit-demo-title">
-                        <?php echo esc_html($demo['default']['import_file_name']); ?>
+                        <a href="<?php echo esc_url( $demo['default']['preview_url'] ) ?>" target="_blank" >
+                            <?php echo esc_html($demo['default']['import_file_name']); ?>
+                        </a>
                     </div>
                     <div class="gutenakit-demo-import-btn">
                         <a href="<?php echo esc_url(admin_url( 'options.php?page=merlin&demo_index='.$index.'')); ?>" class="gutenakit-import-demo-link button button-primary">
