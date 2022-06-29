@@ -190,6 +190,7 @@ class Gutena_Kit {
 		$this->loader->add_action( 'init',$plugin_public,'register_block_styles_gutenakit' );
 		
 		$this->loader->add_action( 'wp_head', $plugin_public,'add_post_css' );
+		//Filters the metadata provided for registering a block type
 		$this->loader->add_filter( 'block_type_metadata', $plugin_public, 'block_settings_setup', 10, 2 );
 		$this->loader->add_filter( 'render_block', $plugin_public, 'render_block_customization', 10, 2 );
 		
