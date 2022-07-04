@@ -48,7 +48,7 @@ Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtab
 
 == Changelog ==
 
-= 1.0.2 | 9th July 2022 =
+= 1.0.2 | 4th July 2022 =
 * Updated Agency demo Global Style
 
 = 1.0.1 | 17th May 2022 =
