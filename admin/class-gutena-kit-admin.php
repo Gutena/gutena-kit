@@ -179,7 +179,12 @@ class Gutena_Kit_Admin {
 	}
 
 	public function add_admin_menu(){
-		add_submenu_page( 'themes.php', 'Gutena Kit', 'Gutena Kit', 'manage_options', 'gutenakit_demo_import', array( $this, 'demo_import_page' ));
+		$page_hook_suffix =	add_submenu_page( 'themes.php', 'Gutena Kit', 'Gutena Kit', 'manage_options', 'gutenakit_demo_import', array( $this, 'demo_import_page' ));
+
+		if ( ! empty( $page_hook_suffix ) ){
+			add_action( 'admin_print_styles-' . $page_hook_suffix, array( $this, 'demo_import_dashboard_styles' ) );
+			add_action( 'admin_print_scripts-' . $page_hook_suffix, array( $this, 'demo_import_dashboard_scripts' ) );
+	   }
 	}
 
 	public function admin_dashboard_page(){
@@ -190,8 +195,35 @@ class Gutena_Kit_Admin {
 	 * List Demos and Import
 	 */
 	public function demo_import_page(){
-		require_once GUTENA_KIT_DIR_PATH. 'admin/partials/demo-import-page.php';
+		echo '<div id="gutenakit-demo-import-page"></div>';
 	}
+
+	/**
+	 * Demo import styles
+	 */
+	public function demo_import_dashboard_styles() {
+		wp_enqueue_style( 'gutena-theme-dashboard-style', GUTENA_KIT_PLUGIN_URL . 'includes/demo-import/admin-dashboard/assets/dashboard.css', array(), $this->version, 'all' );
+	}
+
+	/**
+	 * Demo import script
+	 */
+	public function demo_import_dashboard_scripts() {
+		
+		wp_enqueue_script( 'gutena-kit-demo-import-dashboard', GUTENA_KIT_PLUGIN_URL . 'includes/demo-import/admin-dashboard/build/index.js', array( 'wp-components', 'wp-element', 'wp-i18n' ), $this->version, false );
+	
+		wp_localize_script( 
+		   'gutena-kit-demo-import-dashboard' , 
+		   'gutenakit_demo_info',
+			array(
+			   'demo_list' => gutendkit_categorize_demo_list(),
+			   'logo' => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/logo.png' ),
+			   'demo_import_url' => esc_url( admin_url( 'options.php?page=merlin&demo_index=' ) ),
+			   'styles' => wp_json_file_decode( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/styles/all_styles.json', array( 'associative' => true ) )
+			)
+		);
+	}
+
 	/**
 	 * Gutena Kit addition with block editor
 	 */
