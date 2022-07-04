@@ -174,7 +174,7 @@ class Gutena_Kit_Public {
 		}
 		return $metadata;
 	}
-
+	//block_type_metadata Filter
 	public function block_settings_setup( $metadata ) {
 		if ( ! empty( $metadata['name'] ) ) {
 			$metadata = $this->add_block_typography_support( $metadata );
@@ -191,7 +191,7 @@ class Gutena_Kit_Public {
 	}
 
 	/**
-	 * Render Block customization
+	 * Render Block customization call on render_block filter
 	 */
 	public function render_block_customization( $block_content, $block ) {
 		if ( ! empty( $block['attrs']['gutenaKitID'] ) ) {
