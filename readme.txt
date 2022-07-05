@@ -2,9 +2,9 @@
 Contributors: expresstech
 Tags: gutena, gutena kit
 Requires at least: 5.8
-Tested up to: 5.9
+Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -48,7 +48,7 @@ Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtab
 
 == Changelog ==
 
-= 1.0.2 | Beta =
+= 1.0.2 | 4th July 2022 =
 * Updated Agency demo Global Style
 
 = 1.0.1 | 17th May 2022 =
