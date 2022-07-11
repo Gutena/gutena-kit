@@ -22,18 +22,28 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 const {
+  __
+} = wp.i18n;
+const {
+  Icon
+} = wp.components;
+const {
+  Fragment,
   useContext
 } = wp.element;
 
 const DemoCard = props => {
   const {
     import_preview_image_url,
-    import_file_name
+    import_file_name,
+    preview_url,
+    demo_type
   } = props.demoWithVariation.default;
   const {
     isPreviewDemo,
     previewDemoData,
     styleSelected,
+    baseDemoIndex,
     demoIndex,
     dispatch
   } = useContext(_data_DemoContextProvider__WEBPACK_IMPORTED_MODULE_1__.DemoContext); //Get actual demo index including all styles variation
@@ -44,7 +54,7 @@ const DemoCard = props => {
     if (selectedDemoIndex > 0) {
       //noOfStyles = style variation + main demo
       let noOfStyles = Object.keys(props.demoWithVariation).length;
-      selectedDemoIndex = selectedDemoIndex * noOfStyles + 1;
+      selectedDemoIndex = selectedDemoIndex * noOfStyles;
     }
 
     return selectedDemoIndex;
@@ -52,12 +62,16 @@ const DemoCard = props => {
 
 
   const onClickDemoCard = () => {
-    let selectedDemoIndex = getDemoindex();
-    dispatch({
-      type: 'PREVIEW_DEMO',
-      selectedDemoData: props.demoWithVariation,
-      selectedDemoIndex: selectedDemoIndex
-    });
+    if ('freepro' === demo_type) {
+      window.open(preview_url, '_blank');
+    } else {
+      let selectedDemoIndex = getDemoindex();
+      dispatch({
+        type: 'PREVIEW_DEMO',
+        selectedDemoData: props.demoWithVariation,
+        selectedDemoIndex: selectedDemoIndex
+      });
+    }
   };
 
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -73,7 +87,14 @@ const DemoCard = props => {
     className: "gk-demo-card-footer"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "gk-demo-title"
-  }, import_file_name)));
+  }, import_file_name)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "gk-overlay"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "gk-overlay-import-btn"
+  }, 'freepro' === demo_type ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Fragment, null, __('View Demo ', 'gutena-kit'), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Icon, {
+    icon: "external",
+    size: "5"
+  })) : __('Import Demo', 'gutena-kit'))));
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DemoCard);
@@ -115,32 +136,33 @@ const DemoPreview = props => {
     isPreviewDemo,
     previewDemoData,
     styleSelected,
+    baseDemoIndex,
     demoIndex,
     dispatch
   } = useContext(_data_DemoContextProvider__WEBPACK_IMPORTED_MODULE_1__.DemoContext);
-  const defaultDemo = previewDemoData.default; // console.log("previewDemoData", previewDemoData);
-  //Get actual demo index including all styles variation
+  const defaultDemo = previewDemoData.default; //RESET DEMO STYLE FOR PREVIEW AND IMPORT
 
-  const getDemoindex = () => {
-    let selectedDemoIndex = props.demoIndex;
-
-    if (selectedDemoIndex > 0) {
-      //noOfStyles = style variation + main demo
-      let noOfStyles = Object.keys(previewDemoData).length;
-      selectedDemoIndex = selectedDemoIndex * noOfStyles + 1;
-    }
-
-    return selectedDemoIndex;
-  }; //On click demo card open preview demo modal
-
-
-  const onClickDemoCard = () => {
-    let selectedDemoIndex = getDemoindex();
+  const demoStyleReSet = () => {
     dispatch({
-      type: 'PREVIEW_DEMO',
-      selectedDemoData: props.demoInfo,
-      selectedDemoIndex: selectedDemoIndex
-    });
+      type: 'RESET_PREVIEW_DEMO'
+    }); //Send Message to iframe to change global styles as per user choice for preview
+
+    document.getElementById("gk-demo-preview-frame").contentWindow.postMessage({
+      "style": "default"
+    }, "*");
+  }; //SET DEMO STYLE FOR PREVIEW AND IMPORT
+
+
+  const demoStyleSet = (styleSlug, selectedDemoIndex) => {
+    dispatch({
+      type: 'SET_PREVIEW_DEMO',
+      styleSelected: styleSlug,
+      demoIndex: selectedDemoIndex
+    }); //Send Message to iframe to change global styles as per user choice for preview
+
+    document.getElementById("gk-demo-preview-frame").contentWindow.postMessage({
+      "style": styleSlug
+    }, "*");
   };
 
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Fragment, null, isPreviewDemo && defaultDemo.preview_url.length > 5 ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -151,7 +173,10 @@ const DemoPreview = props => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "gk-header"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "gk-back-button"
+    className: "gk-back-button",
+    onClick: () => dispatch({
+      type: 'CLOSE_PREVIEW_DEMO'
+    })
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "gk-icon"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Icon, {
@@ -167,14 +192,42 @@ const DemoPreview = props => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "gk-section-title"
   }, __('Choose Style', 'gutena-kit')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "gk-reset-icon"
+    className: "gk-reset-icon",
+    title: "reset",
+    onClick: () => demoStyleReSet()
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Icon, {
     icon: "image-rotate"
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "gk-style-variations-card"
-  }, Object.keys(previewDemoData).length > 0 ? Object.keys(previewDemoData).forEach(function (key) {
-    console.log(key, previewDemoData[key]);
-  }) : ''))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "gk-style-variation-cards"
+  }, Object.keys(previewDemoData).length > 0 ? Object.keys(previewDemoData).map(function (styleSlug, index) {
+    let demoVariation = previewDemoData[styleSlug];
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      key: 'gk-demo-variation' + styleSlug,
+      className: `gk-color-demo-variation-card ${styleSelected === styleSlug ? "style-selected" : ""}`,
+      onClick: () => demoStyleSet(styleSlug, parseInt(baseDemoIndex) + index)
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "gk-demo-color-palette"
+    }, demoVariation.colors.length > 0 ? demoVariation.colors.map((colorCode, colorIndex) => {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+        key: 'gk-colors-' + colorIndex,
+        className: "gk-color-swatch",
+        style: {
+          background: colorCode
+        }
+      });
+    }) : ''), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "demo-style-details"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "style-title"
+    }, demoVariation.title), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "font-families"
+    }, demoVariation.fontFamily.join(', '))));
+  }) : '')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "import-demo-action"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    className: "import-demo-btn",
+    href: gutenakit_demo_info.demo_import_url + demoIndex
+  }, "Import Demo"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     id: "customize-preview",
     className: "gk-right-section wp-full-overlay-main iframe-ready"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("iframe", {
@@ -183,7 +236,7 @@ const DemoPreview = props => {
     width: "100%",
     height: "100%",
     sandbox: "allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts",
-    src: defaultDemo.preview_url + '?igu=1'
+    src: defaultDemo.preview_url + '?embedddemo=gd'
   }))) : '');
 };
 
@@ -222,6 +275,7 @@ const DemoContextProvider = props => {
     isPreviewDemo: false,
     previewDemoData: {},
     styleSelected: 'default',
+    baseDemoIndex: 0,
     demoIndex: 0
   };
   const [demoInfo, dispatch] = useReducer(_DemoReducer__WEBPACK_IMPORTED_MODULE_1__.DemoReducer, currentDemo); //dispatch = DemoReducer : it's a reducer function defined in DemoReducer.js
@@ -262,6 +316,7 @@ const DemoReducer = (state, action) => {
     isPreviewDemo,
     previewDemoData,
     styleSelected,
+    baseDemoIndex,
     demoIndex
   } = state; //Destructuring 
 
@@ -273,7 +328,30 @@ const DemoReducer = (state, action) => {
         isPreviewDemo: true,
         previewDemoData: action.selectedDemoData,
         styleSelected: 'default',
+        baseDemoIndex: action.selectedDemoIndex,
         demoIndex: action.selectedDemoIndex
+      };
+      return update;
+      break;
+
+    case 'SET_PREVIEW_DEMO':
+      update = {
+        isPreviewDemo: true,
+        previewDemoData: previewDemoData,
+        styleSelected: action.styleSelected,
+        baseDemoIndex: baseDemoIndex,
+        demoIndex: action.demoIndex
+      };
+      return update;
+      break;
+
+    case 'RESET_PREVIEW_DEMO':
+      update = {
+        isPreviewDemo: true,
+        previewDemoData: previewDemoData,
+        styleSelected: 'default',
+        baseDemoIndex: baseDemoIndex,
+        demoIndex: baseDemoIndex
       };
       return update;
       break;
@@ -281,8 +359,9 @@ const DemoReducer = (state, action) => {
     case 'CLOSE_PREVIEW_DEMO':
       update = {
         isPreviewDemo: false,
-        previewDemoData: action.selectedDemoData,
+        previewDemoData: previewDemoData,
         styleSelected: 'default',
+        baseDemoIndex: 0,
         demoIndex: 0
       };
       return update;
@@ -393,18 +472,63 @@ const {
   __
 } = wp.i18n;
 const {
+  SelectControl
+} = wp.components;
+const {
   Fragment,
   render,
   useState
-} = wp.element;
+} = wp.element; //add all to category list
+
+gutenakit_demo_info.category.unshift('all');
 
 const GutenaKitDemoImportDashboard = props => {
   //check for info
   if (typeof gutenakit_demo_info === 'undefined') {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, __('Sorry! Gutena kit dashboard not available.', 'gutena-kit'));
-  }
+  } //Main Demos object with index actual number
 
-  const [demoList, setdemoList] = useState(Object.values(gutenakit_demo_info.demo_list));
+
+  let mainDemos = {};
+  Object.keys(gutenakit_demo_info.demo_list).forEach((demoName, index) => {
+    mainDemos[demoName] = index;
+  });
+  const demoArray = Object.values(gutenakit_demo_info.demo_list); //Prepare demo list
+
+  const [demoList, setdemoList] = useState(demoArray);
+  const [category, setCategory] = useState('all');
+  const [demoType, setDemoType] = useState('all'); //Category Filter
+
+  const applyCategoryFilter = categorySelected => {
+    setCategory(categorySelected);
+
+    if ('all' === categorySelected) {
+      setdemoList(demoArray);
+    } else {
+      setdemoList(demoArray.filter(currDemo => {
+        return currDemo.default.category.indexOf(categorySelected) >= 0;
+      }));
+    }
+  }; //Demo Filter
+
+
+  const applyDemoTypeFilter = demoTypeSelected => {
+    setDemoType(demoTypeSelected);
+
+    if ('all' === demoTypeSelected) {
+      setdemoList(demoArray);
+    } else {
+      setdemoList(demoArray.filter(currDemo => {
+        if ('free' === demoTypeSelected) {
+          return currDemo.default.demo_type === 'free';
+        } else {
+          return currDemo.default.demo_type != 'free';
+        }
+      }));
+    }
+  }; //HTML VIEW
+
+
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_data_DemoContextProvider__WEBPACK_IMPORTED_MODULE_1__["default"], null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "gk-dashboard"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_demo_preview_DemoPreview__WEBPACK_IMPORTED_MODULE_3__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -414,10 +538,29 @@ const GutenaKitDemoImportDashboard = props => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
     src: gutenakit_demo_info.logo
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "center-tabs"
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "right-filters"
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "gk-center-tabs"
+  }, '1' === gutenakit_demo_info.show_demo_type_filter ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: `gk-tab ${'all' === demoType ? 'selected' : ''}`,
+    onClick: () => applyDemoTypeFilter('all')
+  }, __('All', 'gutena-kit')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: `gk-tab ${'free' === demoType ? 'selected' : ''}`,
+    onClick: () => applyDemoTypeFilter('free')
+  }, __('Free Templates', 'gutena-kit')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: `gk-tab ${'pro' === demoType ? 'selected' : ''}`,
+    onClick: () => applyDemoTypeFilter('pro')
+  }, __('Premium Templates', 'gutena-kit'))) : ''), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "gk-right-filters"
+  }, '1' === gutenakit_demo_info.show_category_filter ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+    value: category,
+    options: gutenakit_demo_info.category.map(cat => {
+      return {
+        value: cat,
+        label: cat[0].toUpperCase() + cat.slice(1)
+      };
+    }),
+    onChange: newCategory => applyCategoryFilter(newCategory),
+    __nextHasNoMarginBottom: true
+  }) : '')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "gk-dashboard-body"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "gk-demo-grid"
@@ -425,7 +568,7 @@ const GutenaKitDemoImportDashboard = props => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_DemoCard__WEBPACK_IMPORTED_MODULE_2__["default"], {
       key: 'gk-demo-' + index,
       demoWithVariation: item,
-      demoIndex: index
+      demoIndex: mainDemos[item.default.demo_slug]
     });
   }) : '')))));
 };

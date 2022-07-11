@@ -11,6 +11,7 @@ const DemoContextProvider = (props) => {
         isPreviewDemo: false, 
         previewDemoData: {}, 
         styleSelected: 'default', 
+        baseDemoIndex: 0,
         demoIndex: 0
     };
     const [demoInfo, dispatch] = useReducer(DemoReducer,currentDemo);
