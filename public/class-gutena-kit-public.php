@@ -87,14 +87,6 @@ class Gutena_Kit_Public {
 		 add_theme_support( 'editor-styles' );
 
 	}
-
-	/**
-	* Registers Block styles
-	*/
-	public function register_block_styles_gutenakit(){
-		if ( function_exists( 'register_block_style') ) {
-		}
-	}
 	
 
 	/**
