@@ -162,9 +162,6 @@ class Gutena_Kit {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
-		if ( ! is_gutenakit_admin() ) {
-			return;
-		}
 		$plugin_admin = new Gutena_Kit_Admin( $this->get_gutena_kit(), $this->get_version() );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );

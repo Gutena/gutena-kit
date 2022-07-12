@@ -237,7 +237,7 @@ class Gutena_Kit_Admin {
 
 	public function save_post_settings_and_styles( $post_id, $post, $update ) {
 		static $exit_counter = 0;//for exit in case of loop
-		if ( empty( $post_id) || empty( $post) || ! function_exists( 'parse_blocks' ) || ! in_array( $post->post_type, array( 'post', 'page' ), true ) ) {
+		if ( ! is_gutenakit_admin() || empty( $post_id) || empty( $post) || ! function_exists( 'parse_blocks' ) || ! in_array( $post->post_type, array( 'post', 'page' ), true ) ) {
 			return;
 		}
      	//developer.wordpress.org/reference/functions/parse_blocks/
