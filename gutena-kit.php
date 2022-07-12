@@ -78,7 +78,8 @@ register_deactivation_hook( __FILE__, 'deactivate_gutena_kit' );
 require GUTENA_KIT_DIR_PATH . 'includes/class-gutena-kit.php';
 
 /**
- * Begins execution of the plugin.
+ * Begins execution of the plugin after WordPress has finished loading but before any 
+ * headers are sent.
  */
 function run_gutena_kit() {
 
@@ -86,4 +87,4 @@ function run_gutena_kit() {
 	$plugin->run();
 
 }
-run_gutena_kit();
+add_action( 'init', 'run_gutena_kit' );
