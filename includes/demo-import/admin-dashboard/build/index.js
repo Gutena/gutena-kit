@@ -227,7 +227,32 @@ const DemoPreview = props => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
     className: "import-demo-btn",
     href: gutenakit_demo_info.demo_import_url + demoIndex
-  }, "Import Demo"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "gk-btn-icon"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+    width: "12",
+    height: "13",
+    viewBox: "0 0 12 13",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("rect", {
+    y: "12",
+    width: "12",
+    height: "1",
+    fill: "white"
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("rect", {
+    x: "5",
+    y: "9",
+    width: "9",
+    height: "1",
+    transform: "rotate(-90 5 9)",
+    fill: "white"
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+    d: "M5.49994 10L1 5.55124L1.51037 5L5.5 8.94401L9.48963 5L10 5.55124L5.49994 10Z",
+    fill: "white"
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "gk-btn-text"
+  }, __('Import Demo', 'gutena-kit'))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     id: "customize-preview",
     className: "gk-right-section wp-full-overlay-main iframe-ready"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("iframe", {

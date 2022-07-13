@@ -105,7 +105,14 @@ const DemoPreview = ( props ) => {
                         className="import-demo-btn" 
                         href={gutenakit_demo_info.demo_import_url+demoIndex}
                         >
-                        Import Demo
+                            <span className="gk-btn-icon">
+                                <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect y="12" width="12" height="1" fill="white"/>
+                                <rect x="5" y="9" width="9" height="1" transform="rotate(-90 5 9)" fill="white"/>
+                                <path d="M5.49994 10L1 5.55124L1.51037 5L5.5 8.94401L9.48963 5L10 5.55124L5.49994 10Z" fill="white"/>
+                                </svg>
+                            </span>
+                            <span className="gk-btn-text">{ __('Import Demo','gutena-kit') }</span>
                         </a>
                     </div>
                 </div>

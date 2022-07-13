@@ -85,19 +85,22 @@ Header
 .gk-demo-card .gk-overlay {
     position: absolute;
     top: 0;
-    bottom: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transform: translateY(100%);
-    transition: all 0.3s linear;
+    background: rgba(0, 0, 0, 0.1);
+    display: none;
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
 }
 
 .gk-demo-card:hover > .gk-overlay {
-    transform: translateY(0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
     cursor: pointer;
 }
 
@@ -105,11 +108,11 @@ Header
     margin: 0;
     color: white;
     background: #2A65FF;
-    font-size: 14px;
-    line-height: 1.357;
-    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.4;
+    font-weight: 500;
     padding: 12px 18px;
-    border-radius: 19px;
+    border-radius: 5px;
 }
 /*=====================================
 DEMO PREVIEW SCREEN START
@@ -123,15 +126,16 @@ DEMO PREVIEW SCREEN : LEFT SECTION
     filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.1));
 }
 .gk-demo-preview .gk-header,
-.gk-demo-preview .gk-style-variations{
+.gk-demo-preview .gk-style-variations {
     padding: 15px 17px;
     border-bottom: 1px solid rgba(29, 35, 39, 0.1);
 }
 
 .gk-demo-preview .gk-header .gk-back-button {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     padding-bottom: 15px;
+    align-items: center;
 }
 
 .gk-demo-preview .gk-header .gk-back-button,
@@ -139,11 +143,20 @@ DEMO PREVIEW SCREEN : LEFT SECTION
     cursor: pointer;
  }
 
+ .gk-header .gk-back-button .gk-icon .dashicons,
+ .gk-header .gk-back-button .gk-icon .dashicons-before:before { 
+    width: 13px;
+    height: 15px;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
+ }
+
  .gk-header .gk-back-button .gk-text {
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.4;
     font-weight: 600;
-    letter-spacing: 2px;
+    letter-spacing: 0.03em;
     color: #3C434A;
 }
 
@@ -163,7 +176,7 @@ DEMO PREVIEW SCREEN : LEFT SECTION
  LEFT SECTION : STYLE VARIATION 
 ========================================*/
 .gk-demo-preview .gk-style-variations {
-    max-height: 75vh;
+    max-height: calc(100vh - 186px);
     overflow-y: auto;
 }
 
@@ -186,7 +199,7 @@ DEMO PREVIEW SCREEN : LEFT SECTION
     gap: 18px ;
     align-items: center;
     padding: 11px 19px;
-    border: 1px solid rgba(29, 35, 39, 0.2);
+    border: 2px solid rgba(29, 35, 39, 0.2);
     border-radius: 5px;
     margin-top: 7px;
     transition: all 0.3s ease;
@@ -232,22 +245,22 @@ DEMO PREVIEW SCREEN : LEFT SECTION
 /*======================================
  LEFT SECTION : IMPORT BUTTON
 ========================================*/
+.gk-demo-preview .import-demo-action {
+    padding: 12px 21px;
+    border-bottom: 1px solid rgba(29, 35, 39, 0.1);
+}
 
 .import-demo-action .import-demo-btn {
     display: inline-block;
     text-decoration: none;
     cursor: pointer;
-    height: 45px;
-    margin: 12px 21px;
+    padding: 12px 20px;
     background: #2A65FF;
     color: #ffffff;
-    font-size: 16px;
-    line-height: 1.4;
-    font-weight: 600;
     border-radius: 3px;
     display: flex;
+    gap: 8px;
     justify-content: center;
-    align-items: center;
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
@@ -256,4 +269,15 @@ DEMO PREVIEW SCREEN : LEFT SECTION
 
 .import-demo-action .import-demo-btn:hover {
     box-shadow: inset 0 0 0 100px rgba(0,0,0,.1);
+}
+
+.import-demo-action .import-demo-btn .gk-btn-icon svg {
+    width: 18px;
+    height: 20px;
+}
+
+.import-demo-action .import-demo-btn .gk-btn-text {
+    font-size: 16px;
+    line-height: 1.4;
+    font-weight: 600;
 }
