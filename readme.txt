@@ -48,6 +48,10 @@ Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtab
 
 == Changelog ==
 
+= 1.0.3 | Beta =
+* Added demo import preview with different style variation
+* Added import demo with selected global style variation by admin
+
 = 1.0.2 | 4th July 2022 =
 * Updated Agency demo Global Style
 

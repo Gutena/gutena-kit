@@ -162,14 +162,11 @@ class Gutena_Kit {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
-		if ( ! is_gutenakit_admin() ) {
-			return;
-		}
 		$plugin_admin = new Gutena_Kit_Admin( $this->get_gutena_kit(), $this->get_version() );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin , 'add_admin_menu' );
-		$this->loader->add_action( 'init',$plugin_admin,'add_blocks_and_settings' );
+		$this->loader->add_action( 'admin_init',$plugin_admin,'add_blocks_and_settings' );
 		$this->loader->add_action( 'save_post', $plugin_admin,'save_post_settings_and_styles', 10,3 );
 	}
 
@@ -187,7 +184,6 @@ class Gutena_Kit {
 		$this->loader->add_action( 'wp_enqueue_scripts',$plugin_public,'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts',$plugin_public,'enqueue_scripts' );
 		$this->loader->add_action( 'after_setup_theme',$plugin_public,'add_editor_styles' );
-		$this->loader->add_action( 'init',$plugin_public,'register_block_styles_gutenakit' );
 		
 		$this->loader->add_action( 'wp_head', $plugin_public,'add_post_css' );
 		//Filters the metadata provided for registering a block type
