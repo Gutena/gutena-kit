@@ -43,39 +43,101 @@ if ( ! function_exists( 'gutendkit_extract_css_from_block' ) ) {
 	}
 }
 
-if ( ! function_exists( 'gutendkit_categorize_demo_list' ) ) {
-	function gutendkit_categorize_demo_list() {
-		$demo_site = 'https://demo.gutena.io/wp-content/uploads/demo-files/';
+//demo category
+if ( ! function_exists( 'gutendkit_demo_category_list' ) ) {
+	function gutendkit_demo_category_list( ) {
 		return array(
-			'agency'   => array(
-				'default' => array_merge(
-					wp_json_file_decode( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/agency/agency_demo_settings.json', array( 'associative' => true ) ),
-					array(
-						'import_file_url'          => esc_url( $demo_site . '/agency/content.xml' ),
-						'import_preview_image_url' => esc_url( $demo_site . '/agency/demo-screenshot.png' ),
-						'import_notice'            => '',
-					)
-				),
-			),
-			'business' => array(
-				'default' => array_merge(
-					wp_json_file_decode( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/business/business_demo_settings.json', array( 'associative' => true ) ),
-					array(
-						'import_file_url'          => esc_url( $demo_site . '/business/content.xml' ),
-						'import_preview_image_url' => esc_url( $demo_site . '/business/demo-screenshot.png' ),
-						'import_notice'            => '',
-					)
-				),
-			),
+			'agency',
+			'business',
 		);
 	}
 }
+//Demo List
+if ( ! function_exists( 'gutendkit_categorize_demo_list' ) ) {
+	function gutendkit_categorize_demo_list() {
+		$demos = array();
+		if ( function_exists( 'wp_json_file_decode' ) ) { 
+			$demo_site = 'https://demo.gutena.io/wp-content/uploads/demo-files/';
+			$demos = array(
+				'agency'   => array(
+					'default' => array_merge(
+						wp_json_file_decode( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/agency/agency_demo_settings.json', array( 'associative' => true ) ),
+						array(
+							'demo_slug'					=> 'agency',
+							'demo_type'					=> 'free',
+							'category'					=> array('agency'),
+							'import_file_url'          	=> esc_url( $demo_site . '/agency/content.xml' ),
+							'import_preview_image_url' 	=> esc_url( $demo_site . '/agency/demo-screenshot.png' ),
+							'import_notice'           	=> '',
+							'style_slug'				=> 'default',
+							'title'						=> 'Default',
+							'fontFamily'				=> array(
+								'Manrope',
+								'Inter'
+							),
+							'colors'					=> array(
+								'#E7694E',
+								'#202020',
+								'#555555',
+								'#FFF3F0',
+								'#FFFFFF'
+							),
+						)
+					),
+				),
+				'business' => array(
+					'default' => array_merge(
+						wp_json_file_decode( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/business/business_demo_settings.json', array( 'associative' => true ) ),
+						array(
+							'demo_slug'					=> 'business',
+							'demo_type'					=> 'free',
+							'category'					=> array('business'),
+							'import_file_url'          => esc_url( $demo_site . '/business/content.xml' ),
+							'import_preview_image_url' => esc_url( $demo_site . '/business/demo-screenshot.png' ),
+							'import_notice'            => '',
+							'style_slug'				=> 'default',
+							'title'						=> 'Default',
+							'fontFamily'				=> array(
+								'Manrope',
+								'Inter'
+							),
+							'colors'					=> array(
+								'#3F6DE4',
+								'#252740',
+								'#575B7A',
+								'#E7F0FF',
+								'#FFFFFF'
+							),
+						)
+					),
+				),
+			);
+			//Get style variations
+			$demo_styles = wp_json_file_decode( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/styles/all_styles.json', array( 'associative' => true ) );
 
-//demo deatils list
+			foreach ( $demos as $key => $demo_array ) {
+				//Add style variations in demo array
+				foreach ( $demo_styles as $demo_style ) {
+					$demos[$key][$demo_style['style_slug']] = array_merge( $demo_array['default'], $demo_style );
+				}
+			}
+		}
+
+		return $demos;
+	}
+}
+
+//demo deatils list OR make an array of all demos 
 if ( ! function_exists( 'gutendkit_demo_deatils_list' ) ) {
 	function gutendkit_demo_deatils_list( $index = false ) {
 		$demos = gutendkit_categorize_demo_list();
+
+		if ( empty( $demos ) ) {
+			return $demos;
+		}
+
 		$demo = array();
+		
 		foreach ( $demos as $demo_array ) {
 			foreach ( $demo_array as $demo_details ) {
 				$demo[] = $demo_details;

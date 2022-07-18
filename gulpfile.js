@@ -28,7 +28,14 @@ var zipPath = [
     '!./public/block_editor/package-lock.json',
     '!./public/block_editor/node_modules',
     '!./public/block_editor/node_modules/**',
-    '!./public/block_editor/src','!./public/block_editor/src/**'
+    '!./public/block_editor/src',
+    '!./public/block_editor/src/**',
+    '!./includes/demo-import/admin-dashboard/package.json',
+    '!./includes/demo-import/admin-dashboard/package-lock.json',
+    '!./includes/demo-import/admin-dashboard/node_modules',
+    '!./includes/demo-import/admin-dashboard/node_modules/**',
+    '!./includes/demo-import/admin-dashboard/src',
+    '!./includes/demo-import/admin-dashboard/src/**'
 ];
 //Clean CSS, JS and zip
 function clean_files(){
