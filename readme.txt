@@ -4,7 +4,7 @@ Tags: gutena, gutena kit
 Requires at least: 5.8
 Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -37,6 +37,16 @@ There are following settings added:
 
 * Media & Text Block: Spacing > Grid Gap
 
+= Demo page navigation link not working? =
+
+Please check Permalink Settings in admin dashboard under Settings > Permalinks > Common Settings
+Change Common Settings from Plain and Numeric to any other option
+
+OR
+
+Change navigation links under Appearance > Editor > Header > Navigation
+
+
 == Screenshots ==
 
 1. Demo Import
@@ -47,6 +57,13 @@ There are following settings added:
 Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtabor/MerlinWP) for demo import.
 
 == Changelog ==
+
+= 1.0.4 | 29th July 2022 =
+* Added newsletter block
+* Added post featured tag Block
+* Added Blog demo with dark mode feature 
+* Removed TGM
+* Removed plugins requirement for demo import
 
 = 1.0.3 | 14th July 2022 =
 * Added demo import preview with different style variation
