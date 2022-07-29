@@ -133,6 +133,15 @@ class Gutena_Kit {
 		 */
 		require_once GUTENA_KIT_DIR_PATH . 'public/class-gutena-kit-public.php';
 
+		/**
+		 * Load active blocks
+		 */
+		foreach ( gutenakit_block_list() as $blockName => $block) {
+			if ( $block['active'] ) {
+				require_once GUTENA_KIT_DIR_PATH . 'includes/gutena-blocks/'.$block['filepath'];
+			}
+		}
+
 		$this->loader = new Gutena_Kit_Loader();
 
 	}

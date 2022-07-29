@@ -49,6 +49,7 @@ if ( ! function_exists( 'gutendkit_demo_category_list' ) ) {
 		return array(
 			'agency',
 			'business',
+			'blog'
 		);
 	}
 }
@@ -106,6 +107,31 @@ if ( ! function_exists( 'gutendkit_categorize_demo_list' ) ) {
 								'#252740',
 								'#575B7A',
 								'#E7F0FF',
+								'#FFFFFF'
+							),
+						)
+					),
+				),
+				'blog' => array(
+					'default' => array_merge(
+						wp_json_file_decode( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/blog/blog_demo_settings.json', array( 'associative' => true ) ),
+						array(
+							'demo_slug'					=> 'blog',
+							'demo_type'					=> 'free',
+							'category'					=> array('blog'),
+							'import_file_url'          => esc_url( $demo_site . '/blog/content.xml' ),
+							'import_preview_image_url' => esc_url( $demo_site . '/blog/demo-screenshot.png' ),
+							'import_notice'            => '',
+							'style_slug'				=> 'default',
+							'title'						=> 'Default',
+							'fontFamily'				=> array(
+								'Plus Jakarta Sans',
+							),
+							'colors'					=> array(
+								'#0897B7',
+								'#000000',
+								'#151515',
+								'#DAF0F4',
 								'#FFFFFF'
 							),
 						)

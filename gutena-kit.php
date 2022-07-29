@@ -10,7 +10,7 @@
  * Plugin Name:       Gutena Kit
  * Plugin URI:        https://Gutena.io
  * Description:       Add typography, spacing supports to editor blocks and demo import.
- * Version:           1.0.3
+ * Version:           1.0.4
  * Requires at least: 5.8
  * Requires PHP:      5.6
  * Author:            ExpressTech
@@ -29,7 +29,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Plugin version.
  */
 if ( ! defined( 'GUTENA_KIT_VERSION' ) ) {
-	define( 'GUTENA_KIT_VERSION', '1.0.3' );
+	define( 'GUTENA_KIT_VERSION', '1.0.4' );
 }
 
 /**
