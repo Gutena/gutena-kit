@@ -52,13 +52,11 @@ class Gutena_Kit_Admin {
 		 * Admin helper functions
 		 */
 		require_once GUTENA_KIT_DIR_PATH . 'includes/helpers/admin-helpers.php';
-		require_once GUTENA_KIT_DIR_PATH . 'includes/demo-import/tgmpa/class-tgm-plugin-activation.php';
+		//Merlin WP for demo import
 		require_once GUTENA_KIT_DIR_PATH . 'includes/demo-import/merlin/class-merlin.php';
+		//Extend and modify Merlin WP
 		require_once GUTENA_KIT_DIR_PATH . 'includes/demo-import/class-gutenakit-demosetup.php';
 		
-		if ( class_exists( 'TGM_Plugin_Activation' ) ) {
-			add_action( 'tgmpa_register', array( $this, 'gutena_kit_register_required_plugins' ) );
-		}
 		if ( ! class_exists( 'Merlin' ) || ! class_exists( 'GutenakitDemoSetup' ) ) {
 			return;
 		}
@@ -271,32 +269,4 @@ class Gutena_Kit_Admin {
 		
 	}
 
-	public function gutena_kit_register_required_plugins(){
-		if ( ! function_exists( 'tgmpa' ) ) {
-			return;
-		}
-		$plugins = array(
-			array(
-				'name'     => 'Gutenberg',
-				'slug'     => 'gutenberg',
-				'required' => false,
-			),
-		);
-
-		$config = array(
-			'id'           => 'gutena-kit',                 // Unique ID for hashing notices for multiple instances of TGMPA.
-			'default_path' => '',                      // Default absolute path to bundled plugins.
-			'menu'         => 'tgmpa-install-plugins', // Menu slug.
-			'parent_slug'  => 'plugins.php',            // Parent menu slug.
-			'capability'   => 'manage_options',    // Capability needed to view plugin install page, should be a capability associated with the parent menu used.
-			'has_notices'  => false,                    // Show admin notices or not.
-			'dismissable'  => true,                    // If false, a user cannot dismiss the nag message.
-			'dismiss_msg'  => '',                      // If 'dismissable' is false, this message will be output at top of nag.
-			'is_automatic' => false,                   // Automatically activate plugins after installation or not.
-			'message'      => '',                      // Message to output right before the plugins table.
-
-		);
-
-		tgmpa( $plugins, $config );
-	}
 }

@@ -58,3 +58,22 @@ if ( ! function_exists( 'is_gutenakit_admin' ) ) {
 		return ( function_exists( 'current_user_can' ) && current_user_can( 'manage_options' ) );
 	}
 }
+
+//Editor Block list
+if ( ! function_exists( 'gutenakit_block_list' ) ) {
+	function gutenakit_block_list(){
+		$inactive_blocks = get_option( 'gutena_inactive_blocks', array() );
+		return array(
+			'gutena/newsletter' => array(
+				'dirname'	=>	'newsletter-block-gutena',
+				'filepath' 	=>	'newsletter-block-gutena/newsletter-block-gutena.php',
+				'active'	=>	empty( $inactive_blocks['gutena/newsletter'] )	 	
+			), 
+			'gutena/post-featured-tag' => array(
+				'dirname'	=>	'post-featured-tag-block-gutena',
+				'filepath' 	=>	'post-featured-tag-block-gutena/post-featured-tag-block-gutena.php',
+				'active'	=>	empty( $inactive_blocks['gutena/post-featured-tag'] )	 	
+			), 
+		);
+	}
+}

@@ -270,6 +270,8 @@ class GutenakitDemoSetup extends Merlin{
 
 	   if ( ! empty( $home_page ) && ! empty( $home_page->ID ) ) {
 			update_option( 'page_on_front', (int) $home_page->ID );
+	   } elseif ( ! empty( $demo['demo_slug'] ) && 'blog' === $demo['demo_slug'] ) {
+			update_option( 'page_on_front', 0 );
 	   }
        
 	   if ( ! empty( $blog_page ) && ! empty( $blog_page->ID ) ) {

@@ -11,32 +11,6 @@ const gulp = require( 'gulp' ),
     zip = require( 'gulp-zip' );
 const {series, parallel} = require('gulp');
 
-var zipPath = [ 
-    './', 
-    './**', 
-    '!./node_modules', 
-    '!./node_modules/**', 
-    '!./build', 
-    '!./build/**', 
-    '!./gulpfile.js', 
-    '!./package.json', 
-    '!./package-lock.json', 
-    '!./phpcs.xml',
-    '!./LICENSE',
-    '!./README.md',
-    '!./public/block_editor/package.json',
-    '!./public/block_editor/package-lock.json',
-    '!./public/block_editor/node_modules',
-    '!./public/block_editor/node_modules/**',
-    '!./public/block_editor/src',
-    '!./public/block_editor/src/**',
-    '!./includes/demo-import/admin-dashboard/package.json',
-    '!./includes/demo-import/admin-dashboard/package-lock.json',
-    '!./includes/demo-import/admin-dashboard/node_modules',
-    '!./includes/demo-import/admin-dashboard/node_modules/**',
-    '!./includes/demo-import/admin-dashboard/src',
-    '!./includes/demo-import/admin-dashboard/src/**'
-];
 //Clean CSS, JS and zip
 function clean_files(){
     let cleanPath = ['./build/gutena-kit.zip','./public/js/**/*.min.js', './public/css/**/*.min.css'];
@@ -73,12 +47,53 @@ function js_minification(){
 
 //create zip file
 function create_zip(){
- return gulp.src( zipPath, { base : '../' } )
-        .pipe( zip( 'gutena-kit.zip' ) )
-        .pipe( gulp.dest( './build/' ) )
-        .pipe( notify({
-            message : 'Zip process complete! Build Successfull',
-            onLast : true
+    //Zip path for create plugin production zip
+    var zipPath = [ 
+        './', 
+        './**', 
+        '!./node_modules', 
+        '!./node_modules/**', 
+        '!./build', 
+        '!./build/**', 
+        '!./gulpfile.js', 
+        '!./package.json', 
+        '!./package-lock.json', 
+        '!./phpcs.xml',
+        '!./LICENSE',
+        '!./README.md'
+    ];
+    
+    //Ignore directory path
+    let ignorePath = [
+        '!./public/block_editor/',
+        '!./includes/demo-import/admin-dashboard/',
+        '!./includes/gutena-blocks/newsletter-block-gutena/',
+        '!./includes/gutena-blocks/post-featured-tag-block-gutena/'
+    ];
+
+    //common sub-directory and files to ignore
+    let ignoreFiles = [
+        'package.json',
+        'package-lock.json',
+        'node_modules',
+        'node_modules/**',
+        'src',
+        'src/**'
+    ];
+    
+    //Prepare final zip files list
+    ignorePath.forEach( function( ignorefilePath ) {
+        ignoreFiles.forEach( function( ignorefile ) {
+            zipPath.push( ignorefilePath+''+ignorefile );
+        });
+    });
+
+    return gulp.src( zipPath, { base : '../' } )
+            .pipe( zip( 'gutena-kit.zip' ) )
+            .pipe( gulp.dest( './build/' ) )
+            .pipe( notify({
+                message : 'Zip process complete! Build Successfull',
+                onLast : true
         }) );
 }
 
