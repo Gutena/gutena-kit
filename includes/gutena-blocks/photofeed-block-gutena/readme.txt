@@ -1,6 +1,6 @@
-=== Post Featured Tag Block by Gutena ===
+=== PhotoFeed Block by Gutena ===
 Contributors: expresstech, infosatech
-Tags: featured tag, new tag
+Tags: instagram, instagram feed block, instagram photos, instagram gallery, block
 Requires at least: 5.8
 Tested up to: 6.0
 Stable tag: 1.0.0
@@ -10,9 +10,9 @@ License URI: http://www.gnu.org/licenses/gpl.html
 
 == Description ==
 
-### Post Featured Tag Block by Gutena
+### PhotoFeed Gallery Block by Gutena
 
-Post Featured tag block use to add custom featured or new tag on post based on post date.
+Display Instagram Photos from your Instagram accounts, either in the same single feed or in multiple different ones.
 
 #### Compatibility
 
@@ -24,7 +24,7 @@ If you like this plugin, consider exploring our other block plugins:
 
 🧱 [Newsletter Block by Gutena](https://wordpress.org/plugins/newsletter-block-by-gutena/) - Easily and instantly add Newsletter Block to your Gutenberg Editor.
 
-🧱 [PhotoFeed Block by Gutena](https://wordpress.org/plugins/photofeed-block-by-gutena/) - Display Instagram Photos from your Instagram accounts, either in the same single feed or in multiple different ones.
+🧱 [Post Featured Tag Block by Gutena](https://wordpress.org/plugins/post-featured-tag-block-by-gutena/) - Post Featured Tag Block use to add custom featured or new tag on post based on post date.
 
 ## 🌐 Our Products
 
@@ -45,12 +45,13 @@ If you like this plugin, consider exploring our other themes and plugins:
 == Installation ==
 
 1. Visit 'Plugins > Add New'.
-1. Search for 'Post Featured Tag Block by Gutena' and install it.
-1. Or you can upload the `post-featured-tag-block-by-gutena` folder to the `/wp-content/plugins/` directory manually.
-1. Activate Post Featured Tag Block by Gutena from your Plugins page.
+1. Search for 'PhotoFeed Block by Gutena' and install it.
+1. Or you can upload the `photofeed-block-gutena` folder to the `/wp-content/plugins/` directory manually.
+1. Activate PhotoFeed Block by Gutena from your Plugins page.
 
 == Changelog ==
 
 = 1.0.0 =
+Release Date: August 3, 2022
 
 * Inital Release on WordPress.org.

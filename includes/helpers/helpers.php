@@ -63,6 +63,7 @@ if ( ! function_exists( 'is_gutenakit_admin' ) ) {
 if ( ! function_exists( 'gutenakit_block_list' ) ) {
 	function gutenakit_block_list(){
 		$inactive_blocks = get_option( 'gutena_inactive_blocks', array() );
+		//'gutena/newsletter' = block name taken from block.json
 		return array(
 			'gutena/newsletter' => array(
 				'dirname'	=>	'newsletter-block-gutena',
@@ -73,6 +74,11 @@ if ( ! function_exists( 'gutenakit_block_list' ) ) {
 				'dirname'	=>	'post-featured-tag-block-gutena',
 				'filepath' 	=>	'post-featured-tag-block-gutena/post-featured-tag-block-gutena.php',
 				'active'	=>	empty( $inactive_blocks['gutena/post-featured-tag'] )	 	
+			), 
+			'gutena/instagram-gallery' => array(
+				'dirname'	=>	'photofeed-block-gutena',
+				'filepath' 	=>	'photofeed-block-gutena/photofeed-block-gutena.php',
+				'active'	=>	empty( $inactive_blocks['gutena/instagram-gallery'] )	 	
 			), 
 		);
 	}

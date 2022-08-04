@@ -137,7 +137,7 @@ class Gutena_Kit {
 		 * Load active blocks
 		 */
 		foreach ( gutenakit_block_list() as $blockName => $block) {
-			if ( $block['active'] ) {
+			if ( $block['active'] && file_exists( GUTENA_KIT_DIR_PATH . 'includes/gutena-blocks/'.$block['filepath'] ) ) {
 				require_once GUTENA_KIT_DIR_PATH . 'includes/gutena-blocks/'.$block['filepath'];
 			}
 		}
