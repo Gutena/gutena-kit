@@ -1,4 +1,4 @@
-<?php 
+<?php // @codingStandardsIgnoreLine
 /**
  * Plugin Name:     Post Featured Tag Block by Gutena
  * Description:     Post Featured tag block use to add custom featured or new tag on post based on post date.
@@ -61,6 +61,7 @@ if ( ! class_exists( 'Gutena_Post_Featured_Tag' ) ) {
 		 */
 		public function __construct() {
 			add_action( 'init', [ $this, 'register' ] );
+			add_filter( 'block_categories_all', [ $this, 'register_category' ], 10, 2 );
 		}
 
 		/**
@@ -81,9 +82,9 @@ if ( ! class_exists( 'Gutena_Post_Featured_Tag' ) ) {
 
 			if ( ! $latest_post_id ) {
 				$latest_posts = get_posts( [
-					'post_type' => $block->context['postType'],
+					'post_type'   => $block->context['postType'],
 					'numberposts' => 1,
-					'fields' => 'ids'
+					'fields'      => 'ids',
 				] );
 				set_query_var( 'gutena_featured_tag_post_id', $latest_posts[0] );
 				$latest_post_id = $latest_posts[0];
@@ -91,7 +92,7 @@ if ( ! class_exists( 'Gutena_Post_Featured_Tag' ) ) {
 
 			if ( ! empty( $attributes['hideAfter'] ) ) {
 				$post_date = get_the_date( 'U', $block->context['postId'] );
-				$current_date = current_time( 'timestamp', 0 );
+				$current_date = current_time( 'timestamp', 0 ); // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested
 
 				if ( ( $current_date - $post_date ) > ( $attributes['hideAfter'] * DAY_IN_SECONDS ) ) {
 					return;
@@ -103,6 +104,25 @@ if ( ! class_exists( 'Gutena_Post_Featured_Tag' ) ) {
 			}
 
 			return $content;
+		}
+
+		/**
+		 * Register block category.
+		 */
+		public function register_category( $block_categories, $editor_context ) {
+			$fields = wp_list_pluck( $block_categories, 'slug' );
+			
+			if ( ! empty( $editor_context->post ) && ! in_array( 'gutena', $fields, true ) ) {
+				array_push(
+					$block_categories,
+					[
+						'slug'  => 'gutena',
+						'title' => __( 'Gutena', 'post-featured-tag-block-gutena' ),
+					]
+				);
+			}
+
+			return $block_categories;
 		}
 	}
 }
