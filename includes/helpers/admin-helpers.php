@@ -137,6 +137,31 @@ if ( ! function_exists( 'gutendkit_categorize_demo_list' ) ) {
 						)
 					),
 				),
+				'saas_company' => array(
+					'default' => array_merge(
+						wp_json_file_decode( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/saas_company/saas_company_demo_settings.json', array( 'associative' => true ) ),
+						array(
+							'demo_slug'					=> 'saas_company',
+							'demo_type'					=> 'free',
+							'category'					=> array('business'),
+							'import_file_url'          => esc_url( $demo_site . '/saas_company/content.xml' ),
+							'import_preview_image_url' => esc_url( $demo_site . '/saas_company/demo-screenshot.png' ),
+							'import_notice'            => '',
+							'style_slug'				=> 'default',
+							'title'						=> 'Default',
+							'fontFamily'				=> array(
+								'Inter'
+							),
+							'colors'					=> array(
+								'#3F6DE4',
+								'#252740',
+								'#575B7A',
+								'#E7F0FF',
+								'#FFFFFF'
+							),
+						)
+					),
+				),
 			);
 			//Get style variations
 			$demo_styles = wp_json_file_decode( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/styles/all_styles.json', array( 'associative' => true ) );
