@@ -4,7 +4,7 @@ Tags: gutena, gutena kit
 Requires at least: 5.8
 Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -57,6 +57,10 @@ Change navigation links under Appearance > Editor > Header > Navigation
 Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtabor/MerlinWP) for demo import.
 
 == Changelog ==
+
+= 1.0.6 | 2nd September 2022 =
+* Updated banners and icons
+* Update styles for saas-company demo
 
 = 1.0.5 | 4th August 2022 =
 * Added Saas-company demo
