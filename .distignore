@@ -2,10 +2,10 @@
 /.git
 /.github
 /node_modules
-/public/block_editor/package.json
-/public/block_editor/package-lock.json
-/public/block_editor/node_modules
-/public/block_editor/src
+/includes/block-editor/package.json
+/includes/block-editor/package-lock.json
+/includes/block-editor/node_modules
+/includes/block-editor/src
 /build/gutena-kit.zip
 
 .distignore

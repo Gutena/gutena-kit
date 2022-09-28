@@ -128,7 +128,7 @@ function create_zip(){
     
     //Ignore directory path
     let ignorePath = [
-        '!./public/block_editor/',
+        '!./includes/block-editor/',
         '!./includes/demo-import/admin-dashboard/'
     ];
 

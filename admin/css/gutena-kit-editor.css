@@ -1,0 +1,74 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+.components-gk-range-unit-control .components-gk-range-unit-control__wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.components-gk-range-unit-control:last-of-type .components-gk-range-unit-control__wrapper {
+    margin-bottom: 0;
+}
+
+.components-gk-range-unit-control .components-gk-range-unit-control__wrapper .components-range-control {
+    width: calc(70% - 26px);
+    margin-bottom: 8px;
+}
+
+.components-gk-range-unit-control .components-gk-range-unit-control__wrapper .components-range-control input {
+    width: calc(100% + 12px) !important;
+}
+
+.components-gk-range-unit-control .components-gk-range-unit-control__wrapper .components-unit-control-wrapper {
+    width: 30%;
+    margin-bottom: 8px;
+}
+
+.components-gk-range-unit-control legend{
+    padding-top: 1rem;
+    padding-bottom: 0.8rem;
+}
+
+.gutena-tab-panel .components-tab-panel__tabs {
+    border-bottom: 4px solid #ddd;
+    margin-bottom: 18px;
+}
+
+.gutena-tab-panel .components-tab-panel__tabs button.components-tab-panel__tabs-item {
+    font-size: 12px;
+    justify-content: center;
+    background: transparent;
+    border: 0;
+    border-bottom: 4px solid transparent;
+    padding: 6px 16px;
+    margin-bottom: -4px;
+    outline: 0;
+    color: #575757;
+    width: 50%;
+}
+
+.gutena-tab-panel .components-tab-panel__tabs button.components-tab-panel__tabs-item.active-tab {
+    border-bottom-color: #0085ba;
+    color: #0085ba;
+}
+
+.gutena-tab-panel .components-tab-panel__tabs button.components-tab-panel__tabs-item:focus, .gutena-tab-panel .components-tab-panel__tabs button.components-tab-panel__tabs-item:active {
+    box-shadow: none;
+}
+  
+.gutena-tab-panel .components-tab-panel__tab-content .components-font-appearance-control .components-button {
+    width: 100% !important;
+}
+
+/*Component gap*/
+[id^="inspector-box-control"] {
+    padding-bottom:1.5rem;
+}
+
+.components-item-group {
+    margin-bottom: 1rem;
+}

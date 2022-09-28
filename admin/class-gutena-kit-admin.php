@@ -40,7 +40,7 @@ class Gutena_Kit_Admin {
 	public function __construct( $gutena_kit, $version ) {
 
 		$this->gutena_kit = $gutena_kit;
-		$this->version = $version;
+		$this->version        = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? time() : $version;
 		$this->load_dependencies();
 	}
 
@@ -227,46 +227,13 @@ class Gutena_Kit_Admin {
 	}
 
 	/**
-	 * Gutena Kit addition with block editor
+	 * Gutena Kit scripts and styles for block editor
 	 */
 	public function add_blocks_and_settings(){
-		wp_enqueue_script( 'gutena-kit-block-editor', GUTENA_KIT_PLUGIN_URL.'public/block_editor/build/index.js', array( 'wp-block-editor', 'wp-blocks', 'wp-hooks', 'wp-components', 'wp-compose', 'wp-element', 'wp-i18n' ), $this->version );
-	}
 
-	public function save_post_settings_and_styles( $post_id, $post, $update ) {
-		static $exit_counter = 0;//for exit in case of loop
-		if ( ! is_gutenakit_admin() || empty( $post_id) || empty( $post) || ! function_exists( 'parse_blocks' ) || ! in_array( $post->post_type, array( 'post', 'page' ), true ) ) {
-			return;
-		}
-     	//developer.wordpress.org/reference/functions/parse_blocks/
-		$block_res = gutendkit_extract_css_from_block( parse_blocks( $post->post_content ) );
+		wp_enqueue_script( 'gutena-kit-block-editor', GUTENA_KIT_PLUGIN_URL . 'includes/block-editor/build/index.js', array(), $this->version, false );
 
-		//exit in case of loop
-		if ( $exit_counter > 0 ) {
-			return;
-		}
-		++$exit_counter;
-		
-		if ( ! empty( $block_res['gutenakit_css'] ) && is_array( $block_res['gutenakit_ids'] ) ) {
-			//Save post styles data in post meta
-			update_post_meta(
-				$post_id,
-				'gutenakit_post_config',
-				array(
-					'gutenakit_ids' => array_map( 'sanitize_text_field', $block_res['gutenakit_ids'] ),
-					'gutenakit_css' => sanitize_text_field( $block_res['gutenakit_css'] ),
-				)
-			);
-		}
-		
-		
-		if ( ! empty( $block_res['duplicate_blocks'] ) ) {
-			wp_send_json( array(
-				'msg'              => 'duplicate block ids exist', 
-				'duplicate_blocks' => $duplicate_blocks,
-			) );
-		}
-		
+		wp_enqueue_style( 'gutena-kit-block-editor-style', GUTENA_KIT_PLUGIN_URL . 'admin/css/gutena-kit-editor.css', array(), $this->version, 'all' );
 	}
 
 }
