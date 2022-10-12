@@ -1,0 +1,169 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+.components-gk-range-unit-control .components-gk-range-unit-control__wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.components-gk-range-unit-control:last-of-type .components-gk-range-unit-control__wrapper {
+    margin-bottom: 0;
+}
+
+.components-gk-range-unit-control .components-gk-range-unit-control__wrapper .components-range-control {
+    width: calc(70% - 26px);
+    margin-bottom: 8px;
+}
+
+.components-gk-range-unit-control .components-gk-range-unit-control__wrapper .components-range-control input {
+    width: calc(100% + 12px) !important;
+}
+
+.components-gk-range-unit-control .components-gk-range-unit-control__wrapper .components-unit-control-wrapper {
+    width: 30%;
+    margin-bottom: 8px;
+}
+
+.components-gk-range-unit-control legend{
+    padding-top: 1rem;
+    padding-bottom: 0.8rem;
+}
+
+.gutena-tab-panel .components-tab-panel__tabs {
+    border-bottom: 4px solid #ddd;
+    margin-bottom: 18px;
+}
+
+.gutena-tab-panel .components-tab-panel__tabs button.components-tab-panel__tabs-item {
+    font-size: 12px;
+    justify-content: center;
+    background: transparent;
+    border: 0;
+    border-bottom: 4px solid transparent;
+    padding: 6px 16px;
+    margin-bottom: -4px;
+    outline: 0;
+    color: #575757;
+    width: 50%;
+}
+
+.gutena-tab-panel .components-tab-panel__tabs button.components-tab-panel__tabs-item.active-tab {
+    border-bottom-color: #0085ba;
+    color: #0085ba;
+}
+
+.gutena-tab-panel .components-tab-panel__tabs button.components-tab-panel__tabs-item:focus, .gutena-tab-panel .components-tab-panel__tabs button.components-tab-panel__tabs-item:active {
+    box-shadow: none;
+}
+  
+.gutena-tab-panel .components-tab-panel__tab-content .components-font-appearance-control .components-button {
+    width: 100% !important;
+}
+
+/*Component gap*/
+.gutena-kit-settings [id^="inspector-box-control"] {
+    padding-bottom:1.5rem;
+}
+
+.block-editor-block-inspector .gutena-kit-settings .components-panel__body {
+    border-top:none;
+}
+
+.block-editor-block-inspector .gutena-kit-settings .edit-site-typography-panel__full-width-control {
+    grid-column: 1 / -1;
+}
+
+/* Hstack */
+/*Icon*/
+.block-editor-block-inspector .gutena-kit-settings .components-h-stack .components-button.has-icon {
+    padding: 0;
+    min-width: 1rem;
+    height: auto;
+}
+
+.gutena-kit-settings .components-item-group,
+.gutena-kit-settings .components-h-stack {
+    margin-bottom: 0.5rem;
+}
+
+.gutena-kit-settings .components-h-stack .components-h-stack{
+    margin-bottom: 0;
+}
+
+.gutena-kit-settings .components-h-stack.gutena-kit-h-stack {
+    margin: 1rem 0;
+}
+
+/*Hstack flex item*/
+.block-editor-block-inspector .gutena-kit-settings .components-h-stack .components-flex-item {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.block-editor-block-inspector .gutena-kit-settings .components-input-control {
+    height: auto;
+}
+
+/*Gutena kit settings panel body: place icon at left*/
+.gutena-kit-settings > .components-panel__body-title .components-button {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: left;
+    gap: 0.5rem;
+}
+
+/* Select device icon size */
+.gutena-kit-select-device ,
+.gutena-kit-select-device .components-button svg,
+.gutena-kit-select-device-popover .components-button svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.gutena-kit-select-device-popover .components-button {
+    height: 2rem;
+}
+
+/*Border Text*/
+.gutena-kit-border-text {
+    border: 1px solid rgb(117, 117, 117);
+    padding: 1rem;
+    margin: 0.5rem 0 !important;
+}
+
+/*gutena-kit-fluid-typography-toggle-hstack text hstack*/
+.gutena-kit-fluid-typography-toggle-hstack {
+    margin-bottom: 2rem !important;
+}
+
+.gutena-kit-fluid-typography-toggle-hstack .components-base-control,
+.gutena-kit-fluid-typography-toggle-hstack .components-toggle-control .components-base-control__field {
+    margin-bottom: 0;
+    max-width: 130px;
+}
+
+.gutena-kit-popover-help-content .components-popover__content {
+    min-width: 250px;
+}
+
+/*Delete btn*/
+.gutena-kit-settings .gutena-kit-delete-btn {
+    text-decoration-line: none;
+    font-weight: 600;
+    align-items: end;
+}
+
+.gutena-kit-settings .gutena-kit-delete-btn:hover {
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.gutena-kit-settings .gutena-kit-delete-btn svg {
+    margin-right: 0.25rem !important;
+}
