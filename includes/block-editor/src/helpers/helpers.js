@@ -15,6 +15,47 @@ export const gutenakitDocReady = fn => {
 	}
 };
 
+//Camel case to dash name
+export const gkCamelToDash = str => str.replace(/([A-Z])/g, val => `-${val.toLowerCase()}`);
+
+//Dash to camel case name
+export const gkDashToCamel = str => str.replace(/(\-[a-z])/g, val => val.toUpperCase().replace('-',''));
+
+/* search key value index in array of object
+arrObj: array of object 
+key: search key
+value: search value
+Return : index of first match or -1 on fail
+*/
+export const gkSearchArrObj = ( arrObj, key, value ) => {
+	if ( gkIsEmpty( arrObj ) || ! Array.isArray( arrObj ) || 0 === arrObj.length  ) {
+		return -1;
+	}
+
+	//Register existing block edit controls by custom componenet 
+	for (let i = 0; i < arrObj.length; i++) {
+		if ( arrObj[i][key] === value ) {
+			return i; 
+		} 
+	}
+
+	return -1;
+}
+
+/* get value of a key of matched key value obect in array of object
+arrObj: array of object 
+key: search key for match
+value: search value for match
+findKeyValue: key whose value to be find 
+Return : value of first match index object key or false on fail
+e.g arrObj = [{a:'xyz',b:'pqr'},{a:'x1yz',b:'pq1r'},{a:'x2yz',b:'pq2r'}]
+getMatchArrObjKeyValue(arrObj,'a','x1yz','b') will return value of b i.e. pq1r
+*/
+export const getMatchArrObjKeyValue = ( arrObj, key, value, findKeyValue ) =>  {
+	let index = gkSearchArrObj( arrObj, key, value );
+	return ( -1 === index ) ? false: arrObj[ index ][ findKeyValue ];
+}
+
 //Check if empty
 export const gkIsEmpty = data => 'undefined' === typeof data || null === data || '' === data;
 
@@ -27,6 +68,10 @@ export const getParents = ( el, query ) => {
 	}
 	return parents;
 };
+
+//Slug 
+export const generateSlug = ( name ) => gkIsEmpty( name ) ? '' : name.trim().toLowerCase().replace(/\s+/g, "-");
+
 
 //Get editor document: used in responsive preview
 export const getEditorDoc = ( query = '', multiple = false ) => {
@@ -110,6 +155,28 @@ export const spaceCss = ( spacing, spaceName ) => {
 	return ['top','right','bottom','left'].map( (side) => ( gkIsEmpty( spacing[side] ) ? '':  spaceName+'-'+side+':'+spacing[side]+' !important; ') ).join(' ');
 }
 
+//Generate padding|margin css var: spacing: value, varName: css var name
+export const spaceVar = ( spacing, varName ) => {
+	if ( gkIsEmpty( spacing ) ) {
+			return ``;
+	  }
+
+	return ['top','right','bottom','left'].map( (side) => ( gkIsEmpty( spacing[side] ) ? '':  varName+'-'+side+':'+spacing[side]+'; ') ).join(' ');
+}
+
+//Generate border css var borderVar={border:{},radius:2px}, varName = css var
+export const borderVar = ( borderVar , varName ) => {
+    let css = '';
+	if ( ! gkIsEmpty( borderVar?.border ) ) {
+		let border = borderVar.border;
+        css = gkIsEmpty( border.color) ? (['top','right','bottom','left'].map( (side) => (`
+            ${ gkIsEmpty( border[side] ) ? ``: `${ varName }-${ side }: ${ border[side]?.width }  ${ gkIsEmpty( border[side]?.style ) ? 'solid': border[side]?.style } ${ border[side]?.color }; ` }
+        `) ).join(' ')) : (`${ varName }: ${ border?.width }  ${ gkIsEmpty( border?.style ) ? 'solid': border?.style } ${border?.color}; `);
+	}
+	
+    return gkIsEmpty( borderVar?.radius ) ? css : css+' '+varName+'-radius:'+borderVar.radius+'; ';
+};
+
 //Generate border css
 export const borderCss = ( borderVar ) => {
     let css = '';
@@ -124,11 +191,148 @@ export const borderCss = ( borderVar ) => {
 };
 
 //Generate typographyCss
-export const typographyCss = ( typography ) => {
+export const typographyCss = ( typography, varName = null ) => {
 	if ( gkIsEmpty( typography ) ) {
-		return ``;
+		return '';
 	}
-	return `${ gkIsEmpty( typography.fontSize ) ? ``: `font-size: ${typography.fontSize};` }
-			${ gkIsEmpty( typography.lineHeight ) ? ``: `font-size: ${typography.lineHeight};` }
-			${ gkIsEmpty( typography.fontWeight ) ? ``: `font-size: ${typography.fontWeight};` }`;
+	let fontSize = null;
+
+	let min_max_var = '';
+	//Fluid font size
+	if ( typography.fluidTypography && ! gkIsEmpty( typography.fontSize ) && ( ! gkIsEmpty( typography.MfontSize ) || ! gkIsEmpty( typography.TfontSize )  ) ) {
+		let maxFontSize = typography.fontSize;
+		let minFontSize = gkIsEmpty( typography.MfontSize ) ? typography.TfontSize : typography.MfontSize;
+		//All units should be in rem
+		let maxUnit = maxFontSize.replace(/[0-9]/g, ''); //replace number with empty string
+		let minUnit = minFontSize.replace(/[0-9]/g, '');
+		maxFontSize = maxFontSize.replace(/[a-z]/g, '');
+		minFontSize = minFontSize.replace(/[a-z]/g, '');
+		let allowedUnit = ['px','em','rem'];
+		if ( -1 !== allowedUnit.indexOf( maxUnit ) && -1 !== allowedUnit.indexOf( minUnit ) ) {
+			// maxFontSize = (( 'px' === maxUnit ) ? (parseInt( maxFontSize )/16) : maxFontSize)+'rem' ;
+			// minFontSize = (( 'px' === minUnit ) ? (parseInt( minFontSize )/16) : minFontSize)+'rem';
+			//https://websemantics.uk/tools/responsive-font-calculator/
+			//$linear_factor = 100 * ( ( $maximum_font_size['value'] - $minimum_font_size['value'] ) / ( $maximum_viewport_width['value'] - $minimum_viewport_width['value'] ) )
+			// let linear_factor = ( 100 * ( parseInt(maxFontSize) - parseInt(minFontSize) )/(100-48) );
+			// fontSize = 'clamp('+minFontSize+', calc('+minFontSize+' + ((1vw - 0.48rem) * '+linear_factor+')), '+maxFontSize+')';
+
+			//Min Max var
+			min_max_var = gkIsEmpty( varName ) ? '': varName+'-min-font-size:'+minFontSize+'; '+varName+'-max-font-size:'+maxFontSize+'; ';
+		}
+	}
+
+	if ( typography.fluidTypography && ! gkIsEmpty( typography.fluidFontSize ) ) {
+		fontSize = typography.fluidFontSize;
+	}
+	
+
+	varName = gkIsEmpty( varName ) ? '': varName+'-';
+	//font properties
+	return ['fontFamily', 'fontSize', 'lineHeight', 'fontStyle', 'fontWeight', 'letterSpacing', 'textTransform', 'textDecoration' ].map( ( fontProperty ) => {
+		if ( 'fontSize' === fontProperty && !gkIsEmpty( fontSize ) ) {
+			//Fluid typography
+			return min_max_var+' '+varName+'font-size:'+fontSize+';';
+		} else  if ( 'fontSize' === fontProperty && !gkIsEmpty( typography?.fontSize ) && 10 < typography.fontSize.length ) {
+			//font size use theme font-size preset here which will use as a class
+			return '';
+		} else  {
+			return gkIsEmpty( typography?.[fontProperty] ) ? '': varName+gkCamelToDash( fontProperty )+':' + typography[fontProperty]+';';
+		} 
+	}).join(' ');
 };
+
+//Generate typographyCss
+export const typographyVar = ( typography, varName = null ) => {
+	if ( gkIsEmpty( typography ) ) {
+		return '';
+	}
+	let fontSize = null;
+
+	let css = '';
+	//Fluid font size
+	if ( ! gkIsEmpty( varName ) && typography.fluidTypography && ! gkIsEmpty( typography.fontSize ) && ( ! gkIsEmpty( typography.MfontSize ) || ! gkIsEmpty( typography.TfontSize )  ) ) {
+		let maxFontSize = typography.fontSize;
+		let minFontSize = gkIsEmpty( typography.MfontSize ) ? typography.TfontSize : typography.MfontSize;
+		//All units should be in rem
+		let maxUnit = maxFontSize.replace(/[0-9]/g, ''); //replace number with empty string
+		let minUnit = minFontSize.replace(/[0-9]/g, '');
+		maxFontSize = maxFontSize.replace(/[a-z]/g, '');
+		minFontSize = minFontSize.replace(/[a-z]/g, '');
+		let allowedUnit = ['px','em','rem'];
+		if ( -1 !== allowedUnit.indexOf( maxUnit ) && -1 !== allowedUnit.indexOf( minUnit ) ) {
+			maxFontSize = (( 'px' === maxUnit ) ? (parseInt( maxFontSize )/16) : maxFontSize)+'rem' ;
+			minFontSize = (( 'px' === minUnit ) ? (parseInt( minFontSize )/16) : minFontSize)+'rem';
+			//Min Max var
+			css +=  varName+'-min-font-size:'+minFontSize+'; '+varName+'-max-font-size:'+maxFontSize+'; ';
+		}
+	}
+	
+	if ( typography.fluidTypography && ! gkIsEmpty( typography.fluidFontSize ) ) {
+		fontSize = typography.fluidFontSize;
+	} else {
+		css +=  gkIsEmpty( typography.MfontSize ) ? '': varName+'-m-font-size:'+typography.MfontSize+'; ';
+		css +=  gkIsEmpty( typography.TfontSize ) ? '': varName+'-t-font-size:'+typography.TfontSize+'; ';
+		css +=  gkIsEmpty( typography.MlineHeight ) ? '': varName+'-m-line-height:'+typography.MlineHeight+'; ';
+		css +=  gkIsEmpty( typography.TlineHeight ) ? '': varName+'-t-line-height:'+typography.TlineHeight+'; ';
+	}
+	
+
+	
+	//font properties
+	css += ['fontFamily', 'fontSize', 'lineHeight', 'fontStyle', 'fontWeight', 'letterSpacing', 'textTransform', 'textDecoration' ].map( ( fontProperty ) => {
+		if ( 'fontSize' === fontProperty && !gkIsEmpty( fontSize ) ) {
+			//Fluid typography
+			return varName+'-font-size:'+fontSize+';';
+		} else  if ( 'fontSize' === fontProperty && !gkIsEmpty( typography?.fontSize ) && 10 < typography.fontSize.length ) {
+			//font size use theme font-size preset here which will use as a class
+			return '';
+		} else  {
+			return gkIsEmpty( typography?.[fontProperty] ) ? '': varName+'-'+gkCamelToDash( fontProperty )+':' + typography[fontProperty]+';';
+		} 
+	}).join(' ');
+
+	return css;
+};
+
+export const fluidSpacing = ( min, max ) => {
+	let spacing = '';
+	if (  ! gkIsEmpty( min ) && ! gkIsEmpty( max ) ) {
+		//All units should be in rem
+		let maxUnit = max.replace(/[0-9]/g, ''); //replace number with empty string
+		let minUnit = min.replace(/[0-9]/g, '');
+		//replace decimal with empty string
+		maxUnit = maxUnit.replace('.', '');
+		minUnit = minUnit.replace('.', '');
+
+		max = max.replace(/[a-z]/g, '');
+		min = min.replace(/[a-z]/g, '');
+		let allowedUnit = ['px','em','rem'];
+		if ( -1 !== allowedUnit.indexOf( maxUnit ) && -1 !== allowedUnit.indexOf( minUnit ) ) {
+			max = (( 'px' === maxUnit ) ? (parseInt( max )/16) : max)+'rem' ;
+			min = (( 'px' === minUnit ) ? (parseInt( min )/16) : min)+'rem';
+			//https://websemantics.uk/tools/responsive-font-calculator/
+			//$linear_factor = 100 * ( ( $maximum_font_size['value'] - $minimum_font_size['value'] ) / ( $maximum_viewport_width['value'] - $minimum_viewport_width['value'] ) )
+			let linear_factor = ( 100 * ( parseInt(max) - parseInt(min) )/(100-48) ).toFixed(2);
+			spacing = 'clamp('+min+', calc('+min+' + ((1vw - 0.48rem) * '+linear_factor+')), '+max+')';
+		}
+	}
+	return spacing;
+}
+
+/**
+ * 
+ * @param {*} obj 
+ * @returns string: joined values of object
+ */
+export const joinObjectValues = ( obj ) => {
+	if ( gkIsEmpty( obj ) ) {
+		return '';
+	}
+	let joinedValues = '';
+	Object.values( obj ).forEach( function( val ) { 
+		if( ! gkIsEmpty( val ) && 'string' === typeof val ) {
+			joinedValues += val;
+		}
+	});
+	return joinedValues;
+}

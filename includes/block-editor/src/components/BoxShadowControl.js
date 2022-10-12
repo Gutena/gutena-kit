@@ -30,8 +30,12 @@ const BoxShadowControl = ( {
 	toggleLabel = __( 'On', 'gutena-kit' ),
 	attrValue = DEFAULT_BOX_SHADOW,
 	onChangeFunc = noop,
+	onBoxShadow = false,
 	withPanel = true
 } ) => {
+
+	// props: onBoxShadow : variable use to hide enable box shadow toggle button
+
 	const MAX_SPACE_VALUES = {
 		px: 50,
 		em: 10,
@@ -51,18 +55,25 @@ const BoxShadowControl = ( {
 		let newBoxShadowAttr = gkIsEmpty( attrValue )
 			? DEFAULT_BOX_SHADOW
 			: attrValue;
+
+		if ( onBoxShadow ) {
+			newBoxShadowAttr.onBoxShadow = true;
+		}
+		
 		newBoxShadowAttr[ attrName ] = value;
 		onChangeFunc( { ...newBoxShadowAttr } );
 	};
 
 	const controls = (
 		<>
+			{ ! onBoxShadow &&  
 			<ToggleControl
 				label={ toggleLabel }
 				checked={ attrValue.onBoxShadow }
 				onChange={ ( onBoxShadow ) => setBoxShadowAttr( onBoxShadow, 'onBoxShadow' ) }
 			/>
-			{ attrValue.onBoxShadow &&
+			}
+			{ ( onBoxShadow || attrValue.onBoxShadow ) &&
 				<>
 					<legend style={ { 'marginBottom': '8px' } }>{ __( 'Shadow Color', 'gutena-kit' ) }</legend>
 					<ColorPalette

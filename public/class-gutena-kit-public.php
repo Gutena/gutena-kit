@@ -138,7 +138,7 @@ class Gutena_Kit_Public {
 				$metadata['supports']['spacing']['margin']  = array( 'top', 'bottom' );
 				$metadata['supports']['spacing']['padding'] = true;
 			}
-			
+
 			// BlockGap Support
 			if ( in_array( $metadata['name'], array( 'core/columns' ), true ) ) {
 				// $metadata['supports']['spacing']['blockGap'] = true;
@@ -153,9 +153,10 @@ class Gutena_Kit_Public {
 
 	public function add_block_attribute( $metadata ) {
 		// For custom added controls Css generation
-		$metadata['attributes']['gutenaKitID']['type']  = 'string';// Unique ID
-		$metadata['attributes']['gutenaKitCSS']['type'] = 'object';// Block CSS
-		$metadata['attributes']['gutenaKitStyle']['type'] = 'object';// Block CSS
+		$metadata['attributes']['gutenaKitID']['type']    = 'string';// Unique ID
+		$metadata['attributes']['gutenaKitCSS']['type']   = 'object';// Block CSS
+		$metadata['attributes']['gutenaKitClass']['type'] = 'object';// Block classes
+		$metadata['attributes']['gutenaKitStyle']['type'] = 'object';// Block Style Controls
 
 		// Media Text Block extra controls
 		if ( 'core/media-text' === $metadata['name'] ) {
@@ -178,30 +179,18 @@ class Gutena_Kit_Public {
 		return $metadata;
 	}
 
-	//Print style css once only
-	public function generate_style_css( ){
-		static $a = 0;
-		if ( 0 === $a  ) {
-			$this->enqueue_block_gutenakit_styles( array(".gutena-kit-ui{
-				padding-top:var(--gutenakit-style-padding-top) !important;
-				padding-right:var(--gutenakit-style-padding-right) !important;
-				padding-bottom:var(--gutenakit-style-padding-bottom) !important;
-				padding-left:var(--gutenakit-style-padding-left) !important;
+	// Print style css and global typography once only 
+	private function enqueue_block_control_css( $slug = 'gk-total-var-css' ) {
+		//Css variable to store rendered block css 
+		static $css = array();
 
-				margin-top:var(--gutenakit-style-margin-top) !important;
-				margin-right:var(--gutenakit-style-margin-right) !important;
-				margin-bottom:var(--gutenakit-style-margin-bottom) !important;
-				margin-left:var(--gutenakit-style-margin-left) !important;
+		if ( ! in_array( $slug, $css, true ) ) {
 
-				border-top:var(--gutenakit-style-border-top) !important;
-				border-right:var(--gutenakit-style-border-right) !important;
-				border-bottom:var(--gutenakit-style-border-bottom) !important;
-				border-left:var(--gutenakit-style-border-left) !important;
-
-				border-radius:var(--gutenakit-style-border-radius) !important;
-				box-shadow:var(--gutenakit-style-boxShadow) !important;
-			}"), 11 );
-			$a++;
+			//Enqueue required global typography 
+			$this->enqueue_block_gutenakit_styles( array( 
+				( 'gk-total-var-css' === $slug ) ? gutenakit_block_additional_controls_css() : get_gutena_kit_global_typography_css( $slug ) ), 11 );
+		
+			array_push( $css, $slug );
 		}
 	}
 
@@ -211,13 +200,48 @@ class Gutena_Kit_Public {
 	public function render_block_customization( $block_content, $block ) {
 		if ( ! empty( $block['attrs']['gutenaKitID'] ) && ! empty( $block['attrs']['gutenaKitCSS'] ) ) {
 
-			$block_content = preg_replace(
-				'/' . preg_quote( 'class="', '/' ) . '/',
-				'class="' . esc_attr( gutenakit_block_id_classname_prefix() . $block['attrs']['gutenaKitID'] . ' gutena-kit-ui ' ) . ' ',
-				$block_content,
-				1
-			);
+			
+			//get block class
+			$block_classes = ( ! empty( $block['attrs']['gutenaKitClass'] ) && ! empty( $block['attrs']['gutenaKitClass']['blockClasses'] ) ) ?  $block['attrs']['gutenaKitClass']['blockClasses'] : '';
 
+			// Core block advance controls css
+			if ( ! empty( $block_classes ) && ! empty( $block['attrs']['gutenaKitStyle'] ) ) {
+
+				// Enqueue core block advance controls css
+				if ( ! empty( $block['attrs']['gutenaKitCSS']['blockCss'] ) || ! empty( $block['attrs']['gutenaKitStyle']['globalTypography'] ) ) {
+					$this->enqueue_block_control_css();
+				}
+
+				//Global typography
+				if (  ! empty( $block['attrs']['gutenaKitStyle']['globalTypography'] ) ) {
+					$this->enqueue_block_control_css( $block['attrs']['gutenaKitStyle']['globalTypography'] );
+					$block_classes = $block_classes .' '. get_gutena_kit_global_typography_class( $block['attrs']['gutenaKitStyle']['globalTypography'] );
+				}
+			}
+
+			$block_classes = gutenakit_block_id_classname_prefix() . $block['attrs']['gutenaKitID'] . ' '.$block_classes;
+
+			//check if block content has class
+			if ( false === strpos( $block_content, 'class="' ) ) {
+				//if class not exists add class attribute
+				$block_content = preg_replace(
+					'/' . preg_quote( '>', '/' ) . '/',
+					' class="' . esc_attr( $block_classes ) . '" > ',
+					$block_content,
+					1
+				);
+			} else {
+				//add class attribute
+				$block_content = preg_replace(
+					'/' . preg_quote( 'class="', '/' ) . '/',
+					'class="' . esc_attr( $class_to_add ) . ' ',
+					$block_content,
+					1
+				);
+			}
+			
+
+			// Enqueue block css
 			$this->enqueue_block_gutenakit_styles( $block['attrs']['gutenaKitCSS'], 11 );
 
 		}
@@ -230,10 +254,10 @@ class Gutena_Kit_Public {
 			return;
 		}
 
-		//Join all css
+		// Join all css
 		$style = implode( ' ', array_values( $style ) );
 
-		//Filter Css
+		// Filter Css
 		$style = apply_filters( 'gutena_kit_block_style', $style );
 
 		$action_hook_name = 'wp_footer';
@@ -243,7 +267,7 @@ class Gutena_Kit_Public {
 		add_action(
 			$action_hook_name,
 			static function () use ( $style ) {
-				echo '<style>' .wp_strip_all_tags( $style ). "</style>\n";
+				echo '<style>' . wp_strip_all_tags( $style ) . "</style>\n";
 			},
 			$priority
 		);

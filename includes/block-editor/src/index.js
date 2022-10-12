@@ -8,6 +8,9 @@ import { __ } from '@wordpress/i18n';
 import { addFilter } from  '@wordpress/hooks';
 import {  gutenaKitEditMediaTextBlock } from './mediaTextBlockEdit';
 import { GutenaKitSettings } from './GutenaKitSettings';
+import { createHigherOrderComponent } from  '@wordpress/compose';
+import { joinObjectValues } from './helpers/helpers';
+
 
 
 /*************************************
@@ -30,3 +33,30 @@ Object.keys( editBlocksComponents ).forEach( blockSlug =>{
         editBlocksComponents[blockSlug]
     );
 } );
+
+
+/********************************************************************
+ Add classes in editor without saving as main classname attributes
+********************************************************************/
+const withGutenaKitClassName = createHigherOrderComponent(
+    ( BlockListBlock ) => {
+        return ( props ) => {
+            const { 
+                gutenaKitClass={}
+            } = props.attributes;
+            return (
+                <BlockListBlock
+                    { ...props }
+                    className={ joinObjectValues( gutenaKitClass ) }
+                />
+            );
+        };
+    },
+    'withGutenaKitClassName'
+);
+
+wp.hooks.addFilter(
+    'editor.BlockListBlock',
+    'my-plugin/with-client-id-class-name',
+    withGutenaKitClassName
+);

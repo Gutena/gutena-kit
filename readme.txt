@@ -58,6 +58,17 @@ Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtab
 
 == Changelog ==
 
+= 1.0.7 | Beta =
+* Added gutena-kit advance controls settings to core blocks
+* Added normal and hover color settings for text, background and link  
+* Added normal and hover overlay settings for group and column block
+* Added normal and hover border settings for group and column block
+* Added normal and hover box shadow settings for group and column block
+* Added responsive spacing settings
+* Added responsive typography settings
+* Added global typography settings for add or use global typography in a block
+* Added display settings for hide a block in specific device like desktop, tablet or mobile
+
 = 1.0.6 | 2nd September 2022 =
 * Updated banners and icons
 * Update styles for saas-company demo

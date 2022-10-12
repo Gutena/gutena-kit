@@ -1,8 +1,8 @@
 <?php // @codingStandardsIgnoreLine
 /**
- * Plugin Name:     Newsletter Block by Gutena
- * Description:     Newsletter Block by Gutena
- * Version:         1.0.2
+ * Plugin Name:     Gutena Newsletter
+ * Description:     Gutena Newsletter
+ * Version:         1.0.3
  * Author:          ExpressTech
  * License:         GPL-2.0-or-later
  * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
@@ -30,7 +30,7 @@ if ( ! class_exists( 'Gutena_Newsletter' ) ) {
 		 *
 		 * @var string
 		 */
-		public $version = '1.0.2';
+		public $version = '1.0.3';
 
 		/**
 		 * Instance of this class.
@@ -77,8 +77,7 @@ if ( ! class_exists( 'Gutena_Newsletter' ) ) {
 			] );
 
 			// Enqueue assets.
-			wp_register_script( 'gutena-newsletter-block', plugins_url( 'frontend.min.js', __FILE__ ), [], $this->version, true );
-			wp_localize_script( 'gutena-newsletter-block', 'gutenaNewsletterBlock', [
+			wp_localize_script( 'gutena-newsletter-field-script', 'gutenaNewsletterBlock', [
 				'ajax_url'      => admin_url( 'admin-ajax.php' ),
 				'nonce'         => wp_create_nonce( 'gutena_newsletter' ),
 				'in_process'    => __( 'Processing...', 'newsletter-block-gutena' ),

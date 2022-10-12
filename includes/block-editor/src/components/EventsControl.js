@@ -2,7 +2,7 @@
  * Box Shadow Group
  */
  import { __ } from '@wordpress/i18n';
- import {  useState } from '@wordpress/element'
+ import {  useState } from '@wordpress/element';
  import { 
      PanelBody, 
      __experimentalToggleGroupControl as ToggleGroupControl,

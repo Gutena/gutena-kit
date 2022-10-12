@@ -65,10 +65,105 @@
 }
 
 /*Component gap*/
-[id^="inspector-box-control"] {
+.gutena-kit-settings [id^="inspector-box-control"] {
     padding-bottom:1.5rem;
 }
 
-.components-item-group {
-    margin-bottom: 1rem;
+.block-editor-block-inspector .gutena-kit-settings .components-panel__body {
+    border-top:none;
+}
+
+.block-editor-block-inspector .gutena-kit-settings .edit-site-typography-panel__full-width-control {
+    grid-column: 1 / -1;
+}
+
+/* Hstack */
+/*Icon*/
+.block-editor-block-inspector .gutena-kit-settings .components-h-stack .components-button.has-icon {
+    padding: 0;
+    min-width: 1rem;
+    height: auto;
+}
+
+.gutena-kit-settings .components-item-group,
+.gutena-kit-settings .components-h-stack {
+    margin-bottom: 0.5rem;
+}
+
+.gutena-kit-settings .components-h-stack .components-h-stack{
+    margin-bottom: 0;
+}
+
+.gutena-kit-settings .components-h-stack.gutena-kit-h-stack {
+    margin: 1rem 0;
+}
+
+/*Hstack flex item*/
+.block-editor-block-inspector .gutena-kit-settings .components-h-stack .components-flex-item {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.block-editor-block-inspector .gutena-kit-settings .components-input-control {
+    height: auto;
+}
+
+/*Gutena kit settings panel body: place icon at left*/
+.gutena-kit-settings > .components-panel__body-title .components-button {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: left;
+    gap: 0.5rem;
+}
+
+/* Select device icon size */
+.gutena-kit-select-device ,
+.gutena-kit-select-device .components-button svg,
+.gutena-kit-select-device-popover .components-button svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.gutena-kit-select-device-popover .components-button {
+    height: 2rem;
+}
+
+/*Border Text*/
+.gutena-kit-border-text {
+    border: 1px solid rgb(117, 117, 117);
+    padding: 1rem;
+    margin: 0.5rem 0 !important;
+}
+
+/*gutena-kit-fluid-typography-toggle-hstack text hstack*/
+.gutena-kit-fluid-typography-toggle-hstack {
+    margin-bottom: 2rem !important;
+}
+
+.gutena-kit-fluid-typography-toggle-hstack .components-base-control,
+.gutena-kit-fluid-typography-toggle-hstack .components-toggle-control .components-base-control__field {
+    margin-bottom: 0;
+    max-width: 130px;
+}
+
+.gutena-kit-popover-help-content .components-popover__content {
+    min-width: 250px;
+}
+
+/*Delete btn*/
+.gutena-kit-settings .gutena-kit-delete-btn {
+    text-decoration-line: none;
+    font-weight: 600;
+    align-items: end;
+}
+
+.gutena-kit-settings .gutena-kit-delete-btn:hover {
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.gutena-kit-settings .gutena-kit-delete-btn svg {
+    margin-right: 0.25rem !important;
 }

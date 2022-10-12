@@ -7,7 +7,6 @@
   "parent": [
     "gutena/newsletter"
   ],
-  "icon": "email-alt",
   "description": "Gutena Newsletter Field",
   "textdomain": "newsletter-block-gutena",
   "supports": {
@@ -96,6 +95,6 @@
   },
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",
-  "script": "gutena-newsletter-block",
+  "script": "file:./view.js",
   "style": "file:./style-index.css"
 }
