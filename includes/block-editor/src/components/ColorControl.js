@@ -10,6 +10,7 @@ import {
 import { PanelBody,
     __experimentalToggleGroupControl as ToggleGroupControl,
     __experimentalToggleGroupControlOption as ToggleGroupControlOption,
+    __experimentalToolsPanel as ToolsPanel,
 } from '@wordpress/components';
 import { gkIsEmpty } from '../helpers/helpers';
 import colorSettingsData from './colorSettingsData'
@@ -27,6 +28,7 @@ import colorSettingsData from './colorSettingsData'
      attrValue = {},
      colorPanelsSettings=false,
      onChangeFunc = noop,
+     panelId=0,
      enableAlpha = false,
      disableCustomColors = false,
      withPanel = true,
@@ -88,14 +90,17 @@ import colorSettingsData from './colorSettingsData'
     
      const controls = (
          <>
+         <ToolsPanel label="" className="gutena-kit-color-toolpanel" resetAll={ () => onChangeFunc( {} ) }  panelId={ panelId } >
             <ColorGradientSettingsDropdown 
              __experimentalHasMultipleOrigins
              __experimentalIsRenderedInSidebar
              settings={ colorSettings }
             disableCustomColors={ disableCustomColors }
             enableAlpha={ enableAlpha }
+            panelId={ panelId }
             { ...colorGradientSettings }
              />
+        </ToolsPanel>
          </>
      );
 

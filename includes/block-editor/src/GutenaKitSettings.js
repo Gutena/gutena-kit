@@ -621,6 +621,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                         label={ __("Color", "gutena-kit") }
                         attrValue ={ gutenaKitStyle?.color }
                         onChangeFunc ={ ( value ) => setAttr( value, 'color' ) }
+                        panelId={ clientId }
                     />
                     }
                     { gkSupports.overlay && 
