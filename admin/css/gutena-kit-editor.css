@@ -64,10 +64,10 @@
     width: 100% !important;
 }
 
-/*Component gap*/
+/*Component gap
 .gutena-kit-settings [id^="inspector-box-control"] {
     padding-bottom:1.5rem;
-}
+}*/
 
 .block-editor-block-inspector .gutena-kit-settings .components-panel__body {
     border-top:none;
@@ -166,4 +166,11 @@
 
 .gutena-kit-settings .gutena-kit-delete-btn svg {
     margin-right: 0.25rem !important;
+}
+
+/* Color panel settings*/
+.gutena-kit-settings .gutena-kit-color-toolpanel {
+    padding: 0.1rem;
+    border: 0;
+    gap:0.1rem;
 }
