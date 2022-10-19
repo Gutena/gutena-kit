@@ -34,17 +34,17 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             clientId,
 		} = props;
 
-        if( -1 === [ 'core/group', 'core/column', 'core/paragraph', 'core/heading' ].indexOf( name ) ){
+        if( -1 === [ 'core/group', 'core/cover', 'core/column', 'core/paragraph', 'core/heading' ].indexOf( name ) ){
             return ( <BlockEdit { ...props } /> );
         }
         
         //Show or hide controls in gutena kit settings
         const gkSupports = {
-            color:true,
+            color:( -1 === [ 'core/cover' ].indexOf( name ) ),
             overlay:( -1 !== [ 'core/group', 'core/column' ].indexOf( name ) ),
             spacing:true,
             border:( -1 !== [ 'core/group', 'core/column' ].indexOf( name ) ),
-            boxShadow:true,
+            boxShadow:( -1 === [ 'core/cover' ].indexOf( name ) ),
             display:true,
             typography:( -1 !== [ 'core/paragraph', 'core/heading' ].indexOf( name ) )
         };
@@ -548,16 +548,29 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
         */
         const renderBlockCSSForResponsive = () => {
 
-            if ( 'Desktop' !== deviceType && ! gkIsEmpty( gutena_kit_block_editor?.css ) && gkIsEmpty( gutena_kit_block_editor.cssCount ) ) {
+            if ( gkIsEmpty( gutena_kit_block_editor?.css ) ) {
+                return false;
+            }
+
+            let editorDoc = null;
+
+            if ( 'Desktop' !== deviceType && gkIsEmpty( getEditorDoc( '#gutena-kit-settings-css' ) ) ) {
+                
                 //Get editor iframe document
-                let editorDoc = getEditorDoc( 'head' );
+                editorDoc = getEditorDoc( '.editor-styles-wrapper' );
     
                 if ( gkIsEmpty(editorDoc) || editorDoc.length < 1) {
                     return false;
                 }
+            }else{
+                let editorStyleWrapperCSS = document.querySelector('#gutena-kit-settings-css');
+                if ( gkIsEmpty( editorStyleWrapperCSS ) || 0 === editorStyleWrapperCSS.length ) {
+                    editorDoc = document.querySelector('.editor-styles-wrapper');
+                }
+            }
 
-                editorDoc.insertAdjacentHTML("afterend", "<style>"+gutena_kit_block_editor.css+"</style>");
-                gutena_kit_block_editor.cssCount = 1;
+            if ( ! gkIsEmpty( editorDoc ) ) {
+                editorDoc.insertAdjacentHTML('afterend','<style id="gutena-kit-settings-css">'+gutena_kit_block_editor.css+'</style>');
             }
 
             return '';

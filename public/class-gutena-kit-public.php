@@ -208,9 +208,7 @@ class Gutena_Kit_Public {
 			if ( ! empty( $block_classes ) && ! empty( $block['attrs']['gutenaKitStyle'] ) ) {
 
 				// Enqueue core block advance controls css
-				if ( ! empty( $block['attrs']['gutenaKitCSS']['blockCss'] ) || ! empty( $block['attrs']['gutenaKitStyle']['globalTypography'] ) ) {
-					$this->enqueue_block_control_css();
-				}
+				$this->enqueue_block_control_css();
 
 				//Global typography
 				if (  ! empty( $block['attrs']['gutenaKitStyle']['globalTypography'] ) ) {
@@ -234,7 +232,7 @@ class Gutena_Kit_Public {
 				//add class attribute
 				$block_content = preg_replace(
 					'/' . preg_quote( 'class="', '/' ) . '/',
-					'class="' . esc_attr( $class_to_add ) . ' ',
+					'class="' . esc_attr( $block_classes ) . ' ',
 					$block_content,
 					1
 				);
