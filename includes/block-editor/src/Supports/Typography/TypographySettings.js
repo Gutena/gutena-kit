@@ -17,11 +17,12 @@ import {
     __experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
 import { settings } from '@wordpress/icons';
+import { useSelect } from "@wordpress/data";
 import { useState, useEffect } from '@wordpress/element';
 import TypographyControl from '../../components/TypographyControl';
 import SelectDeviceDropdown from '../../components/SelectDeviceDropdown';
 import { deleteIcon } from '../../components/gutenaIcons';
-import { gkIsEmpty, getMatchArrObjKeyValue, typographyVar, generateSlug } from '../../helpers/helpers';
+import { gkIsEmpty, getMatchArrObjKeyValue, typographyVar, generateSlug, gkCssJson, renderBlockCSSForResponsive } from '../../helpers/helpers';
 
 const noop = () => {}; 
 
@@ -69,9 +70,14 @@ const TypographySettings = ({
         letterSpacing: undefined,
         textTransform: undefined,
         textDecoration: undefined,
-        css:undefined,
+        cssJson:undefined,
     } );
     
+     //Get Device preview type
+     const deviceType = useSelect((select) => {
+        return select("core/edit-post").__experimentalGetPreviewDeviceType();
+        }, []);
+
     //Save Global Typography
 	useEffect( () => {
 		if ( 'progress' === typographyTab?.status ) {
@@ -106,6 +112,7 @@ const TypographySettings = ({
                 .then( ( response ) => {
                     if ( ! gkIsEmpty( response?.globalTypography ) ) {
                         gutena_kit_block_editor.globalTypography = response.globalTypography;
+                        renderBlockCSSForResponsive( gutena_kit_block_editor, deviceType);
                     }
                     let activeTab = ( gkIsEmpty( gutena_kit_block_editor.globalTypography ) || 0 === gutena_kit_block_editor.globalTypography.length ) ? { activeTab:'set_global_typography', label: __( 'Saved Typography', 'gutena-kit' ),  } : {};
                     setTypographyTab( {
@@ -158,9 +165,11 @@ const TypographySettings = ({
         return slug;
     }
 
+    const getCssJson = () => gkCssJson( typographyVar( addEditTypography, '--gutenakit--gt-' ) );
+
     const getCss = ( typographyName = null ) => {
         let slug =  getSlug( typographyName );
-        return gkIsEmpty( slug )?'':'.has-gutenakit-g-typography.has-gutenakit-'+slug+'{' + typographyVar( addEditTypography, '--gutenakit--gt-' ) + '}';
+        return gkIsEmpty( slug )?'':'.has-gutenakit-gt-'+slug+'{' + typographyVar( addEditTypography, '--gutenakit--gt-' ) + '}';
     }
 
     const isDeleteTypographyInitiated = () => ( true === typographyTab.deleteTypography );
@@ -284,14 +293,14 @@ const TypographySettings = ({
                                 ...addEditTypography,
                                 name:name,
                                 slug: getSlug( name ),
-                                css: getCss( name )
+                                cssJson: getCssJson()
                             } ) }
                         />
                         <TypographyControl 
                             attrValue = { addEditTypography }
                             onChangeFunc = { ( value ) => setAddEditTypography( {
                                 ...value, 
-                                css: getCss()
+                                cssJson: getCssJson()
                                 } ) }
                             editGlobalTypography = { true }
                             makeFluidTypography = { true }

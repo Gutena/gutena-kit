@@ -18,7 +18,7 @@ import  RangeControlUnit  from './components/RangeControlUnit';
 import BorderGroup from './components/BorderGroup';
 import EventsControl from './components/EventsControl';
 import TypographySettings from './Supports/Typography/TypographySettings';
-import { gkIsEmpty, spaceCss, spaceVar, borderCss, borderVar, boxShadowCss, typographyCss, typographyVar, gkCamelToDash, getEditorDoc } from './helpers/helpers';
+import { gkIsEmpty, spaceCss, spaceVar, borderCss, borderVar, boxShadowCss, typographyCss, typographyVar, gkCamelToDash, getEditorDoc, gkCssJson, renderBlockCSSForResponsive } from './helpers/helpers';
 
 //https://make.wordpress.org/core/2019/04/09/the-block-editor-javascript-module-in-5-2/
  
@@ -88,18 +88,15 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                     }
                 }
             }
+        }else{
+            DefaultStyle = {};
         }
-
-        const DEFAULT_STYLE = {
-            enable: true,
-            style: DefaultStyle,
-        };
 
         const { 
             gutenaKitID,
             gutenaKitCSS,
             gutenaKitClass={},
-            gutenaKitStyle=DEFAULT_STYLE, 
+            gutenaKitStyle=DefaultStyle, 
             style={},
         } = attributes;
 
@@ -293,8 +290,239 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             return css;
         }
 
+        const generateCssFromVar = ( styleVar = gutenaKitStyle, id = '#block-'+clientId ) => {
+           let cssJson = generateCssVar( styleVar = gutenaKitStyle, id = '#block-'+clientId, true  );
+           //console.log("json",cssJson);
+           //global typography flag
+		   let global_typography = '';
+           if ( ! gkIsEmpty( styleVar?.globalTypography ) && ! gkIsEmpty( gutena_kit_block_editor?.globalTypography ) && ! gkIsEmpty( gutena_kit_block_editor?.globalTypography?.[styleVar.globalTypography]?.['cssJson'] ) ) {
+                //slug
+                global_typography = styleVar.globalTypography;
+           }
+
+           //Media size
+           let media_query_tab = gkIsEmpty( gutena_kit_block_editor?.media_query_tab ) ?'1080px': gutena_kit_block_editor.media_query_tab;
+           let media_query_mobile = gkIsEmpty( gutena_kit_block_editor?.media_query_mobile ) ?'767px': gutena_kit_block_editor.media_query_mobile;
+
+           let css = id+' {';
+           //spacing 
+           [ 'padding', 'margin' ].forEach( ( spaceName ) => {
+                [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
+                    if ( ! gkIsEmpty( cssJson?.['--gutenakit--default-'+spaceName+'-'+position] ) ) {
+                        css += spaceName+'-'+position+':'+cssJson['--gutenakit--default-'+spaceName+'-'+position]+' !important;';
+                    }
+                });
+           });
+
+           // Text color
+            if ( ! gkIsEmpty( cssJson?.['--gutenakit--color-normal-text'] ) ) {
+                css += ' color:'+cssJson['--gutenakit--color-normal-text'] +' !important;';
+            }
+
+            // Background color
+            if ( ! gkIsEmpty( cssJson?.['--gutenakit--color-normal-background'] ) ) {
+                css += ' background-color:'+cssJson['--gutenakit--color-normal-background'] +' !important;';
+            }
+
+            // Border
+            if ( ! gkIsEmpty( cssJson?.['--gutenakit--border-normal'] ) ) {
+                css += ' border:'+cssJson['--gutenakit--border-normal'] +' !important;';
+            } else {
+                [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
+                    if ( ! gkIsEmpty( cssJson?.['--gutenakit--border-normal-'+position] ) ) {
+                        css += ' border-'+position+':'+cssJson['--gutenakit--border-normal-'+position] +' !important;';
+                    }
+                });
+            }
+
+            // Border radius
+            if ( ! gkIsEmpty( cssJson?.['--gutenakit--border-normal-radius'] ) ) {
+                css += ' border-radius:'+cssJson['--gutenakit--border-normal-radius'] +' !important;';
+            }
+
+            // Box Shadow
+            if ( ! gkIsEmpty( cssJson?.['--gutenakit--boxshadow-normal'] ) ) {
+                css += 'box-shadow:'+cssJson['--gutenakit--boxshadow-normal'] +' !important;';
+            }
+
+            // Overlay parent
+            if ( ! gkIsEmpty( cssJson?.['--gutenakit--overlay-normal-background'] ) || ! gkIsEmpty( cssJson?.['--gutenakit--overlay-hover-background'] ) ) {
+                css += ' position: relative;';
+            }
+
+            //typography
+            if ( gkIsEmpty( global_typography ) ) {
+                [ 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transfor', 'text-decoration' ].forEach( ( font_property ) => {
+                    if ( ! gkIsEmpty( cssJson?.['--gutenakit--'+font_property] ) ) {
+                        css += ' '+font_property+':'+cssJson['--gutenakit--'+font_property] +' !important;';
+                    }
+                });
+            } 
+
+            //Hide in desktop
+            if ( ! gkIsEmpty( cssJson?.['--gutenakit--display-default'] ) ) {
+                css += ' display: '+cssJson['--gutenakit--display-default']+';';
+            }
+            
+            css += ' }';
+
+            /************************
+             Block hover : START
+            **************************/
+            css += id+':hover {';
+
+            // Text color
+            if ( ! gkIsEmpty( cssJson?.['--gutenakit--color-hover-text'] ) ) {
+                css += ' color:'+cssJson['--gutenakit--color-hover-text'] +' !important;';
+            }
+
+            // Background color
+            if ( ! gkIsEmpty( cssJson?.['--gutenakit--color-hover-background'] ) ) {
+                css += ' background-color:'+cssJson['--gutenakit--color-hover-background'] +' !important;';
+            }
+
+            // Border
+            if ( ! gkIsEmpty( cssJson?.['--gutenakit--border-hover'] ) ) {
+                css += ' border:'+cssJson['--gutenakit--border-hover'] +' !important;';
+            } else {
+                [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
+                    if ( ! gkIsEmpty( cssJson?.['--gutenakit--border-hover-'+position] ) ) {
+                        css += ' border-'+position+':'+cssJson['--gutenakit--border-hover-'+position] +' !important;';
+                    }
+                });
+            }
+
+            // Border radius
+            if ( ! gkIsEmpty( cssJson?.['--gutenakit--border-hover-radius'] ) ) {
+                css += ' border-radius:'+cssJson['--gutenakit--border-hover-radius'] +' !important;';
+            }
+
+            // Box Shadow
+            if ( ! gkIsEmpty( cssJson?.['--gutenakit--boxshadow-hover'] ) ) {
+                css += 'box-shadow:'+cssJson['--gutenakit--boxshadow-hover'] +' !important;';
+            }
+
+            css += ' }';
+            /************************
+             Block hover : END
+            **************************/
+
+            // Link color
+            if ( ! gkIsEmpty( cssJson?.['--gutenakit--color-normal-link'] ) ) {
+                css += id+' a { color:'+cssJson['--gutenakit--color-normal-link'] +' !important; }';
+            }
+
+            // Link hover color
+            if ( ! gkIsEmpty( cssJson?.['--gutenakit--color-hover-link'] ) ) {
+                css += id+' a:hover { color:'+cssJson['--gutenakit--color-hover-link'] +' !important; }';
+            }
+
+            // overlay color
+            if ( ! gkIsEmpty( cssJson?.['--gutenakit--overlay-normal-background'] ) && ! gkIsEmpty( cssJson?.['--gutenakit--overlay-normal-opacity'] ) ) {
+                css += id+`:before {
+                    content:"";
+                    background-color:${ cssJson['--gutenakit--overlay-normal-background']}; 
+                    opacity: ${cssJson['--gutenakit--overlay-normal-opacity']};
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                }`;
+            }
+
+            // overlay color
+            if ( ! gkIsEmpty( cssJson?.['--gutenakit--overlay-hover-background'] ) && ! gkIsEmpty( cssJson?.['--gutenakit--overlay-hover-opacity'] ) ) {
+                css += id+`:hover:before {
+                    content:"";
+                    background-color:${cssJson['--gutenakit--overlay-hover-background']}; 
+                    opacity: ${cssJson['--gutenakit--overlay-hover-opacity']};
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                }`;
+            }
+
+            /************************
+             Block Tablet : START
+            **************************/
+                css += '@media only screen and (min-width: 768px) and (max-width: '+media_query_tab+') { '+id+' {';
+
+                //Hide in Tablet
+                if ( ! gkIsEmpty( cssJson?.['--gutenakit--display-tablet'] ) ) {
+                    css += ' display: '+cssJson['--gutenakit--display-tablet']+';';
+                } else {
+
+                    //spacing
+                    [ 'padding', 'margin' ].forEach( ( spaceName ) => {
+                        [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
+                            if ( ! gkIsEmpty( cssJson?.['--gutenakit--tablet-'+spaceName+'-'+position] ) ) {
+                                css += spaceName+'-'+position+':'+cssJson['--gutenakit--tablet-'+spaceName+'-'+position]+' !important;';
+                            }
+                        });
+                   });
+                    
+                    if ( gkIsEmpty( global_typography ) ) {
+                        //typography
+                        [ 'font-size', 'line-height' ].forEach( ( font_property ) => {
+                            if ( ! gkIsEmpty( cssJson?.['--gutenakit--t-'+font_property] ) ) {
+                                css += ' '+font_property+':'+cssJson['--gutenakit--t-'+font_property] +' !important;';
+                            }
+                        });
+                    }
+
+                }
+
+                //gutena kit settings end
+                css += '} }';
+            /************************
+             Block Tablet : END
+            **************************/
+
+            /************************
+             Block Mobile : START
+            **************************/
+            css += '@media only screen and (max-width: '+media_query_mobile +') { '+id+' {';
+
+                //Hide in Mobile
+                if ( ! gkIsEmpty( cssJson?.['--gutenakit--display-mobile'] ) ) {
+                    css += ' display: '+cssJson['--gutenakit--display-mobile']+';';
+                } else {
+
+                    //spacing
+                    [ 'padding', 'margin' ].forEach( ( spaceName ) => {
+                        [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
+                            if ( ! gkIsEmpty( cssJson?.['--gutenakit--mobile-'+spaceName+'-'+position] ) ) {
+                                css += spaceName+'-'+position+':'+cssJson['--gutenakit--mobile-'+spaceName+'-'+position]+' !important;';
+                            }
+                        });
+                   });
+                    
+                    if ( gkIsEmpty( global_typography ) ) {
+                        //typography
+                        [ 'font-size', 'line-height' ].forEach( ( font_property ) => {
+                            if ( ! gkIsEmpty( cssJson?.['--gutenakit--m-'+font_property] ) ) {
+                                css += ' '+font_property+':'+cssJson['--gutenakit--m-'+font_property] +' !important;';
+                            }
+                        });
+                    }
+
+                }
+
+                //gutena kit settings end
+                css += '} }';
+            /************************
+             Block Mobile : END
+            **************************/
+
+            return css;
+
+        }
+
         //generate Css var
-        const generateCssVar = ( styleVar = gutenaKitStyle, id = '#block-'+clientId ) => {
+        const generateCssVar = ( styleVar = gutenaKitStyle, id = '#block-'+clientId, requireJson = false ) => {
             
             let cssVar = '';
         
@@ -352,7 +580,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                         
                         // Box shadow
                         if ( 'boxShadow' === cssProperty ) {
-                            cssVar += newVarName+':'+boxShadowCss( styleVar[ cssProperty ][ eventName ] , false);
+                            cssVar += newVarName+':'+boxShadowCss( styleVar[ cssProperty ][ eventName ] , false)+';';
                         }
                     }
                 } );
@@ -360,11 +588,46 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
 
             //Typography
             cssVar += typographyVar( styleVar?.typography, varName );
+
+            //display none for other devices
+            if ( ! gkIsEmpty( styleVar?.hideDisplay ) ) {
+                ['default', 'tablet', 'mobile'].forEach( ( deviceName ) => {
+                    if ( ! gkIsEmpty( styleVar.hideDisplay?.[deviceName] ) && true === styleVar.hideDisplay?.[deviceName] ) {
+                        cssVar += varName+'-display-'+deviceName+':none;';
+                    }
+                });
+            }
+
+            if ( 10 > cssVar.length ) {
+                return '';
+            }
             
-            return ( 10 > cssVar.length ) ? '' : ' '+id+'{'+cssVar+'} ' ;
+            return requireJson ? gkCssJson( cssVar ) : ' '+id+'{'+cssVar+'} ' ;
         
         }
 
+        //minimal classes
+        const generateClassesMinimal = ( styleVar = gutenaKitStyle ) => {
+
+            if ( gkIsEmpty( styleVar ) ) {
+                return false;
+            }
+        
+            let cssClass = [];
+        
+            let classPre = 'has-gutenakit';
+
+            if ( ! gkIsEmpty( styleVar?.typography?.fontSize ) && 10 <  styleVar.typography.fontSize.length ) {
+                cssClass.push( styleVar.typography.fontSize );
+            } else if ( ! gkIsEmpty( styleVar?.globalTypography ) ) {
+                //Global typography
+                cssClass.push( classPre+'-gt-'+styleVar.globalTypography );
+            }
+            //console.log("cssClass",cssClass);
+            return cssClass.join(' ');
+        }
+
+        //detailed classes
         const generateClasses = ( styleVar = gutenaKitStyle ) => {
 
             if ( gkIsEmpty( styleVar ) ) {
@@ -465,6 +728,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             return cssClass.join(' ');
         }
 
+        //Set gutena kit settings attributes
         const setAttr = ( value, styleAttr = null, attrName = null, deviceStyle=null ) => {
             /**
              * 
@@ -478,7 +742,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             }
             
             //Initialize style
-            let newstyle = gkIsEmpty( gutenaKitStyle ) ? DEFAULT_STYLE : gutenaKitStyle;
+            let newstyle = gkIsEmpty( gutenaKitStyle ) ? DefaultStyle : gutenaKitStyle;
             
             //check if required style attribute available or not
             if ( gkIsEmpty( newstyle[ styleAttr ] ) ) {
@@ -511,19 +775,16 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                  //Reset global typography when custom typography applied
                 newstyle.globalTypography = undefined;
             }
-           
 
-
+            //CSS json
+            newstyle.cssJson = generateCssVar( newstyle, " .gutenakitid-"+clientId, true );
+            
             setAttributes( { 
                 gutenaKitStyle:{ ...newstyle }, 
                 gutenaKitID:clientId,
-                gutenaKitCSS: {
-                ...gutenaKitCSS,
-                blockCss:generateCssVar( newstyle, " .gutenakitid-"+clientId ),
-                },
                 gutenaKitClass:{
                     ...gutenaKitClass,
-                    blockClasses: generateClasses( newstyle )
+                    blockClasses: generateClassesMinimal( newstyle )
                 },
             } );
             
@@ -543,47 +804,9 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             Mobile: __( 'Hide on Mobile', 'gutena-kit' ),
         };
 
-        /* To Fix mobile and tablet preview due to a wordpress bug
-            In mobile and tablet preview WP editor use iframe which cause css fall outside of iframe 
-        */
-        const renderBlockCSSForResponsive = () => {
 
-            if ( gkIsEmpty( gutena_kit_block_editor?.css ) ) {
-                return false;
-            }
-
-            let editorDoc = null;
-
-            if ( 'Desktop' !== deviceType && gkIsEmpty( getEditorDoc( '#gutena-kit-settings-css' ) ) ) {
-                
-                //Get editor iframe document
-                editorDoc = getEditorDoc( '.editor-styles-wrapper' );
-    
-                if ( gkIsEmpty(editorDoc) || editorDoc.length < 1) {
-                    return false;
-                }
-            }else{
-                let editorStyleWrapperCSS = document.querySelector('#gutena-kit-settings-css');
-                if ( gkIsEmpty( editorStyleWrapperCSS ) || 0 === editorStyleWrapperCSS.length ) {
-                    editorDoc = document.querySelector('.editor-styles-wrapper');
-                }
-            }
-
-            if ( ! gkIsEmpty( editorDoc ) ) {
-                editorDoc.insertAdjacentHTML('afterend','<style id="gutena-kit-settings-css">'+gutena_kit_block_editor.css+'</style>');
-            }
-
-            return '';
-        }
-        
-        let global_typography_block_css = '';
-
-        if ( gkSupports.typography && ! gkIsEmpty( gutenaKitStyle?.globalTypography ) && ! gkIsEmpty( gutena_kit_block_editor?.globalTypography?.[ gutenaKitStyle.globalTypography ]?.['css'] ) ) {
-            global_typography_block_css += '#block-' + clientId + gutena_kit_block_editor?.globalTypography?.[ gutenaKitStyle.globalTypography ]?.['css'];
-        }
-
-        const Style = generateCssVar()+' '+global_typography_block_css+''+renderBlockCSSForResponsive();
-       
+        const Style = generateCssFromVar()+''+renderBlockCSSForResponsive( gutena_kit_block_editor , deviceType );
+      
         
         return (
             <Fragment>

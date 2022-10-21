@@ -241,13 +241,14 @@ class Gutena_Kit_Admin {
 
 		wp_add_inline_style( 'gutena-kit-block-editor-style', gutenakit_block_additional_controls_css( true ) );
 
-		//get global typography
-		get_gutena_kit_global_typography();
 		//enqueue global typography
 		global $gutena_kit_global_typography;
 
-		//print_r( get_gutena_kit_global_typography_css() );exit;
-		
+		//check if global typography exists 
+		if ( ! isset( $gutena_kit_global_typography ) ) {
+			$gutena_kit_global_typography = get_option( 'gutena_kit_global_typography', array() );
+		}
+
 		wp_localize_script( 
 			'gutena-kit-block-editor' , 
 			'gutena_kit_block_editor',
@@ -256,7 +257,8 @@ class Gutena_Kit_Admin {
 				'nonce' => wp_create_nonce( 'gutena-kit-save' ),
 				'ajax_url' => esc_url( admin_url('admin-ajax.php') ),
 				'globalTypography'=> $gutena_kit_global_typography,
-				'css' => gutenakit_block_additional_controls_css( true ),
+				'media_query_tab' => apply_filters('gutena-kit-media-query-tab', '1080px' ),
+				'media_query_mobile' => apply_filters('gutena-kit-media-query-mobile', '767px' )
 			 )
 		);
 	}

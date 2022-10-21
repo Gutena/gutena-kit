@@ -9,7 +9,8 @@
  import { PanelBody,
     RangeControl,
  } from '@wordpress/components';
- import colorSettingsData from './colorSettingsData'
+ import { gkIsEmpty, getGlobalColorVar } from '../helpers/helpers';
+ import colorSettingsData from './colorSettingsData';
  
 const DEFAULT_OVERLAY = {
     color:undefined,
@@ -26,15 +27,18 @@ const OverlayControl = ( {
     withPanel = true
 } ) => {
 
+    const { gradientValue, setGradient } = __experimentalUseGradient();
+    const colorGradientSettings = colorSettingsData();
+
     //Set attribute
     const setAttr = ( value, attrName ) => {
         let newAttr = attrValue;
+        if ( 'color' === attrName ) {
+            value = getGlobalColorVar( colorGradientSettings, value );
+        }
         newAttr[ attrName ] = value;
         onChangeFunc( { ...newAttr } );
     };
-
-    const { gradientValue, setGradient } = __experimentalUseGradient();
-    const colorGradientSettings = colorSettingsData();
     
     const controls = (
         <>

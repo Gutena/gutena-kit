@@ -336,3 +336,187 @@ export const joinObjectValues = ( obj ) => {
 	});
 	return joinedValues;
 }
+
+//convert css into json
+export const gkCssJson = ( cssVar ) => {
+	if ( gkIsEmpty( cssVar ) ) {
+		return {};
+	}
+	//remove spaces
+	cssVar = cssVar.replace(' ', '');
+	cssVar = cssVar.replace(/\n/g, " ");
+
+	//convert into array e.g. --gutenakit-css-property:value;
+	let cssJson = {};
+	cssVar.split(';').forEach( itemVar => {
+		
+		//split --gutenakit-css-property:value
+		let itemArray = itemVar.split(':');
+
+		if ( ! gkIsEmpty( itemArray ) && 1 < itemArray.length ) {
+			cssJson[ itemArray[0].trim() ] = itemArray[1].trim();
+		}
+		
+	});
+
+	return cssJson;
+}
+
+/**Get global typography css */
+export const getGlobalTypographyCss = ( gutena_kit_block_editor ) => {
+	let cssDefault = '';
+	if ( ! gkIsEmpty( gutena_kit_block_editor?.globalTypography ) ) {
+		let cssTab = '';
+		let cssMobile = '';
+		 //Media size
+		let media_query_tab = gkIsEmpty( gutena_kit_block_editor?.media_query_tab ) ?'1080px': gutena_kit_block_editor.media_query_tab;
+		let media_query_mobile = gkIsEmpty( gutena_kit_block_editor?.media_query_mobile ) ?'767px': gutena_kit_block_editor.media_query_mobile;
+
+		Object.keys( gutena_kit_block_editor.globalTypography ).forEach( slug =>{ 
+			if ( ! gkIsEmpty( gutena_kit_block_editor.globalTypography[slug]?.['cssJson'] ) ) {
+				let cssFont = '';
+				let cssJson = gutena_kit_block_editor.globalTypography[slug]['cssJson'];
+				
+				//Default typography
+				[ 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transfor', 'text-decoration' ].forEach( ( font_property ) => {
+					if ( ! gkIsEmpty( cssJson?.['--gutenakit--gt--'+font_property] ) ) {
+						cssFont += ' '+font_property+':'+cssJson['--gutenakit--gt--'+font_property] +' !important;';
+					}
+				});
+				
+				if ( !gkIsEmpty( cssFont ) ) {
+					cssDefault += '.editor-styles-wrapper .has-gutenakit-gt-'+slug+'{'+cssFont+'} ';
+				}
+
+			   
+				//tablet typography
+				cssFont = '';
+				[ 'font-size', 'line-height' ].forEach( ( font_property ) => {
+					if ( ! gkIsEmpty( cssJson?.['--gutenakit--t-'+font_property] ) ) {
+						cssFont += ' '+font_property+':'+cssJson['--gutenakit--t-'+font_property] +' !important;';
+					}
+				});
+				if ( !gkIsEmpty( cssFont ) ) {
+					cssTab += '.editor-styles-wrapper .has-gutenakit-gt-'+slug+'{'+cssFont+'} ';
+				}
+
+				//mobile typography
+				cssFont = '';
+				[ 'font-size', 'line-height' ].forEach( ( font_property ) => {
+					if ( ! gkIsEmpty( cssJson?.['--gutenakit--m-'+font_property] ) ) {
+						cssFont += ' '+font_property+':'+cssJson['--gutenakit--m-'+font_property] +' !important;';
+					}
+				});
+				if ( !gkIsEmpty( cssFont ) ) {
+					cssMobile += '.editor-styles-wrapper .has-gutenakit-gt-'+slug+'{'+cssFont+'} ';
+				}
+			}
+
+		});
+
+		if ( !gkIsEmpty( cssTab ) ) {
+			cssDefault += ' @media only screen and (min-width: 768px) and (max-width: '+media_query_tab+') { '+cssTab+'} ';
+		}
+
+		if ( !gkIsEmpty( cssMobile ) ) {
+			cssDefault += ' @media only screen and (min-width: 768px) and (max-width: '+media_query_mobile+') { '+cssMobile+'} ';
+		}
+	}
+	
+	return cssDefault;
+}
+/* To Fix mobile and tablet preview due to a wordpress bug
+	In mobile and tablet preview WP editor use iframe which cause css fall outside of iframe 
+*/
+export const renderBlockCSSForResponsive = ( gutena_kit_block_editor , deviceType = 'Desktop' ) => {
+
+	if ( gkIsEmpty( gutena_kit_block_editor?.globalTypography ) ) {
+		return false;
+	}
+
+	let editorDoc = null;
+	let gkInnerHtml = false;
+
+	if ( 'Desktop' !== deviceType ) {
+		editorDoc =  getEditorDoc( '#gutena-kit-settings-css' );
+		if ( ! gkIsEmpty( editorDoc ) ) {
+			gkInnerHtml = true;
+		} else {
+			//Get editor iframe document
+			editorDoc = getEditorDoc( '.editor-styles-wrapper' );
+		}
+	}else{
+		editorDoc =  document.querySelector('#gutena-kit-settings-css');
+		if ( ! gkIsEmpty( editorDoc ) ) {
+			gkInnerHtml = true;
+		} else {
+			editorDoc = document.querySelector('.editor-styles-wrapper');
+		}
+	}
+
+	if ( ! gkIsEmpty( editorDoc ) ) {
+		if ( gkInnerHtml ) {
+			//Update
+			editorDoc.innerHTML = getGlobalTypographyCss( gutena_kit_block_editor );
+		} else {
+			//add
+			editorDoc.insertAdjacentHTML('afterend','<style id="gutena-kit-settings-css">'+getGlobalTypographyCss( gutena_kit_block_editor )+'</style>');
+		}
+	}
+
+	return '';
+}
+
+/**
+ * Get global color as var if use global variable
+ */
+export const getGlobalColorVar = ( colorGradientSettings, color ) => {
+	if ( gkIsEmpty( colorGradientSettings ) || gkIsEmpty( colorGradientSettings?.colors ) ) {
+		return color;
+	}
+	let colorSlug = '';
+	colorGradientSettings.colors.forEach( ( colorGroup ) => {
+		//break if found colorSlug
+		if ( ! gkIsEmpty( colorSlug ) ) {
+			return;
+		}
+		if ( ! gkIsEmpty( colorGroup?.colors ) && ! gkIsEmpty( colorGroup?.name ) ) {
+			colorGroup.colors.forEach( ( colorObj ) => { 
+				//break if found colorSlug
+				if ( ! gkIsEmpty( colorSlug ) ) {
+					return;
+				}
+				if ( ! gkIsEmpty( colorObj?.color ) && ! gkIsEmpty( colorObj?.slug ) && color === colorObj.color ) { 
+					colorSlug = ( "custom" === colorGroup.name.toLowerCase() )? 'custom-'+colorObj.slug: colorObj.slug;
+				}
+			});
+		}
+   });
+
+   if ( ! gkIsEmpty( colorSlug ) ) {
+	return 'var(--wp--preset--color--'+colorSlug+','+color+')';
+   } else if ( ! gkIsEmpty( colorGradientSettings?.gradients
+	) ) {
+		//Match for gradient
+		colorGradientSettings.gradients.forEach( ( gradientsGroup ) => {
+			//break if found colorSlug
+			if ( ! gkIsEmpty( colorSlug ) ) {
+				return;
+			}
+			if ( ! gkIsEmpty( gradientsGroup?.gradients ) && ! gkIsEmpty( gradientsGroup?.name ) ) {
+				gradientsGroup.gradients.forEach( ( gradientsObj ) => { 
+					//break if found colorSlug
+					if ( ! gkIsEmpty( colorSlug ) ) {
+						return;
+					}
+
+					if ( ! gkIsEmpty( gradientsObj?.gradient ) && ! gkIsEmpty( gradientsObj?.slug ) && color === gradientsObj.gradient ) { 
+						colorSlug = ( "custom" === gradientsGroup.name.toLowerCase() ) ? 'custom-'+gradientsObj.slug: gradientsObj.slug;
+					}
+
+				});
+			}
+	   });
+   }
+   return gkIsEmpty( colorSlug ) ? color : 'var(--wp--preset--gradient--'+colorSlug+','+color+')';
+}
