@@ -12,8 +12,8 @@ import { PanelBody,
     __experimentalToggleGroupControlOption as ToggleGroupControlOption,
     __experimentalToolsPanel as ToolsPanel,
 } from '@wordpress/components';
-import { gkIsEmpty } from '../helpers/helpers';
-import colorSettingsData from './colorSettingsData'
+import { gkIsEmpty, getGlobalColorVar } from '../helpers/helpers';
+import colorSettingsData from './colorSettingsData';
 
  const DEFAULT_COLOR = {
 	text:undefined,
@@ -38,16 +38,18 @@ import colorSettingsData from './colorSettingsData'
      linkColor = true,
  } ) => {
  
+   
+
+    const { gradientValue, setGradient } = __experimentalUseGradient();
+    const colorGradientSettings = colorSettingsData();
+
     //Set attribute
     const setAttr = ( value, attrName ) => {
         let newAttr = attrValue;
         //check if active tab has value
-        newAttr[ attrName ] = value;
+        newAttr[ attrName ] = getGlobalColorVar( colorGradientSettings, value );
         onChangeFunc( { ...newAttr } );
     };
-
-    const { gradientValue, setGradient } = __experimentalUseGradient();
-    const colorGradientSettings = colorSettingsData();
 
     //Multiple color settings i.e. text, background, link etc
     let colorSettings = [];

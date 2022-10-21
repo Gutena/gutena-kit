@@ -15,7 +15,7 @@
  } from '@wordpress/components';
  import colorSettingsData from './colorSettingsData';
  import  RangeControlUnit  from './RangeControlUnit';
-import { gkIsEmpty } from '../helpers/helpers';
+import { gkIsEmpty, getGlobalColorVar } from '../helpers/helpers';
  
  const DEFAULT_PROPS = {
      normal: __( 'Normal', 'gutena-kit' ),
@@ -43,19 +43,34 @@ import { gkIsEmpty } from '../helpers/helpers';
  } ) => {
      const propsData = Object.keys( attrProps );
      const [ activeTab, setActiveTab ] = useState( propsData[0] );
- 
+     const colorGradientSettings = colorSettingsData();
      //Set attribute
      const setAttr = ( value , attrName ) => {
         let newAttr = attrValue;
         if( gkIsEmpty( newAttr[activeTab] ) ){
             newAttr[activeTab] = {};
         }
+
+        //get global color var name
+        if ( 'border' === attrName ) {
+            if ( ! gkIsEmpty(value?.color) ) {
+                value.color = getGlobalColorVar( colorGradientSettings, value.color );
+            } else {
+                [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
+                    if ( ! gkIsEmpty( value?.[ position ]?.color ) ) {
+                        value[ position ]['color'] = getGlobalColorVar( colorGradientSettings, value[ position ]['color'] );
+                    }
+                });
+            }
+        }
+
         newAttr[activeTab][ attrName ] = value;
+        
         onChangeFunc( { ...newAttr } );
     };
 
      const { colors } = colorSettingsData();
- 
+     
      const controls = (
          <>
              { propsData.length > 1 && /* show only if there is multiple items present. */
