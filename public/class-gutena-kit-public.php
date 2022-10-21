@@ -451,7 +451,7 @@ class Gutena_Kit_Public {
 		**************************/
 			$css = '';
 			//Hide in Mobile
-			if ( true === array_key_exists( '--gutenakit--display-mobile', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			if ( true === array_key_exists( '--gutenakit--display-mobile', $attrs['gutenaKitStyle']['cssJson'] ) ) { 
 				$css .= ' display: '.$attrs['gutenaKitStyle']['cssJson']['--gutenakit--display-mobile'].';';
 			} else {
 				//spacing
@@ -490,7 +490,7 @@ class Gutena_Kit_Public {
 			}
 	
 			if ( ! empty( $css ) ) {
-				$attrs['gutenaKitCSS']['generatedCss'] .= '@media only screen and (max-width: '.$media_query_mobile .') { .'  . $css . '} ';
+				$attrs['gutenaKitCSS']['generatedCss'] .= '@media only screen and (max-width: '.$media_query_mobile .') { '  . $css . '} ';
 			}
 		/************************
 		 Block Mobile : END
@@ -526,8 +526,9 @@ class Gutena_Kit_Public {
 
 			$block_classes = gutenakit_block_id_classname_prefix() . $block['attrs']['gutenaKitID'] . ' '.$block_classes;
 
-			//check if block content has class
-			if ( false === strpos( $block_content, 'class="' ) ) {
+			//check if block content has class and its position must inside first html element
+			$class_pos = strpos( $block_content, 'class="' );
+			if ( false === $class_pos || $class_pos > strpos( $block_content, '>' ) ) {
 				//if class not exists add class attribute
 				$block_content = preg_replace(
 					'/' . preg_quote( '>', '/' ) . '/',
@@ -536,7 +537,7 @@ class Gutena_Kit_Public {
 					1
 				);
 			} else {
-				//add class attribute
+				//add classes inside class attribute
 				$block_content = preg_replace(
 					'/' . preg_quote( 'class="', '/' ) . '/',
 					'class="' . esc_attr( $block_classes ) . ' ',
