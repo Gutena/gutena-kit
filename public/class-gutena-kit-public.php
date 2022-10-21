@@ -207,10 +207,11 @@ class Gutena_Kit_Public {
 				$gutena_kit_global_typography = get_option( 'gutena_kit_global_typography', array() );
 			}
 	
-			if ( ! empty( $gutena_kit_global_typography ) && is_array( $gutena_kit_global_typography ) && ! empty( $gutena_kit_global_typography[ $global_typography ] ) && ! empty( $gutena_kit_global_typography[ $global_typography ]['cssJson'] ) ) {
+			if ( ! empty( $gutena_kit_global_typography ) && is_array( $gutena_kit_global_typography ) && ! empty( $gutena_kit_global_typography[ $global_typography ] ) && ! empty( $gutena_kit_global_typography[ $global_typography ]['cssJson'] ) ) { 
 				$attrs['gutenaKitStyle']['cssJson'] = array_merge( $attrs['gutenaKitStyle']['cssJson'],$gutena_kit_global_typography[ $global_typography ]['cssJson'] );
 				array_push( $css_slug_array, $global_typography );
-				$global_typography = true;
+			}else{
+				$global_typography = false;
 			}
 		}
 	
