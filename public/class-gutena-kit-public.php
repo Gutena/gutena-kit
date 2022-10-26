@@ -244,7 +244,7 @@ class Gutena_Kit_Public {
 	
 			// Background color
 			if ( true === array_key_exists( '--gutenakit--color-normal-background', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= ' background-color:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--color-normal-background'] .' !important;';
+				$css .= ' background:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--color-normal-background'] .' !important;';
 			}
 	
 			// Border
@@ -285,6 +285,14 @@ class Gutena_Kit_Public {
 			//Hide in desktop
 			if ( true === array_key_exists( '--gutenakit--display-default', $attrs['gutenaKitStyle']['cssJson'] ) ) {
 				$css .= ' display: '.$attrs['gutenaKitStyle']['cssJson']['--gutenakit--display-default'].';';
+			} elseif (true === array_key_exists( '--gutenakit--textcontentgap', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+				 //text content gap, usually use for inline image gap
+				$css .= ' display:flex; gap:'.$attrs['gutenaKitStyle']['cssJson']['--gutenakit--textcontentgap'].';';
+			}
+
+			//translate3d in desktop
+			if ( true === array_key_exists( '--gutenakit--translate3d-default', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+				$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson']['--gutenakit--translate3d-default'].';';
 			}
 
 			if ( ! empty( $css ) ) {
@@ -320,7 +328,7 @@ class Gutena_Kit_Public {
 	
 		// Background color
 		if ( true === array_key_exists( '--gutenakit--color-hover-background', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$css .= ' background-color:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--color-hover-background'] .' !important;';
+			$css .= ' background:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--color-hover-background'] .' !important;';
 		}
 	
 		// Border
@@ -352,6 +360,13 @@ class Gutena_Kit_Public {
 		**************************/
 	
 		// Link color
+		if ( true === array_key_exists( '--gutenakit--linkdecorationline', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .' a {
+				text-decoration-line:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--linkdecorationline'] .' !important;
+			}';
+		}
+
+		// Link color
 		if ( true === array_key_exists( '--gutenakit--color-normal-link', $attrs['gutenaKitStyle']['cssJson'] ) ) {
 			$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .' a {
 				color:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--color-normal-link'] .' !important;
@@ -369,7 +384,7 @@ class Gutena_Kit_Public {
 		if ( true === array_key_exists( '--gutenakit--overlay-normal-background', $attrs['gutenaKitStyle']['cssJson'] ) && true === array_key_exists( '--gutenakit--overlay-normal-opacity', $attrs['gutenaKitStyle']['cssJson'] ) ) {
 			$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .':before {
 				content:"";
-				background-color:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--overlay-normal-background'] .'; 
+				background:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--overlay-normal-background'] .'; 
 				opacity: '. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--overlay-normal-opacity'] .';
 				position: absolute;
 				top: 0;
@@ -383,7 +398,7 @@ class Gutena_Kit_Public {
 		if ( true === array_key_exists( '--gutenakit--overlay-hover-background', $attrs['gutenaKitStyle']['cssJson'] ) && true === array_key_exists( '--gutenakit--overlay-hover-opacity', $attrs['gutenaKitStyle']['cssJson'] ) ) {
 			$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .':hover:before {
 				content:"";
-				background-color:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--overlay-hover-background'] .'; 
+				background:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--overlay-hover-background'] .'; 
 				opacity: '. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--overlay-hover-opacity'] .';
 				position: absolute;
 				top: 0;
@@ -419,6 +434,11 @@ class Gutena_Kit_Public {
 							$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--t-'.$font_property] .' !important;';
 						}
 					}
+				}
+
+				//translate3d in tablet
+				if ( true === array_key_exists( '--gutenakit--translate3d-tablet', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+					$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson']['--gutenakit--translate3d-tablet'].';';
 				}
 	
 			}
@@ -471,6 +491,11 @@ class Gutena_Kit_Public {
 							$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--m-'.$font_property] .' !important;';
 						}
 					}
+				}
+
+				//translate3d in mobile
+				if ( true === array_key_exists( '--gutenakit--translate3d-mobile', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+					$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson']['--gutenakit--translate3d-mobile'].';';
 				}
 			}
 
