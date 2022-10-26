@@ -46,13 +46,17 @@ import colorSettingsData from './colorSettingsData';
     //Set attribute
     const setAttr = ( value, attrName ) => {
         let newAttr = attrValue;
+        value = getGlobalColorVar( colorGradientSettings, value );
         //check if active tab has value
-        newAttr[ attrName ] = getGlobalColorVar( colorGradientSettings, value );
+        newAttr[ attrName ] = value;
+        
         onChangeFunc( { ...newAttr } );
     };
 
     //Multiple color settings i.e. text, background, link etc
     let colorSettings = [];
+
+   
 
     if ( false === colorPanelsSettings ) {
         if ( textColor ) {
@@ -67,8 +71,8 @@ import colorSettingsData from './colorSettingsData';
             let gradientSettings = {};
             if ( isGradient ) {
                 gradientSettings = { 
-                    gradientValue,
-                    onGradientChange: setGradient, 
+                    gradientValue:attrValue?.gradient,
+                    onGradientChange: ( value ) => setAttr( value, 'gradient' ), 
                 }
             }
             colorSettings.push({

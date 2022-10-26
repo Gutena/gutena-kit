@@ -50,8 +50,8 @@ const OverlayControl = ( {
                     colorValue: attrValue?.color,
                     onColorChange: ( value ) => setAttr( value, 'color' ),
                     label: __("color", "gutena-kit"),
-                    gradientValue,
-                    onGradientChange: setGradient, 
+                    gradientValue:attrValue?.gradient,
+                    onGradientChange: ( value ) => setAttr( value, 'gradient' ), 
                 }
             ] }
             disableCustomColors={ disableCustomColors }

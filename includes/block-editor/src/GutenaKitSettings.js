@@ -14,8 +14,9 @@ import {  PanelBody,
     Icon,
 } from  '@wordpress/components';
 import SelectDeviceDropdown from './components/SelectDeviceDropdown';
-import  RangeControlUnit  from './components/RangeControlUnit';
+import  Translate3dControl  from './components/Translate3dControl';
 import BorderGroup from './components/BorderGroup';
+import RangeControlUnit from './components/RangeControlUnit';
 import EventsControl from './components/EventsControl';
 import TypographySettings from './Supports/Typography/TypographySettings';
 import { gkIsEmpty, spaceCss, spaceVar, borderCss, borderVar, boxShadowCss, typographyCss, typographyVar, gkCamelToDash, getEditorDoc, gkCssJson, renderBlockCSSForResponsive } from './helpers/helpers';
@@ -46,7 +47,10 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             border:( -1 !== [ 'core/group', 'core/column' ].indexOf( name ) ),
             boxShadow:( -1 === [ 'core/cover' ].indexOf( name ) ),
             display:true,
-            typography:( -1 !== [ 'core/paragraph', 'core/heading' ].indexOf( name ) )
+            typography:( -1 !== [ 'core/paragraph', 'core/heading' ].indexOf( name ) ),
+            translate3d:( -1 !== [ 'core/group' ].indexOf( name ) ),
+            textContentGap:( -1 !== [ 'core/paragraph', 'core/heading' ].indexOf( name ) ),
+            linkSettings:( -1 !== [ 'core/paragraph', 'core/heading', 'core/group' ].indexOf( name ) ),
         };
         /***** Check Core support for block : start ******/
         /**
@@ -93,7 +97,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
         }
 
         const { 
-            gutenaKitID,
+            gutenaKitID=clientId,
             gutenaKitCSS,
             gutenaKitClass={},
             gutenaKitStyle=DefaultStyle, 
@@ -321,7 +325,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
 
             // Background color
             if ( ! gkIsEmpty( cssJson?.['--gutenakit--color-normal-background'] ) ) {
-                css += ' background-color:'+cssJson['--gutenakit--color-normal-background'] +' !important;';
+                css += ' background:'+cssJson['--gutenakit--color-normal-background'] +' !important;';
             }
 
             // Border
@@ -362,6 +366,14 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             //Hide in desktop
             if ( ! gkIsEmpty( cssJson?.['--gutenakit--display-default'] ) ) {
                 css += ' display: '+cssJson['--gutenakit--display-default']+';';
+            } else if ( ! gkIsEmpty( cssJson?.['--gutenakit--textcontentgap'] ) ) {
+                //text content gap, usually use for inline image gap
+                css += 'display:flex; gap:'+cssJson['--gutenakit--textcontentgap']+';';
+            }
+
+            //translate3d in desktop
+            if ( ! gkIsEmpty( cssJson?.['--gutenakit--translate3d-default'] ) ) {
+                css += ' transform: '+cssJson['--gutenakit--translate3d-default']+';';
             }
             
             css += ' }';
@@ -378,7 +390,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
 
             // Background color
             if ( ! gkIsEmpty( cssJson?.['--gutenakit--color-hover-background'] ) ) {
-                css += ' background-color:'+cssJson['--gutenakit--color-hover-background'] +' !important;';
+                css += ' background:'+cssJson['--gutenakit--color-hover-background'] +' !important;';
             }
 
             // Border
@@ -407,6 +419,11 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
              Block hover : END
             **************************/
 
+             //link text decoration
+             if ( ! gkIsEmpty( cssJson?.['--gutenakit--linkdecorationline'] ) ) {
+                css += id+' a { text-decoration-line:'+cssJson['--gutenakit--linkdecorationline']+'; }';
+            }
+
             // Link color
             if ( ! gkIsEmpty( cssJson?.['--gutenakit--color-normal-link'] ) ) {
                 css += id+' a { color:'+cssJson['--gutenakit--color-normal-link'] +' !important; }';
@@ -421,7 +438,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             if ( ! gkIsEmpty( cssJson?.['--gutenakit--overlay-normal-background'] ) && ! gkIsEmpty( cssJson?.['--gutenakit--overlay-normal-opacity'] ) ) {
                 css += id+`:before {
                     content:"";
-                    background-color:${ cssJson['--gutenakit--overlay-normal-background']}; 
+                    background:${ cssJson['--gutenakit--overlay-normal-background']}; 
                     opacity: ${cssJson['--gutenakit--overlay-normal-opacity']};
                     position: absolute;
                     top: 0;
@@ -435,7 +452,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             if ( ! gkIsEmpty( cssJson?.['--gutenakit--overlay-hover-background'] ) && ! gkIsEmpty( cssJson?.['--gutenakit--overlay-hover-opacity'] ) ) {
                 css += id+`:hover:before {
                     content:"";
-                    background-color:${cssJson['--gutenakit--overlay-hover-background']}; 
+                    background:${cssJson['--gutenakit--overlay-hover-background']}; 
                     opacity: ${cssJson['--gutenakit--overlay-hover-opacity']};
                     position: absolute;
                     top: 0;
@@ -473,6 +490,11 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                         });
                     }
 
+                    //translate3d in tablet
+                    if ( ! gkIsEmpty( cssJson?.['--gutenakit--translate3d-tablet'] ) ) {
+                        css += ' transform: '+cssJson['--gutenakit--translate3d-tablet']+';';
+                    }
+
                 }
 
                 //gutena kit settings end
@@ -507,6 +529,11 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                                 css += ' '+font_property+':'+cssJson['--gutenakit--m-'+font_property] +' !important;';
                             }
                         });
+                    }
+
+                    //translate3d in tablet
+                    if ( ! gkIsEmpty( cssJson?.['--gutenakit--translate3d-mobile'] ) ) {
+                        css += ' transform: '+cssJson['--gutenakit--translate3d-mobile']+';';
                     }
 
                 }
@@ -554,19 +581,19 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                         let newVarName = varName+'-'+cssProperty.toLowerCase()+'-'+eventName;
                         // Color
                         if ( 'color' === cssProperty ) {
-                            [ 'text', 'background', 'link' ].forEach( ( colorName ) => {
+                            [ 'text', 'background', 'gradient', 'link' ].forEach( ( colorName ) => {
                                 if ( ! gkIsEmpty( styleVar[ cssProperty ][ eventName ][ colorName ] ) ) {
-        
-                                    cssVar += newVarName+'-'+colorName+':'+styleVar[ cssProperty ][ eventName ][ colorName ]+';' ;
+                                    //put gradient color in background var
+                                    cssVar += newVarName+'-'+( ( 'gradient' === colorName ) ? 'background' : colorName )+':'+styleVar[ cssProperty ][ eventName ][ colorName ]+';' ;
                                 }
                             } );
                         }
         
                         // Overlay 
-                        if ( 'overlay' === cssProperty && ! gkIsEmpty( styleVar[ cssProperty ][ eventName ].color ) ) {
+                        if ( 'overlay' === cssProperty && ( ! gkIsEmpty( styleVar[ cssProperty ][ eventName ].color ) || ! gkIsEmpty( styleVar[ cssProperty ][ eventName ].gradient ) ) ) {
                             
                             //color
-                            cssVar += newVarName+'-background:'+styleVar[ cssProperty ][ eventName ].color+';';
+                            cssVar += newVarName+'-background:'+( gkIsEmpty( styleVar[ cssProperty ][ eventName ].color ) ? styleVar[ cssProperty ][ eventName ].gradient : styleVar[ cssProperty ][ eventName ].color ) +';';
         
                             //opacity
                             cssVar += newVarName+'-opacity:'+(gkIsEmpty( styleVar[ cssProperty ][ eventName ]?.opacity ) ? '80%;' : styleVar[ cssProperty ][ eventName ].opacity+'%;');
@@ -596,6 +623,27 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                         cssVar += varName+'-display-'+deviceName+':none;';
                     }
                 });
+            }
+
+            //translate3d
+            if ( ! gkIsEmpty( styleVar?.translate3d ) ) {
+                ['default', 'tablet', 'mobile'].forEach( ( deviceName ) => {
+                    if ( ! gkIsEmpty( styleVar.translate3d?.[deviceName] ) && ( ! gkIsEmpty( styleVar.translate3d?.[deviceName]?.x ) || ! gkIsEmpty( styleVar.translate3d?.[deviceName]?.y ) || ! gkIsEmpty( styleVar.translate3d?.[deviceName]?.z )   ) ) {
+                        let translate = styleVar.translate3d[deviceName];
+                        translate = [ 'x', 'y', 'z' ].map( ( axis ) => gkIsEmpty( translate?.[axis] ) ? '0px' : translate[axis] ).join(', ');
+                        cssVar += varName+'-translate3d-'+deviceName+':translate3d('+translate+');';
+                    }
+                });
+            }
+
+            //Text content gap
+            if ( ! gkIsEmpty( styleVar?.textContentGap ) ) {
+                cssVar += varName+'-textcontentgap:'+styleVar.textContentGap+';';
+            }
+
+            //Link text decoration
+            if ( ! gkIsEmpty( styleVar?.linkDecorationLineNone ) && true === styleVar.linkDecorationLineNone ) {
+                cssVar += varName+'-linkdecorationline:none;';
             }
 
             if ( 10 > cssVar.length ) {
@@ -776,9 +824,11 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                 newstyle.globalTypography = undefined;
             }
 
+           
+           
             //CSS json
             newstyle.cssJson = generateCssVar( newstyle, " .gutenakitid-"+clientId, true );
-            
+            console.log("newstyle",newstyle);
             setAttributes( { 
                 gutenaKitStyle:{ ...newstyle }, 
                 gutenaKitID:clientId,
@@ -925,6 +975,41 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                             )
                         }
                     </PanelBody>
+                    }
+                    { gkSupports.translate3d &&
+                        <Translate3dControl 
+                        attrValue={ gutenaKitStyle?.translate3d?.[styleName] }
+                        onChangeFunc={ ( value ) =>  setAttr( value, 'translate3d', null, styleName  ) }
+                        />
+                    }
+                    { ( gkSupports.textContentGap || gkSupports.linkSettings ) && 
+                        <PanelBody 
+                            title={__("Content Settings", "gutena-kit")}
+                            initialOpen={ false }
+                        >
+                            { gkSupports.textContentGap && 
+                                <RangeControlUnit
+                                    rangeLabel={ __("Content Gap", "gutena-kit")  }
+                                    attrValue={ gutenaKitStyle?.textContentGap }
+                                    onChangeFunc={ ( value ) => setAttr( value, 'textContentGap' ) }
+                                    rangeMin={ 0 }
+                                    rangeMax={ {
+                                        px: 100,
+                                        em: 10,
+                                        rem: 10,
+                                    } }
+                                    rangeStep={ 1 }
+                                    attrUnits= { [ 'px', 'em', 'rem' ] }
+                                />
+                            }
+                            { gkSupports.linkSettings &&
+                                <ToggleControl
+                                    label={ __("Unset text decoration line", "gutena-kit") }
+                                    checked={ gkIsEmpty( gutenaKitStyle?.linkDecorationLineNone ) ? false : gutenaKitStyle.linkDecorationLineNone  }
+                                    onChange={ ( value ) =>  setAttr( value, 'linkDecorationLineNone' ) }
+                                />
+                            }
+                        </PanelBody>
                     }
                     </PanelBody>    
                 </InspectorControls>

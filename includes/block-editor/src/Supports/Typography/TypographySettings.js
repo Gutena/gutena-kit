@@ -27,12 +27,12 @@ import { gkIsEmpty, getMatchArrObjKeyValue, typographyVar, generateSlug, gkCssJs
 const noop = () => {}; 
 
 const TypographySettings = ({
-    attrValue,
+    attrValue = undefined,
 	onChangeFunc = noop,
     setGlobalTypography = noop,
     globalTypographySlug=undefined,
 }) => {
-
+    console.log("attrValue",attrValue);
     /*
     Active tab : set_global_typography| add_typography | edit_typography 
     Status : '' | progress | error | success 
