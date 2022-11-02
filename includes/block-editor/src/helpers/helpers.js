@@ -354,7 +354,10 @@ export const gkCssJson = ( cssVar ) => {
 		let itemArray = itemVar.split(':');
 
 		if ( ! gkIsEmpty( itemArray ) && 1 < itemArray.length ) {
-			cssJson[ itemArray[0].trim() ] = itemArray[1].trim();
+			itemArray[0] = itemArray[0].trim();
+			itemArray[0] = itemArray[0].replace('--gutenakit--', '');
+			itemArray[0] = itemArray[0].replace('--', '-');
+			cssJson[ itemArray[0] ] = itemArray[1].trim();
 		}
 		
 	});
@@ -368,6 +371,7 @@ export const getGlobalTypographyCss = ( gutena_kit_block_editor ) => {
 	if ( ! gkIsEmpty( gutena_kit_block_editor?.globalTypography ) ) {
 		let cssTab = '';
 		let cssMobile = '';
+        let preVar = 'gt-';
 		 //Media size
 		let media_query_tab = gkIsEmpty( gutena_kit_block_editor?.media_query_tab ) ?'1080px': gutena_kit_block_editor.media_query_tab;
 		let media_query_mobile = gkIsEmpty( gutena_kit_block_editor?.media_query_mobile ) ?'767px': gutena_kit_block_editor.media_query_mobile;
@@ -378,9 +382,9 @@ export const getGlobalTypographyCss = ( gutena_kit_block_editor ) => {
 				let cssJson = gutena_kit_block_editor.globalTypography[slug]['cssJson'];
 				
 				//Default typography
-				[ 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transfor', 'text-decoration' ].forEach( ( font_property ) => {
-					if ( ! gkIsEmpty( cssJson?.['--gutenakit--gt--'+font_property] ) ) {
-						cssFont += ' '+font_property+':'+cssJson['--gutenakit--gt--'+font_property] +' !important;';
+				[ 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transform', 'text-decoration' ].forEach( ( font_property ) => {
+					if ( ! gkIsEmpty( cssJson?.[preVar+''+font_property] ) ) {
+						cssFont += ' '+font_property+':'+cssJson[preVar+''+font_property] +' !important;';
 					}
 				});
 				
@@ -392,8 +396,8 @@ export const getGlobalTypographyCss = ( gutena_kit_block_editor ) => {
 				//tablet typography
 				cssFont = '';
 				[ 'font-size', 'line-height' ].forEach( ( font_property ) => {
-					if ( ! gkIsEmpty( cssJson?.['--gutenakit--t-'+font_property] ) ) {
-						cssFont += ' '+font_property+':'+cssJson['--gutenakit--t-'+font_property] +' !important;';
+					if ( ! gkIsEmpty( cssJson?.[preVar+'t-'+font_property] ) ) {
+						cssFont += ' '+font_property+':'+cssJson[preVar+'t-'+font_property] +' !important;';
 					}
 				});
 				if ( !gkIsEmpty( cssFont ) ) {
@@ -403,8 +407,8 @@ export const getGlobalTypographyCss = ( gutena_kit_block_editor ) => {
 				//mobile typography
 				cssFont = '';
 				[ 'font-size', 'line-height' ].forEach( ( font_property ) => {
-					if ( ! gkIsEmpty( cssJson?.['--gutenakit--m-'+font_property] ) ) {
-						cssFont += ' '+font_property+':'+cssJson['--gutenakit--m-'+font_property] +' !important;';
+					if ( ! gkIsEmpty( cssJson?.[preVar+'m-'+font_property] ) ) {
+						cssFont += ' '+font_property+':'+cssJson[preVar+'m-'+font_property] +' !important;';
 					}
 				});
 				if ( !gkIsEmpty( cssFont ) ) {

@@ -60,8 +60,8 @@ class Gutena_Kit_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-		wp_enqueue_style( $this->gutena_kit . '-block', GUTENA_KIT_PLUGIN_URL . 'public/css/block-editor' . GUTENA_KIT_MIN_FILE . '.css', array(), $this->version, 'all' );
-		wp_enqueue_style( $this->gutena_kit, GUTENA_KIT_PLUGIN_URL . 'public/css/gutena-kit-public' . GUTENA_KIT_MIN_FILE . '.css', array(), $this->version, 'all' );
+		//wp_enqueue_style( $this->gutena_kit . '-block', GUTENA_KIT_PLUGIN_URL . 'public/css/block-editor' . GUTENA_KIT_MIN_FILE . '.css', array(), $this->version, 'all' );
+		//wp_enqueue_style( $this->gutena_kit, GUTENA_KIT_PLUGIN_URL . 'public/css/gutena-kit-public' . GUTENA_KIT_MIN_FILE . '.css', array(), $this->version, 'all' );
 	}
 
 	public function add_post_css() {
@@ -185,7 +185,7 @@ class Gutena_Kit_Public {
 		if ( empty( $attrs['gutenaKitID'] ) || empty( $attrs['gutenaKitStyle'] ) ) {
 			return $attrs;
 		}
-
+	
 		//Check css properties in array format
 		if ( empty( $attrs['gutenaKitStyle']['cssJson'] ) ) {
 			$attrs['gutenaKitStyle']['cssJson'] = array();
@@ -221,6 +221,7 @@ class Gutena_Kit_Public {
 		$media_query_mobile = apply_filters('gutena-kit-media-query-mobile', '767px' );
 	
 		$attrs['gutenaKitCSS']['generatedCss'] = '';
+		$preVar = '';//--gutenakit--
 		//Css 
 		$css = '';
 		$gk_id = ' .gutenakitid-'.$attrs['gutenaKitID'];
@@ -231,70 +232,70 @@ class Gutena_Kit_Public {
 			//spacing
 			foreach ( array( 'margin', 'padding' ) as $spacing ) {
 				foreach ( array( 'top', 'right', 'bottom', 'left' ) as $position ) {
-					if ( true === array_key_exists( '--gutenakit--default-'.$spacing.'-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-						$css .= ' '.$spacing.'-'.$position.':'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--default-'.$spacing.'-'.$position] .' !important;';
+					if ( true === array_key_exists( $preVar.'default-'.$spacing.'-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
+						$css .= ' '.$spacing.'-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'default-'.$spacing.'-'.$position] .' !important;';
 					}
 				}
 			}
 	
 			// Text color
-			if ( true === array_key_exists( '--gutenakit--color-normal-text', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= ' color:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--color-normal-text'] .' !important;';
+			if ( true === array_key_exists( $preVar.'color-normal-text', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+				$css .= ' color:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'color-normal-text'] .' !important;';
 			}
 	
 			// Background color
-			if ( true === array_key_exists( '--gutenakit--color-normal-background', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= ' background:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--color-normal-background'] .' !important;';
+			if ( true === array_key_exists( $preVar.'color-normal-background', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+				$css .= ' background:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'color-normal-background'] .' !important;';
 			}
 	
 			// Border
-			if ( true === array_key_exists( '--gutenakit--border-normal', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= ' border:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--border-normal'] .' !important;';
+			if ( true === array_key_exists( $preVar.'border-normal', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+				$css .= ' border:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-normal'] .' !important;';
 			} else {
 				foreach ( array( 'top', 'right', 'bottom', 'left' ) as $position ) {
-					if ( true === array_key_exists( '--gutenakit--border-normal-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-						$css .= ' border-'.$position.':'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--border-normal-'.$position] .' !important;';
+					if ( true === array_key_exists( $preVar.'border-normal-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
+						$css .= ' border-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-normal-'.$position] .' !important;';
 					}
 				}
 			}
-
+	
 			// Border radius
-			if ( true === array_key_exists( '--gutenakit--border-normal-radius', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= ' border-radius:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--border-normal-radius'] .' !important;';
+			if ( true === array_key_exists( $preVar.'border-normal-radius', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+				$css .= ' border-radius:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-normal-radius'] .' !important;';
 			}
 	
 			// Box Shadow
-			if ( true === array_key_exists( '--gutenakit--boxshadow-normal', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= 'box-shadow:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--boxshadow-normal'] .' !important;';
+			if ( true === array_key_exists( $preVar.'boxshadow-normal', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+				$css .= 'box-shadow:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'boxshadow-normal'] .' !important;';
 			}
 	
 			// Overlay parent
-			if ( true === array_key_exists( '--gutenakit--overlay-normal-background', $attrs['gutenaKitStyle']['cssJson'] ) || true === array_key_exists( '--gutenakit--overlay-hover-background', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			if ( true === array_key_exists( $preVar.'overlay-normal-background', $attrs['gutenaKitStyle']['cssJson'] ) || true === array_key_exists( $preVar.'overlay-hover-background', $attrs['gutenaKitStyle']['cssJson'] ) ) {
 				$css .= ' position: relative;';
 			}
 	
 			//typography
 			if ( empty( $global_typography ) ) {
-				foreach ( array( 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transfor', 'text-decoration' ) as $font_property ) {
-					if ( true === array_key_exists( '--gutenakit--'.$font_property, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-						$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--'.$font_property] .' !important;';
+				foreach ( array( 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transform', 'text-decoration' ) as $font_property ) {
+					if ( true === array_key_exists( $preVar.''.$font_property, $attrs['gutenaKitStyle']['cssJson'] ) ) {
+						$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.''.$font_property] .' !important;';
 					}
 				}
 			}
 	
 			//Hide in desktop
-			if ( true === array_key_exists( '--gutenakit--display-default', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= ' display: '.$attrs['gutenaKitStyle']['cssJson']['--gutenakit--display-default'].';';
-			} elseif (true === array_key_exists( '--gutenakit--textcontentgap', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			if ( true === array_key_exists( $preVar.'display-default', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+				$css .= ' display: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'display-default'].';';
+			} elseif (true === array_key_exists( $preVar.'textcontentgap', $attrs['gutenaKitStyle']['cssJson'] ) ) {
 				 //text content gap, usually use for inline image gap
-				$css .= ' display:flex; gap:'.$attrs['gutenaKitStyle']['cssJson']['--gutenakit--textcontentgap'].';';
+				$css .= ' display:flex; gap:'.$attrs['gutenaKitStyle']['cssJson'][$preVar.'textcontentgap'].';';
 			}
-
+	
 			//translate3d in desktop
-			if ( true === array_key_exists( '--gutenakit--translate3d-default', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson']['--gutenakit--translate3d-default'].';';
+			if ( true === array_key_exists( $preVar.'translate3d-default', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+				$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'translate3d-default'].';';
 			}
-
+	
 			if ( ! empty( $css ) ) {
 				$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .'{ ' . $css . '}';
 			}
@@ -303,9 +304,9 @@ class Gutena_Kit_Public {
 			if ( ! empty( $global_typography ) && ! empty( $gutena_kit_global_typography[ $global_typography ]['cssJson'] ) ) {
 				$css = '';
 				//typography
-				foreach ( array( 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transfor', 'text-decoration' ) as $font_property ) {
-					if ( true === array_key_exists( '--gutenakit--gt--'.$font_property, $gutena_kit_global_typography[ $global_typography ]['cssJson'] ) ) {
-						$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--gt--'.$font_property] .' !important;';
+				foreach ( array( 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transform', 'text-decoration' ) as $font_property ) {
+					if ( true === array_key_exists( $preVar.'gt-'.$font_property, $gutena_kit_global_typography[ $global_typography ]['cssJson'] ) ) {
+						$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'gt-'.$font_property] .' !important;';
 					}
 				}
 				
@@ -322,34 +323,34 @@ class Gutena_Kit_Public {
 		**************************/
 		$css = '';
 		// Text color
-		if ( true === array_key_exists( '--gutenakit--color-hover-text', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$css .= ' color:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--color-hover-text'] .' !important;';
+		if ( true === array_key_exists( $preVar.'color-hover-text', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			$css .= ' color:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'color-hover-text'] .' !important;';
 		}
 	
 		// Background color
-		if ( true === array_key_exists( '--gutenakit--color-hover-background', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$css .= ' background:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--color-hover-background'] .' !important;';
+		if ( true === array_key_exists( $preVar.'color-hover-background', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			$css .= ' background:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'color-hover-background'] .' !important;';
 		}
 	
 		// Border
-		if ( true === array_key_exists( '--gutenakit--border-hover', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$css .= ' border:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--border-hover'] .' !important;';
+		if ( true === array_key_exists( $preVar.'border-hover', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			$css .= ' border:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-hover'] .' !important;';
 		} else {
 			foreach ( array( 'top', 'right', 'bottom', 'left' ) as $position ) {
-				if ( true === array_key_exists( '--gutenakit--border-hover-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-					$css .= ' border-'.$position.':'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--border-hover-'.$position] .' !important;';
+				if ( true === array_key_exists( $preVar.'border-hover-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
+					$css .= ' border-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-hover-'.$position] .' !important;';
 				}
 			}
 		}
-
+	
 		// Border radius
-		if ( true === array_key_exists( '--gutenakit--border-hover-radius', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$css .= ' border-radius:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--border-hover-radius'] .' !important;';
+		if ( true === array_key_exists( $preVar.'border-hover-radius', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			$css .= ' border-radius:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-hover-radius'] .' !important;';
 		}
 	
 		// Box Shadow
-		if ( true === array_key_exists( '--gutenakit--boxshadow-hover', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$css .= 'box-shadow:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--boxshadow-hover'] .' !important;';
+		if ( true === array_key_exists( $preVar.'boxshadow-hover', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			$css .= 'box-shadow:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'boxshadow-hover'] .' !important;';
 		}
 	
 		if ( ! empty( $css ) ) {
@@ -360,32 +361,32 @@ class Gutena_Kit_Public {
 		**************************/
 	
 		// Link color
-		if ( true === array_key_exists( '--gutenakit--linkdecorationline', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+		if ( true === array_key_exists( $preVar.'linkdecorationline', $attrs['gutenaKitStyle']['cssJson'] ) ) {
 			$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .' a {
-				text-decoration-line:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--linkdecorationline'] .' !important;
+				text-decoration-line:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'linkdecorationline'] .' !important;
 			}';
 		}
-
+	
 		// Link color
-		if ( true === array_key_exists( '--gutenakit--color-normal-link', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+		if ( true === array_key_exists( $preVar.'color-normal-link', $attrs['gutenaKitStyle']['cssJson'] ) ) {
 			$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .' a {
-				color:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--color-normal-link'] .' !important;
+				color:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'color-normal-link'] .' !important;
 			}';
 		}
 	
 		// Link hover color
-		if ( true === array_key_exists( '--gutenakit--color-hover-link', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+		if ( true === array_key_exists( $preVar.'color-hover-link', $attrs['gutenaKitStyle']['cssJson'] ) ) {
 			$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .' a:hover {
-				color:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--color-hover-link'] .' !important;
+				color:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'color-hover-link'] .' !important;
 			}';
 		}
 	
 		// overlay color
-		if ( true === array_key_exists( '--gutenakit--overlay-normal-background', $attrs['gutenaKitStyle']['cssJson'] ) && true === array_key_exists( '--gutenakit--overlay-normal-opacity', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+		if ( true === array_key_exists( $preVar.'overlay-normal-background', $attrs['gutenaKitStyle']['cssJson'] ) && true === array_key_exists( $preVar.'overlay-normal-opacity', $attrs['gutenaKitStyle']['cssJson'] ) ) {
 			$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .':before {
 				content:"";
-				background:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--overlay-normal-background'] .'; 
-				opacity: '. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--overlay-normal-opacity'] .';
+				background:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'overlay-normal-background'] .'; 
+				opacity: '. $attrs['gutenaKitStyle']['cssJson'][$preVar.'overlay-normal-opacity'] .';
 				position: absolute;
 				top: 0;
 				left: 0;
@@ -395,11 +396,11 @@ class Gutena_Kit_Public {
 		}
 	
 		// overlay color
-		if ( true === array_key_exists( '--gutenakit--overlay-hover-background', $attrs['gutenaKitStyle']['cssJson'] ) && true === array_key_exists( '--gutenakit--overlay-hover-opacity', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+		if ( true === array_key_exists( $preVar.'overlay-hover-background', $attrs['gutenaKitStyle']['cssJson'] ) && true === array_key_exists( $preVar.'overlay-hover-opacity', $attrs['gutenaKitStyle']['cssJson'] ) ) {
 			$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .':hover:before {
 				content:"";
-				background:'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--overlay-hover-background'] .'; 
-				opacity: '. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--overlay-hover-opacity'] .';
+				background:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'overlay-hover-background'] .'; 
+				opacity: '. $attrs['gutenaKitStyle']['cssJson'][$preVar.'overlay-hover-opacity'] .';
 				position: absolute;
 				top: 0;
 				left: 0;
@@ -414,15 +415,15 @@ class Gutena_Kit_Public {
 		
 			$css = '';
 			//Hide in Tablet
-			if ( true === array_key_exists( '--gutenakit--display-tablet', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= ' display: '.$attrs['gutenaKitStyle']['cssJson']['--gutenakit--display-tablet'].';';
+			if ( true === array_key_exists( $preVar.'display-tablet', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+				$css .= ' display: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'display-tablet'].';';
 			} else {
 	
 				//spacing
 				foreach ( array( 'margin', 'padding' ) as $spacing ) {
 					foreach ( array( 'top', 'right', 'bottom', 'left' ) as $position ) {
-						if ( true === array_key_exists( '--gutenakit--tablet-'.$spacing.'-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-							$css .= ' '.$spacing.'-'.$position.':'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--tablet-'.$spacing.'-'.$position] .' !important;';
+						if ( true === array_key_exists( $preVar.'tablet-'.$spacing.'-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
+							$css .= ' '.$spacing.'-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'tablet-'.$spacing.'-'.$position] .' !important;';
 						}
 					}
 				}
@@ -430,15 +431,15 @@ class Gutena_Kit_Public {
 				if ( empty( $global_typography ) ) {
 					//typography
 					foreach ( array( 'font-size', 'line-height' ) as $font_property ) {
-						if ( true === array_key_exists( '--gutenakit--t-'.$font_property, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-							$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--t-'.$font_property] .' !important;';
+						if ( true === array_key_exists( $preVar.'t-'.$font_property, $attrs['gutenaKitStyle']['cssJson'] ) ) {
+							$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'t-'.$font_property] .' !important;';
 						}
 					}
 				}
-
+	
 				//translate3d in tablet
-				if ( true === array_key_exists( '--gutenakit--translate3d-tablet', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-					$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson']['--gutenakit--translate3d-tablet'].';';
+				if ( true === array_key_exists( $preVar.'translate3d-tablet', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+					$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'translate3d-tablet'].';';
 				}
 	
 			}
@@ -453,13 +454,13 @@ class Gutena_Kit_Public {
 				$css .= '.has-gutenakit-gt-'.$global_typography.'{';
 				//typography
 				foreach ( array( 'font-size', 'line-height' ) as $font_property ) {
-					if ( true === array_key_exists( '--gutenakit--gt--t-'.$font_property, $gutena_kit_global_typography[ $global_typography ]['cssJson'] ) ) {
-						$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--gt--t-'.$font_property] .' !important;';
+					if ( true === array_key_exists( $preVar.'gt-t-'.$font_property, $gutena_kit_global_typography[ $global_typography ]['cssJson'] ) ) {
+						$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'gt-t-'.$font_property] .' !important;';
 					}
 				}
 				$css .='}'; 
 			}
-
+	
 			if ( ! empty( $css ) ) {
 				$attrs['gutenaKitCSS']['generatedCss'] .= '@media only screen and (min-width: 768px) and (max-width: '.$media_query_tab.') { ' . $css . '} ';
 			}
@@ -472,14 +473,14 @@ class Gutena_Kit_Public {
 		**************************/
 			$css = '';
 			//Hide in Mobile
-			if ( true === array_key_exists( '--gutenakit--display-mobile', $attrs['gutenaKitStyle']['cssJson'] ) ) { 
-				$css .= ' display: '.$attrs['gutenaKitStyle']['cssJson']['--gutenakit--display-mobile'].';';
+			if ( true === array_key_exists( $preVar.'display-mobile', $attrs['gutenaKitStyle']['cssJson'] ) ) { 
+				$css .= ' display: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'display-mobile'].';';
 			} else {
 				//spacing
 				foreach ( array( 'margin', 'padding' ) as $spacing ) {
 					foreach ( array( 'top', 'right', 'bottom', 'left' ) as $position ) {
-						if ( true === array_key_exists( '--gutenakit--mobile-'.$spacing.'-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-							$css .= ' '.$spacing.'-'.$position.':'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--mobile-'.$spacing.'-'.$position] .' !important;';
+						if ( true === array_key_exists( $preVar.'mobile-'.$spacing.'-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
+							$css .= ' '.$spacing.'-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'mobile-'.$spacing.'-'.$position] .' !important;';
 						}
 					}
 				}
@@ -487,29 +488,29 @@ class Gutena_Kit_Public {
 				if ( empty( $global_typography ) ) {
 					//typography
 					foreach ( array( 'font-size', 'line-height' ) as $font_property ) {
-						if ( true === array_key_exists( '--gutenakit--m-'.$font_property, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-							$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--m-'.$font_property] .' !important;';
+						if ( true === array_key_exists( $preVar.'m-'.$font_property, $attrs['gutenaKitStyle']['cssJson'] ) ) {
+							$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'m-'.$font_property] .' !important;';
 						}
 					}
 				}
-
+	
 				//translate3d in mobile
-				if ( true === array_key_exists( '--gutenakit--translate3d-mobile', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-					$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson']['--gutenakit--translate3d-mobile'].';';
+				if ( true === array_key_exists( $preVar.'translate3d-mobile', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+					$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'translate3d-mobile'].';';
 				}
 			}
-
+	
 			if ( ! empty( $css ) ) {
 				$css =  $gk_id .' {' . $css . '} ';
 			}
-
+	
 			// global typography for mobile
 			if ( ! empty( $global_typography ) && ! empty( $gutena_kit_global_typography[ $global_typography ]['cssJson'] ) ) {
 				$css .= '.has-gutenakit-gt-'.$global_typography.'{';
 				//typography
 				foreach ( array( 'font-size', 'line-height' ) as $font_property ) {
-					if ( true === array_key_exists( '--gutenakit--gt--m-'.$font_property, $gutena_kit_global_typography[ $global_typography ]['cssJson'] ) ) {
-						$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson']['--gutenakit--gt--m-'.$font_property] .' !important;';
+					if ( true === array_key_exists( $preVar.'gt-m-'.$font_property, $gutena_kit_global_typography[ $global_typography ]['cssJson'] ) ) {
+						$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'gt-m-'.$font_property] .' !important;';
 					}
 				}
 				$css .='}'; 
@@ -541,11 +542,11 @@ class Gutena_Kit_Public {
 	 */
 	public function render_block_customization( $block_content, $block ) {
 		
-		if ( ! empty( $block['attrs']['gutenaKitID'] ) ) {
+		if ( ! empty( $block['attrs']['gutenaKitID'] ) && ( ! empty( $block['attrs']['gutenaKitCSS'] ) || ! empty( $block['attrs']['gutenaKitStyle'] ) ) ) {
 
-			// if ( 'core/group' === $block['blockName'] && 'jjjjjjjjjjjjjjj' === $block['attrs']['className'] ) {
-			// 	//echo "<pre>";print_r($block['attrs']);exit;
-			// }
+			if ( 'core/heading' === $block['blockName']  ) {
+				//echo "<pre>";print_r($block['attrs']);exit;
+			}
 			
 			//get block class
 			$block_classes = ( ! empty( $block['attrs']['gutenaKitClass'] ) && ! empty( $block['attrs']['gutenaKitClass']['blockClasses'] ) ) ?  $block['attrs']['gutenaKitClass']['blockClasses'] : '';
