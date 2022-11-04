@@ -2,6 +2,7 @@
 import { __ } from '@wordpress/i18n';
 import { createHigherOrderComponent } from  '@wordpress/compose';
 import {  useSelect } from "@wordpress/data";
+import { useEntityRecords } from '@wordpress/core-data';
 import { store as blocksStore } from '@wordpress/blocks';
 import { Fragment } from  '@wordpress/element';
 import { useEffect } from '@wordpress/element';
@@ -28,6 +29,7 @@ import { gkIsEmpty, spaceCss, spaceVar, borderCss, borderVar, boxShadowCss, typo
 export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
 
     return ( props ) => {
+
         const {
 			name,
 			attributes,
@@ -35,6 +37,14 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
 			isSelected,
             clientId,
 		} = props;
+
+        //check if page is still loading 
+        // const pages = useEntityRecords( 'postType', 'page' );
+        // if ( pages.isResolving ) {
+        //     //'Loading ...'
+        //     console.log("Loading ...");
+        //     return ( <BlockEdit { ...props } /> );
+        // }
 
         if( -1 === [ 'core/group', 'core/cover', 'core/column', 'core/paragraph', 'core/heading' ].indexOf( name ) ){
             return ( <BlockEdit { ...props } /> );
@@ -880,7 +890,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             }
         }, [] );
         ******/
-
+        //console.log("gutenaKitStyle",gutenaKitStyle);
         const MAX_SPACE_VALUES = {
             px: 500,
             em: 40,

@@ -39,7 +39,7 @@ import colorSettingsData from './colorSettingsData';
  } ) => {
  
    
-
+//console.log("attrValue color",attrValue);
     const { gradientValue, setGradient } = __experimentalUseGradient();
     const colorGradientSettings = colorSettingsData();
 
