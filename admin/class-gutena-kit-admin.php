@@ -230,16 +230,10 @@ class Gutena_Kit_Admin {
 	 * Gutena Kit scripts and styles for block editor
 	 */
 	public function add_blocks_and_settings(){
-
-		if ( ! function_exists( 'gutenakit_block_additional_controls_css' ) ) {
-			return;
-		}
 		
 		wp_enqueue_script( 'gutena-kit-block-editor', GUTENA_KIT_PLUGIN_URL . 'includes/block-editor/build/index.js', array(), $this->version, false );
 
 		wp_enqueue_style( 'gutena-kit-block-editor-style', GUTENA_KIT_PLUGIN_URL . 'admin/css/gutena-kit-editor.css', array(), $this->version, 'all' );
-
-		wp_add_inline_style( 'gutena-kit-block-editor-style', gutenakit_block_additional_controls_css( true ) );
 
 		//enqueue global typography
 		global $gutena_kit_global_typography;

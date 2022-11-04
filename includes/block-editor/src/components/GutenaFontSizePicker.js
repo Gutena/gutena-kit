@@ -34,7 +34,7 @@
         reponsive=false,
         setCustom=false
     } = props;
-
+    
     //setFontAttr : if theme font selected
 
      //Get Device preview type
@@ -50,7 +50,7 @@
 
     //Font size array for select
     const fonSizesArray = gkIsEmpty( fontSizes ) ? [] : fontSizes.map( ( item ) => ( { label: item.name, value: 'has-'+item.slug+'-font-size', fontSize:item.size } ));
-
+    
     //when switch theme font size to custom
     const setCustomFontSize = () => {
         if ( gkIsEmpty( fontSize ) ) {
@@ -78,7 +78,7 @@
     //Font size theme preset label 
     let customLabel =  customSize ? __( 'Custom', 'gutena-kit' ) : getMatchArrObjKeyValue( fonSizesArray, 'value', fontSize, 'label' );
     
-    customLabel = ( false === customLabel ) ? __( 'Default', 'gutena-kit' ) : '('+ customLabel + ')';
+    customLabel = ( false === customLabel || ( ! customSize &&  gkIsEmpty( fontSize ) ) ) ? __( 'Default', 'gutena-kit' ) : '('+ customLabel + ')';
 
     return (
         reponsive ? 

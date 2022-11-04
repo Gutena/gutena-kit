@@ -8,6 +8,7 @@
  } from "@wordpress/block-editor";
  import { PanelBody,
     RangeControl,
+    __experimentalToolsPanel as ToolsPanel,
  } from '@wordpress/components';
  import { gkIsEmpty, getGlobalColorVar } from '../helpers/helpers';
  import colorSettingsData from './colorSettingsData';
@@ -42,6 +43,7 @@ const OverlayControl = ( {
     
     const controls = (
         <>
+        <ToolsPanel label="" className="gutena-kit-color-toolpanel" >
             <ColorGradientSettingsDropdown 
             __experimentalHasMultipleOrigins
             __experimentalIsRenderedInSidebar
@@ -67,6 +69,7 @@ const OverlayControl = ( {
                 step={ 10 }
                 className="components-spacing-sizes-control__custom-value-range"
             />
+         </ToolsPanel>
         </>
     );
 

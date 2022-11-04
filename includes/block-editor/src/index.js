@@ -57,6 +57,6 @@ const withGutenaKitClassName = createHigherOrderComponent(
 
 wp.hooks.addFilter(
     'editor.BlockListBlock',
-    'my-plugin/with-client-id-class-name',
+    'gutena-kit/with-client-id-class-name',
     withGutenaKitClassName
 );

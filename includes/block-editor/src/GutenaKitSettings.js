@@ -2,8 +2,10 @@
 import { __ } from '@wordpress/i18n';
 import { createHigherOrderComponent } from  '@wordpress/compose';
 import {  useSelect } from "@wordpress/data";
+import { useEntityRecords } from '@wordpress/core-data';
 import { store as blocksStore } from '@wordpress/blocks';
 import { Fragment } from  '@wordpress/element';
+import { useEffect } from '@wordpress/element';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import {  PanelBody, 
     __experimentalHStack as HStack,
@@ -27,6 +29,7 @@ import { gkIsEmpty, spaceCss, spaceVar, borderCss, borderVar, boxShadowCss, typo
 export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
 
     return ( props ) => {
+
         const {
 			name,
 			attributes,
@@ -34,6 +37,14 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
 			isSelected,
             clientId,
 		} = props;
+
+        //check if page is still loading 
+        // const pages = useEntityRecords( 'postType', 'page' );
+        // if ( pages.isResolving ) {
+        //     //'Loading ...'
+        //     console.log("Loading ...");
+        //     return ( <BlockEdit { ...props } /> );
+        // }
 
         if( -1 === [ 'core/group', 'core/cover', 'core/column', 'core/paragraph', 'core/heading' ].indexOf( name ) ){
             return ( <BlockEdit { ...props } /> );
@@ -47,8 +58,8 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             border:( -1 !== [ 'core/group', 'core/column' ].indexOf( name ) ),
             boxShadow:( -1 === [ 'core/cover' ].indexOf( name ) ),
             display:true,
-            typography:( -1 !== [ 'core/paragraph', 'core/heading' ].indexOf( name ) ),
-            translate3d:( -1 !== [ 'core/group' ].indexOf( name ) ),
+            typography:( -1 !== [ 'core/paragraph', 'core/heading', 'core/group' ].indexOf( name ) ),
+            translate3d:false,
             textContentGap:( -1 !== [ 'core/paragraph', 'core/heading' ].indexOf( name ) ),
             linkSettings:( -1 !== [ 'core/paragraph', 'core/heading', 'core/group' ].indexOf( name ) ),
         };
@@ -295,258 +306,259 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
         }
 
         const generateCssFromVar = ( styleVar = gutenaKitStyle, id = '#block-'+clientId ) => {
-           let cssJson = generateCssVar( styleVar = gutenaKitStyle, id = '#block-'+clientId, true  );
-           //console.log("json",cssJson);
-           //global typography flag
-		   let global_typography = '';
-           if ( ! gkIsEmpty( styleVar?.globalTypography ) && ! gkIsEmpty( gutena_kit_block_editor?.globalTypography ) && ! gkIsEmpty( gutena_kit_block_editor?.globalTypography?.[styleVar.globalTypography]?.['cssJson'] ) ) {
-                //slug
-                global_typography = styleVar.globalTypography;
-           }
-
-           //Media size
-           let media_query_tab = gkIsEmpty( gutena_kit_block_editor?.media_query_tab ) ?'1080px': gutena_kit_block_editor.media_query_tab;
-           let media_query_mobile = gkIsEmpty( gutena_kit_block_editor?.media_query_mobile ) ?'767px': gutena_kit_block_editor.media_query_mobile;
-
-           let css = id+' {';
-           //spacing 
-           [ 'padding', 'margin' ].forEach( ( spaceName ) => {
-                [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
-                    if ( ! gkIsEmpty( cssJson?.['--gutenakit--default-'+spaceName+'-'+position] ) ) {
-                        css += spaceName+'-'+position+':'+cssJson['--gutenakit--default-'+spaceName+'-'+position]+' !important;';
-                    }
-                });
-           });
-
-           // Text color
-            if ( ! gkIsEmpty( cssJson?.['--gutenakit--color-normal-text'] ) ) {
-                css += ' color:'+cssJson['--gutenakit--color-normal-text'] +' !important;';
+            let cssJson = generateCssVar( styleVar = gutenaKitStyle, id = '#block-'+clientId, true  );
+            //console.log("json",cssJson);
+            //global typography flag
+            let global_typography = '';
+            if ( ! gkIsEmpty( styleVar?.globalTypography ) && ! gkIsEmpty( gutena_kit_block_editor?.globalTypography ) && ! gkIsEmpty( gutena_kit_block_editor?.globalTypography?.[styleVar.globalTypography]?.['cssJson'] ) ) {
+                 //slug
+                 global_typography = styleVar.globalTypography;
             }
-
-            // Background color
-            if ( ! gkIsEmpty( cssJson?.['--gutenakit--color-normal-background'] ) ) {
-                css += ' background:'+cssJson['--gutenakit--color-normal-background'] +' !important;';
-            }
-
-            // Border
-            if ( ! gkIsEmpty( cssJson?.['--gutenakit--border-normal'] ) ) {
-                css += ' border:'+cssJson['--gutenakit--border-normal'] +' !important;';
-            } else {
-                [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
-                    if ( ! gkIsEmpty( cssJson?.['--gutenakit--border-normal-'+position] ) ) {
-                        css += ' border-'+position+':'+cssJson['--gutenakit--border-normal-'+position] +' !important;';
-                    }
-                });
-            }
-
-            // Border radius
-            if ( ! gkIsEmpty( cssJson?.['--gutenakit--border-normal-radius'] ) ) {
-                css += ' border-radius:'+cssJson['--gutenakit--border-normal-radius'] +' !important;';
-            }
-
-            // Box Shadow
-            if ( ! gkIsEmpty( cssJson?.['--gutenakit--boxshadow-normal'] ) ) {
-                css += 'box-shadow:'+cssJson['--gutenakit--boxshadow-normal'] +' !important;';
-            }
-
-            // Overlay parent
-            if ( ! gkIsEmpty( cssJson?.['--gutenakit--overlay-normal-background'] ) || ! gkIsEmpty( cssJson?.['--gutenakit--overlay-hover-background'] ) ) {
-                css += ' position: relative;';
-            }
-
-            //typography
-            if ( gkIsEmpty( global_typography ) ) {
-                [ 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transfor', 'text-decoration' ].forEach( ( font_property ) => {
-                    if ( ! gkIsEmpty( cssJson?.['--gutenakit--'+font_property] ) ) {
-                        css += ' '+font_property+':'+cssJson['--gutenakit--'+font_property] +' !important;';
-                    }
-                });
-            } 
-
-            //Hide in desktop
-            if ( ! gkIsEmpty( cssJson?.['--gutenakit--display-default'] ) ) {
-                css += ' display: '+cssJson['--gutenakit--display-default']+';';
-            } else if ( ! gkIsEmpty( cssJson?.['--gutenakit--textcontentgap'] ) ) {
-                //text content gap, usually use for inline image gap
-                css += 'display:flex; gap:'+cssJson['--gutenakit--textcontentgap']+';';
-            }
-
-            //translate3d in desktop
-            if ( ! gkIsEmpty( cssJson?.['--gutenakit--translate3d-default'] ) ) {
-                css += ' transform: '+cssJson['--gutenakit--translate3d-default']+';';
-            }
-            
-            css += ' }';
-
-            /************************
-             Block hover : START
-            **************************/
-            css += id+':hover {';
-
+        
+            //Media size
+            let media_query_tab = gkIsEmpty( gutena_kit_block_editor?.media_query_tab ) ?'1080px': gutena_kit_block_editor.media_query_tab;
+            let media_query_mobile = gkIsEmpty( gutena_kit_block_editor?.media_query_mobile ) ?'767px': gutena_kit_block_editor.media_query_mobile;
+            //let preVar = '--gutenakit--';
+            let preVar = '';
+            let css = id+' {';
+            //spacing 
+            [ 'padding', 'margin' ].forEach( ( spaceName ) => {
+                 [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
+                     if ( ! gkIsEmpty( cssJson?.[preVar+'default-'+spaceName+'-'+position] ) ) {
+                         css += spaceName+'-'+position+':'+cssJson[preVar+'default-'+spaceName+'-'+position]+' !important;';
+                     }
+                 });
+            });
+        
             // Text color
-            if ( ! gkIsEmpty( cssJson?.['--gutenakit--color-hover-text'] ) ) {
-                css += ' color:'+cssJson['--gutenakit--color-hover-text'] +' !important;';
-            }
-
-            // Background color
-            if ( ! gkIsEmpty( cssJson?.['--gutenakit--color-hover-background'] ) ) {
-                css += ' background:'+cssJson['--gutenakit--color-hover-background'] +' !important;';
-            }
-
-            // Border
-            if ( ! gkIsEmpty( cssJson?.['--gutenakit--border-hover'] ) ) {
-                css += ' border:'+cssJson['--gutenakit--border-hover'] +' !important;';
-            } else {
-                [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
-                    if ( ! gkIsEmpty( cssJson?.['--gutenakit--border-hover-'+position] ) ) {
-                        css += ' border-'+position+':'+cssJson['--gutenakit--border-hover-'+position] +' !important;';
-                    }
-                });
-            }
-
-            // Border radius
-            if ( ! gkIsEmpty( cssJson?.['--gutenakit--border-hover-radius'] ) ) {
-                css += ' border-radius:'+cssJson['--gutenakit--border-hover-radius'] +' !important;';
-            }
-
-            // Box Shadow
-            if ( ! gkIsEmpty( cssJson?.['--gutenakit--boxshadow-hover'] ) ) {
-                css += 'box-shadow:'+cssJson['--gutenakit--boxshadow-hover'] +' !important;';
-            }
-
-            css += ' }';
-            /************************
-             Block hover : END
-            **************************/
-
-             //link text decoration
-             if ( ! gkIsEmpty( cssJson?.['--gutenakit--linkdecorationline'] ) ) {
-                css += id+' a { text-decoration-line:'+cssJson['--gutenakit--linkdecorationline']+'; }';
-            }
-
-            // Link color
-            if ( ! gkIsEmpty( cssJson?.['--gutenakit--color-normal-link'] ) ) {
-                css += id+' a { color:'+cssJson['--gutenakit--color-normal-link'] +' !important; }';
-            }
-
-            // Link hover color
-            if ( ! gkIsEmpty( cssJson?.['--gutenakit--color-hover-link'] ) ) {
-                css += id+' a:hover { color:'+cssJson['--gutenakit--color-hover-link'] +' !important; }';
-            }
-
-            // overlay color
-            if ( ! gkIsEmpty( cssJson?.['--gutenakit--overlay-normal-background'] ) && ! gkIsEmpty( cssJson?.['--gutenakit--overlay-normal-opacity'] ) ) {
-                css += id+`:before {
-                    content:"";
-                    background:${ cssJson['--gutenakit--overlay-normal-background']}; 
-                    opacity: ${cssJson['--gutenakit--overlay-normal-opacity']};
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                }`;
-            }
-
-            // overlay color
-            if ( ! gkIsEmpty( cssJson?.['--gutenakit--overlay-hover-background'] ) && ! gkIsEmpty( cssJson?.['--gutenakit--overlay-hover-opacity'] ) ) {
-                css += id+`:hover:before {
-                    content:"";
-                    background:${cssJson['--gutenakit--overlay-hover-background']}; 
-                    opacity: ${cssJson['--gutenakit--overlay-hover-opacity']};
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                }`;
-            }
-
-            /************************
-             Block Tablet : START
-            **************************/
-                css += '@media only screen and (min-width: 768px) and (max-width: '+media_query_tab+') { '+id+' {';
-
-                //Hide in Tablet
-                if ( ! gkIsEmpty( cssJson?.['--gutenakit--display-tablet'] ) ) {
-                    css += ' display: '+cssJson['--gutenakit--display-tablet']+';';
-                } else {
-
-                    //spacing
-                    [ 'padding', 'margin' ].forEach( ( spaceName ) => {
-                        [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
-                            if ( ! gkIsEmpty( cssJson?.['--gutenakit--tablet-'+spaceName+'-'+position] ) ) {
-                                css += spaceName+'-'+position+':'+cssJson['--gutenakit--tablet-'+spaceName+'-'+position]+' !important;';
-                            }
-                        });
-                   });
-                    
-                    if ( gkIsEmpty( global_typography ) ) {
-                        //typography
-                        [ 'font-size', 'line-height' ].forEach( ( font_property ) => {
-                            if ( ! gkIsEmpty( cssJson?.['--gutenakit--t-'+font_property] ) ) {
-                                css += ' '+font_property+':'+cssJson['--gutenakit--t-'+font_property] +' !important;';
-                            }
-                        });
-                    }
-
-                    //translate3d in tablet
-                    if ( ! gkIsEmpty( cssJson?.['--gutenakit--translate3d-tablet'] ) ) {
-                        css += ' transform: '+cssJson['--gutenakit--translate3d-tablet']+';';
-                    }
-
-                }
-
-                //gutena kit settings end
-                css += '} }';
-            /************************
-             Block Tablet : END
-            **************************/
-
-            /************************
-             Block Mobile : START
-            **************************/
-            css += '@media only screen and (max-width: '+media_query_mobile +') { '+id+' {';
-
-                //Hide in Mobile
-                if ( ! gkIsEmpty( cssJson?.['--gutenakit--display-mobile'] ) ) {
-                    css += ' display: '+cssJson['--gutenakit--display-mobile']+';';
-                } else {
-
-                    //spacing
-                    [ 'padding', 'margin' ].forEach( ( spaceName ) => {
-                        [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
-                            if ( ! gkIsEmpty( cssJson?.['--gutenakit--mobile-'+spaceName+'-'+position] ) ) {
-                                css += spaceName+'-'+position+':'+cssJson['--gutenakit--mobile-'+spaceName+'-'+position]+' !important;';
-                            }
-                        });
-                   });
-                    
-                    if ( gkIsEmpty( global_typography ) ) {
-                        //typography
-                        [ 'font-size', 'line-height' ].forEach( ( font_property ) => {
-                            if ( ! gkIsEmpty( cssJson?.['--gutenakit--m-'+font_property] ) ) {
-                                css += ' '+font_property+':'+cssJson['--gutenakit--m-'+font_property] +' !important;';
-                            }
-                        });
-                    }
-
-                    //translate3d in tablet
-                    if ( ! gkIsEmpty( cssJson?.['--gutenakit--translate3d-mobile'] ) ) {
-                        css += ' transform: '+cssJson['--gutenakit--translate3d-mobile']+';';
-                    }
-
-                }
-
-                //gutena kit settings end
-                css += '} }';
-            /************************
-             Block Mobile : END
-            **************************/
-
-            return css;
-
-        }
+             if ( ! gkIsEmpty( cssJson?.[preVar+'color-normal-text'] ) ) {
+                 css += ' color:'+cssJson[preVar+'color-normal-text'] +' !important;';
+             }
+        
+             // Background color
+             if ( ! gkIsEmpty( cssJson?.[preVar+'color-normal-background'] ) ) {
+                 css += ' background:'+cssJson[preVar+'color-normal-background'] +' !important;';
+             }
+        
+             // Border
+             if ( ! gkIsEmpty( cssJson?.[preVar+'border-normal'] ) ) {
+                 css += ' border:'+cssJson[preVar+'border-normal'] +' !important;';
+             } else {
+                 [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
+                     if ( ! gkIsEmpty( cssJson?.[preVar+'border-normal-'+position] ) ) {
+                         css += ' border-'+position+':'+cssJson[preVar+'border-normal-'+position] +' !important;';
+                     }
+                 });
+             }
+        
+             // Border radius
+             if ( ! gkIsEmpty( cssJson?.[preVar+'border-normal-radius'] ) ) {
+                 css += ' border-radius:'+cssJson[preVar+'border-normal-radius'] +' !important;';
+             }
+        
+             // Box Shadow
+             if ( ! gkIsEmpty( cssJson?.[preVar+'boxshadow-normal'] ) ) {
+                 css += 'box-shadow:'+cssJson[preVar+'boxshadow-normal'] +' !important;';
+             }
+        
+             // Overlay parent
+             if ( ! gkIsEmpty( cssJson?.[preVar+'overlay-normal-background'] ) || ! gkIsEmpty( cssJson?.[preVar+'overlay-hover-background'] ) ) {
+                 css += ' position: relative;';
+             }
+        
+             //typography
+             if ( gkIsEmpty( global_typography ) ) {
+                 [ 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transfor', 'text-decoration' ].forEach( ( font_property ) => {
+                     if ( ! gkIsEmpty( cssJson?.[preVar+''+font_property] ) ) {
+                         css += ' '+font_property+':'+cssJson[preVar+''+font_property] +' !important;';
+                     }
+                 });
+             } 
+        
+             //Hide in desktop
+             if ( ! gkIsEmpty( cssJson?.[preVar+'display-default'] ) ) {
+                 css += ' display: '+cssJson[preVar+'display-default']+';';
+             } else if ( ! gkIsEmpty( cssJson?.[preVar+'textcontentgap'] ) ) {
+                 //text content gap, usually use for inline image gap
+                 css += 'display:flex; gap:'+cssJson[preVar+'textcontentgap']+';';
+             }
+        
+             //translate3d in desktop
+             if ( ! gkIsEmpty( cssJson?.[preVar+'translate3d-default'] ) ) {
+                 css += ' transform: '+cssJson[preVar+'translate3d-default']+';';
+             }
+             
+             css += ' }';
+        
+             /************************
+              Block hover : START
+             **************************/
+             css += id+':hover {';
+        
+             // Text color
+             if ( ! gkIsEmpty( cssJson?.[preVar+'color-hover-text'] ) ) {
+                 css += ' color:'+cssJson[preVar+'color-hover-text'] +' !important;';
+             }
+        
+             // Background color
+             if ( ! gkIsEmpty( cssJson?.[preVar+'color-hover-background'] ) ) {
+                 css += ' background:'+cssJson[preVar+'color-hover-background'] +' !important;';
+             }
+        
+             // Border
+             if ( ! gkIsEmpty( cssJson?.[preVar+'border-hover'] ) ) {
+                 css += ' border:'+cssJson[preVar+'border-hover'] +' !important;';
+             } else {
+                 [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
+                     if ( ! gkIsEmpty( cssJson?.[preVar+'border-hover-'+position] ) ) {
+                         css += ' border-'+position+':'+cssJson[preVar+'border-hover-'+position] +' !important;';
+                     }
+                 });
+             }
+        
+             // Border radius
+             if ( ! gkIsEmpty( cssJson?.[preVar+'border-hover-radius'] ) ) {
+                 css += ' border-radius:'+cssJson[preVar+'border-hover-radius'] +' !important;';
+             }
+        
+             // Box Shadow
+             if ( ! gkIsEmpty( cssJson?.[preVar+'boxshadow-hover'] ) ) {
+                 css += 'box-shadow:'+cssJson[preVar+'boxshadow-hover'] +' !important;';
+             }
+        
+             css += ' }';
+             /************************
+              Block hover : END
+             **************************/
+        
+              //link text decoration
+              if ( ! gkIsEmpty( cssJson?.[preVar+'linkdecorationline'] ) ) {
+                 css += id+' a { text-decoration-line:'+cssJson[preVar+'linkdecorationline']+'; }';
+             }
+        
+             // Link color
+             if ( ! gkIsEmpty( cssJson?.[preVar+'color-normal-link'] ) ) {
+                 css += id+' a { color:'+cssJson[preVar+'color-normal-link'] +' !important; }';
+             }
+        
+             // Link hover color
+             if ( ! gkIsEmpty( cssJson?.[preVar+'color-hover-link'] ) ) {
+                 css += id+' a:hover { color:'+cssJson[preVar+'color-hover-link'] +' !important; }';
+             }
+        
+             // overlay color
+             if ( ! gkIsEmpty( cssJson?.[preVar+'overlay-normal-background'] ) && ! gkIsEmpty( cssJson?.[preVar+'overlay-normal-opacity'] ) ) {
+                 css += id+`:before {
+                     content:"";
+                     background:${ cssJson[preVar+'overlay-normal-background']}; 
+                     opacity: ${cssJson[preVar+'overlay-normal-opacity']};
+                     position: absolute;
+                     top: 0;
+                     left: 0;
+                     right: 0;
+                     bottom: 0;
+                 }`;
+             }
+        
+             // overlay color
+             if ( ! gkIsEmpty( cssJson?.[preVar+'overlay-hover-background'] ) && ! gkIsEmpty( cssJson?.[preVar+'overlay-hover-opacity'] ) ) {
+                 css += id+`:hover:before {
+                     content:"";
+                     background:${cssJson[preVar+'overlay-hover-background']}; 
+                     opacity: ${cssJson[preVar+'overlay-hover-opacity']};
+                     position: absolute;
+                     top: 0;
+                     left: 0;
+                     right: 0;
+                     bottom: 0;
+                 }`;
+             }
+        
+             /************************
+              Block Tablet : START
+             **************************/
+                 css += '@media only screen and (min-width: 768px) and (max-width: '+media_query_tab+') { '+id+' {';
+        
+                 //Hide in Tablet
+                 if ( ! gkIsEmpty( cssJson?.[preVar+'display-tablet'] ) ) {
+                     css += ' display: '+cssJson[preVar+'display-tablet']+';';
+                 } else {
+        
+                     //spacing
+                     [ 'padding', 'margin' ].forEach( ( spaceName ) => {
+                         [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
+                             if ( ! gkIsEmpty( cssJson?.[preVar+'tablet-'+spaceName+'-'+position] ) ) {
+                                 css += spaceName+'-'+position+':'+cssJson[preVar+'tablet-'+spaceName+'-'+position]+' !important;';
+                             }
+                         });
+                    });
+                     
+                     if ( gkIsEmpty( global_typography ) ) {
+                         //typography
+                         [ 'font-size', 'line-height' ].forEach( ( font_property ) => {
+                             if ( ! gkIsEmpty( cssJson?.[preVar+'t-'+font_property] ) ) {
+                                 css += ' '+font_property+':'+cssJson[preVar+'t-'+font_property] +' !important;';
+                             }
+                         });
+                     }
+        
+                     //translate3d in tablet
+                     if ( ! gkIsEmpty( cssJson?.[preVar+'translate3d-tablet'] ) ) {
+                         css += ' transform: '+cssJson[preVar+'translate3d-tablet']+';';
+                     }
+        
+                 }
+        
+                 //gutena kit settings end
+                 css += '} }';
+             /************************
+              Block Tablet : END
+             **************************/
+        
+             /************************
+              Block Mobile : START
+             **************************/
+             css += '@media only screen and (max-width: '+media_query_mobile +') { '+id+' {';
+        
+                 //Hide in Mobile
+                 if ( ! gkIsEmpty( cssJson?.[preVar+'display-mobile'] ) ) {
+                     css += ' display: '+cssJson[preVar+'display-mobile']+';';
+                 } else {
+        
+                     //spacing
+                     [ 'padding', 'margin' ].forEach( ( spaceName ) => {
+                         [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
+                             if ( ! gkIsEmpty( cssJson?.[preVar+'mobile-'+spaceName+'-'+position] ) ) {
+                                 css += spaceName+'-'+position+':'+cssJson[preVar+'mobile-'+spaceName+'-'+position]+' !important;';
+                             }
+                         });
+                    });
+                     
+                     if ( gkIsEmpty( global_typography ) ) {
+                         //typography
+                         [ 'font-size', 'line-height' ].forEach( ( font_property ) => {
+                             if ( ! gkIsEmpty( cssJson?.[preVar+'m-'+font_property] ) ) {
+                                 css += ' '+font_property+':'+cssJson[preVar+'m-'+font_property] +' !important;';
+                             }
+                         });
+                     }
+        
+                     //translate3d in tablet
+                     if ( ! gkIsEmpty( cssJson?.[preVar+'translate3d-mobile'] ) ) {
+                         css += ' transform: '+cssJson[preVar+'translate3d-mobile']+';';
+                     }
+        
+                 }
+        
+                 //gutena kit settings end
+                 css += '} }';
+             /************************
+              Block Mobile : END
+             **************************/
+        
+             return css;
+        
+         }
 
         //generate Css var
         const generateCssVar = ( styleVar = gutenaKitStyle, id = '#block-'+clientId, requireJson = false ) => {
@@ -776,6 +788,18 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             return cssClass.join(' ');
         }
 
+        //Check if all keys are empty are not
+        const checkGutenaStyleEmpty = ( newstyle ) => {
+            let isGutenaKitStyleEmpty = true;
+            Object.keys( newstyle ).forEach( styleKey =>{
+                if ( ! gkIsEmpty( newstyle[styleKey] ) ) {
+                    isGutenaKitStyleEmpty = false;
+                    return;
+                }
+            } );
+            return isGutenaKitStyleEmpty;
+        }
+
         //Set gutena kit settings attributes
         const setAttr = ( value, styleAttr = null, attrName = null, deviceStyle=null ) => {
             /**
@@ -827,19 +851,46 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
            
            
             //CSS json
-            newstyle.cssJson = generateCssVar( newstyle, " .gutenakitid-"+clientId, true );
+            newstyle.cssJson = gkIsEmpty( newstyle ) ? undefined : generateCssVar( newstyle, " .gutenakitid-"+clientId, true );
             console.log("newstyle",newstyle);
+
+            let isGutenaKitStyleEmpty = checkGutenaStyleEmpty( newstyle );
+
             setAttributes( { 
-                gutenaKitStyle:{ ...newstyle }, 
+                gutenaKitStyle: isGutenaKitStyleEmpty ? undefined : { ...newstyle }, 
                 gutenaKitID:clientId,
                 gutenaKitClass:{
                     ...gutenaKitClass,
-                    blockClasses: generateClassesMinimal( newstyle )
+                    blockClasses: isGutenaKitStyleEmpty ? undefined : generateClassesMinimal( newstyle )
                 },
             } );
             
         };
 
+        /******** Regenerate css json 
+        useEffect( () => {
+            if ( ! gkIsEmpty( gutenaKitStyle ) ) {
+                 //Initialize style
+                let newstyle = gutenaKitStyle;
+                 //CSS json
+                newstyle.cssJson = gkIsEmpty( newstyle ) ? undefined : generateCssVar( newstyle, " .gutenakitid-"+clientId, true );
+
+
+                let isGutenaKitStyleEmpty = checkGutenaStyleEmpty( newstyle );
+
+                setAttributes( { 
+                    gutenaKitStyle: isGutenaKitStyleEmpty ? undefined : { ...newstyle }, 
+                    gutenaKitID:clientId,
+                    gutenaKitClass:{
+                        ...gutenaKitClass,
+                        blockClasses: isGutenaKitStyleEmpty ? undefined : generateClassesMinimal( newstyle )
+                    },
+                    gutenaKitCSS:undefined
+                } );
+            }
+        }, [] );
+        ******/
+        //console.log("gutenaKitStyle",gutenaKitStyle);
         const MAX_SPACE_VALUES = {
             px: 500,
             em: 40,
@@ -880,13 +931,22 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                             <Button 
                                 variant="secondary"
                                 isSmall
-                                disabled={ gkIsEmpty( gutenaKitCSS?.blockCss ) }
+                                disabled={ checkGutenaStyleEmpty( gutenaKitStyle ) }
                                 onClick={ () => setAttributes( { 
-                                    gutenaKitStyle:undefined,
-                                    gutenaKitCSS: {
-                                    ...gutenaKitCSS,
-                                    blockCss:undefined
-                                    } 
+                                    gutenaKitStyle:{
+                                        spacing:undefined,
+                                        typography:undefined,
+                                        globalTypography:undefined,
+                                        color:undefined,
+                                        overlay:undefined,
+                                        border:undefined,
+                                        boxShadow:undefined,
+                                        hideDisplay:undefined,
+                                        translate3d:undefined,
+                                        textContentGap:undefined,
+                                        linkDecorationLineNone:undefined,
+                                        cssJson:undefined
+                                    }
                                 } ) }
                             >
                                 { __('Reset') }
@@ -1004,7 +1064,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                             }
                             { gkSupports.linkSettings &&
                                 <ToggleControl
-                                    label={ __("Unset text decoration line", "gutena-kit") }
+                                    label={ __("Unset link text decoration line", "gutena-kit") }
                                     checked={ gkIsEmpty( gutenaKitStyle?.linkDecorationLineNone ) ? false : gutenaKitStyle.linkDecorationLineNone  }
                                     onChange={ ( value ) =>  setAttr( value, 'linkDecorationLineNone' ) }
                                 />

@@ -165,12 +165,8 @@ const TypographySettings = ({
         return slug;
     }
 
-    const getCssJson = () => gkCssJson( typographyVar( addEditTypography, '--gutenakit--gt-' ) );
-
-    const getCss = ( typographyName = null ) => {
-        let slug =  getSlug( typographyName );
-        return gkIsEmpty( slug )?'':'.has-gutenakit-gt-'+slug+'{' + typographyVar( addEditTypography, '--gutenakit--gt-' ) + '}';
-    }
+    //Css in json form
+    const getCssJson = () => gkCssJson( typographyVar( addEditTypography, 'gt' ) );
 
     const isDeleteTypographyInitiated = () => ( true === typographyTab.deleteTypography );
     const isProgressStatus = () => ( 'progress' === typographyTab.status );

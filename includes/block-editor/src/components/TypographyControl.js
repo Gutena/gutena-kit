@@ -267,7 +267,23 @@ const TypographyControl = ( props ) => {
                     variant="secondary"
                     isSmall
                     disabled={ gkIsEmpty( props?.attrValue ) }
-                    onClick={ () => onChangeFunc( undefined ) }
+                    onClick={ () => onChangeFunc( { 
+                        ...attrValue,
+                        fluidTypography: undefined,
+                        fontFamily:undefined,
+                        fontSize: undefined,
+                        TfontSize: undefined,
+                        MfontSize: undefined,
+                        fluidFontSize: undefined,
+                        lineHeight: undefined,
+                        TlineHeight: undefined,
+                        MlineHeight: undefined,
+                        fontStyle: undefined,
+                        fontWeight: undefined,
+                        letterSpacing: undefined,
+                        textTransform: undefined,
+                        textDecoration: undefined,
+                    } ) }
                 >
                     { __( 'Reset', 'gutena-kit' ) }
                 </Button>
