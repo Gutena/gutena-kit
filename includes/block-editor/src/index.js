@@ -55,8 +55,48 @@ const withGutenaKitClassName = createHigherOrderComponent(
     'withGutenaKitClassName'
 );
 
-wp.hooks.addFilter(
+addFilter(
     'editor.BlockListBlock',
-    'gutena-kit/with-client-id-class-name',
+    'gutena-kit/with-gutena-kit-class-name',
     withGutenaKitClassName
+);
+
+
+/********************************************************************
+ Add custom attributes
+********************************************************************/
+const addGutenaKitCustomAttributes = ( settings, name ) => {
+   if ( 'undefined' !== typeof settings.attributes && 'undefined' === typeof settings.attributes.gutenaKitStyle ) {
+        //gutena kit settings
+        settings.attributes = Object.assign( settings.attributes, {
+            "gutenaKitID":{
+                "type":"string"
+            },
+            "gutenaKitCSS":{
+                "type":"object"
+            },
+            "gutenaKitClass":{
+                "type":"object"
+            },
+            "gutenaKitStyle":{
+                "type":"object"
+            },
+        });
+
+        if ( 'core/media-text' === name ) {
+            settings.attributes = Object.assign( settings.attributes, {
+                "gutenaKitGridGap":{
+                    "type":"string",
+                    "default":"0px",
+                }
+            });
+        }
+   }
+   return settings;
+}
+
+addFilter(
+    'blocks.registerBlockType',
+    'gutena-kit/add-gutena-kit-custom-attributes',
+    addGutenaKitCustomAttributes
 );

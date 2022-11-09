@@ -82,6 +82,15 @@ require GUTENA_KIT_DIR_PATH . 'includes/class-gutena-kit.php';
  */
 function run_gutena_kit() {
 
+	$global_typography = get_option( 'gutena_kit_global_typography', array() );
+	//correction of old set typography and assign to default group
+	if ( ! empty( $global_typography ) &&  ! isset( $global_typography[ 'default' ] ) ) {
+		$global_typography = array( 'default' => $global_typography );
+		update_option( 'gutena_kit_global_typography', $global_typography );
+	}
+
+	
+
 	$plugin = new Gutena_Kit();
 	$plugin->run();
 
