@@ -211,16 +211,16 @@ class Gutena_Kit_Admin {
 			wp_enqueue_script( 'gutena-kit-demo-import-dashboard', GUTENA_KIT_PLUGIN_URL . 'includes/demo-import/admin-dashboard/build/index.js', array( 'wp-components', 'wp-element', 'wp-i18n' ), $this->version, false );
 	
 			wp_localize_script( 
-			'gutena-kit-demo-import-dashboard' , 
-			'gutenakit_demo_info',
+				'gutena-kit-demo-import-dashboard', 
+				'gutenakit_demo_info',
 				array(
-				'show_demo_type_filter' => '0',
-				'show_category_filter'  => '0',
-				'category' => gutendkit_demo_category_list(),
-				'demo_list' => gutendkit_categorize_demo_list(),
-				'logo' => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/logo.png' ),
-				'demo_import_url' => esc_url( admin_url( 'options.php?page=merlin&demo_index=' ) ),
-				'styles' => wp_json_file_decode( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/styles/all_styles.json', array( 'associative' => true ) )
+					'show_demo_type_filter' => '0',
+					'show_category_filter'  => '0',
+					'category' => gutendkit_demo_category_list(),
+					'demo_list' => gutendkit_categorize_demo_list(),
+					'logo' => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/logo.png' ),
+					'demo_import_url' => esc_url( admin_url( 'options.php?page=merlin&demo_index=' ) ),
+					'styles' => wp_json_file_decode( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/styles/all_styles.json', array( 'associative' => true ) )
 				)
 			);
 		}
@@ -229,9 +229,11 @@ class Gutena_Kit_Admin {
 	/**
 	 * Gutena Kit scripts and styles for block editor
 	 */
-	public function add_blocks_and_settings(){
-		
-		wp_enqueue_script( 'gutena-kit-block-editor', GUTENA_KIT_PLUGIN_URL . 'includes/block-editor/build/index.js', array(), $this->version, false );
+	public function add_blocks_and_settings() {
+		$asset_file = include( GUTENA_KIT_DIR_PATH . 'includes/block-editor/build/index.asset.php' );
+
+		wp_enqueue_script( 'gutena-kit-block-editor', GUTENA_KIT_PLUGIN_URL . 'includes/block-editor/build/index.js', $asset_file['dependencies'], $asset_file['version'], true );
+		wp_enqueue_style( 'gutena-kit-block-editor', GUTENA_KIT_PLUGIN_URL . 'includes/block-editor/build/index.css', array(), $this->version );
 
 		wp_enqueue_style( 'gutena-kit-block-editor-style', GUTENA_KIT_PLUGIN_URL . 'admin/css/gutena-kit-editor.css', array(), $this->version, 'all' );
 
@@ -246,14 +248,14 @@ class Gutena_Kit_Admin {
 		wp_localize_script( 
 			'gutena-kit-block-editor' , 
 			'gutena_kit_block_editor',
-			 array(
+			array(
 				'save_typography_action' => 'save_global_typography',
 				'nonce' => wp_create_nonce( 'gutena-kit-save' ),
 				'ajax_url' => esc_url( admin_url('admin-ajax.php') ),
 				'globalTypography'=> $gutena_kit_global_typography,
 				'media_query_tab' => apply_filters('gutena-kit-media-query-tab', '1080px' ),
 				'media_query_mobile' => apply_filters('gutena-kit-media-query-mobile', '767px' )
-			 )
+			)
 		);
 	}
 
@@ -321,8 +323,5 @@ class Gutena_Kit_Admin {
 				'globalTypography'=> $global_typography
 			)
 		);
-		
 	}
-	
-
 }

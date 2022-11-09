@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { 
-      __experimentalBoxControl as BoxControl,
+    __experimentalBoxControl as BoxControl,
 } from '@wordpress/components';
 import SelectDeviceDropdown from './SelectDeviceDropdown';
 import { gkIsEmpty } from '../helpers/helpers';
@@ -16,7 +16,7 @@ const PaddingMargin = ({
 	onChangeFunc = noop,
 	negativeValue=false,
     allowReset=true
- }) => {
+}) => {
 
     return(
         <>

@@ -5,13 +5,14 @@
  
  ****** Info : END ***/
 import { __ } from '@wordpress/i18n';
-import { addFilter } from  '@wordpress/hooks';
-import {  gutenaKitEditMediaTextBlock } from './mediaTextBlockEdit';
+import { addFilter } from '@wordpress/hooks';
+import { gutenaKitEditMediaTextBlock } from './mediaTextBlockEdit';
 import { GutenaKitSettings } from './GutenaKitSettings';
 import { createHigherOrderComponent } from  '@wordpress/compose';
 import { joinObjectValues } from './helpers/helpers';
 
-
+import './blocks/advanced-buttons'
+import './blocks/advanced-button'
 
 /*************************************
  Add controls in existing blocks
@@ -23,10 +24,8 @@ const editBlocksComponents = {
 };
 
 //Register existing block edit controls by custom componenet 
-Object.keys( editBlocksComponents ).forEach( blockSlug =>{
-    
-    console.log("blockSlug",blockSlug);
-    
+Object.keys( editBlocksComponents ).forEach( blockSlug => {
+    //console.log("blockSlug",blockSlug);
     addFilter(
         'editor.BlockEdit',
         'gutena-kit/edit-'+blockSlug,

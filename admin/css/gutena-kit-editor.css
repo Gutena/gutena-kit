@@ -85,10 +85,10 @@
     height: auto;
 }
 
-.gutena-kit-settings .components-item-group,
+/* .gutena-kit-settings .components-item-group,
 .gutena-kit-settings .components-h-stack {
     margin-bottom: 0.5rem;
-}
+} */
 
 .gutena-kit-settings .components-h-stack .components-h-stack{
     margin-bottom: 0;
@@ -169,8 +169,8 @@
 }
 
 /* Color panel settings*/
-.gutena-kit-settings .gutena-kit-color-toolpanel {
-    padding: 0.1rem;
+.gutena-kit-color-toolpanel {
+    padding: 0.1rem !important;
     border: 0;
-    gap:0.1rem;
+    gap: 0 !important;
 }
