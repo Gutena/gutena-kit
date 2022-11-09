@@ -124,7 +124,7 @@ export const toogleStyleDisplay = element => {
 };
 
 //Generate box shadow css
-export const boxShadowCss = ( boxShadow, generateCss = true ) => {
+export const boxShadowCss = ( boxShadow, generateCss = true, colorGradientSettings = null ) => {
 	let data;
 	if (
 		gkIsEmpty( boxShadow ) ||
@@ -136,7 +136,7 @@ export const boxShadowCss = ( boxShadow, generateCss = true ) => {
 	) {
 		return '';
 	} else {
-		data = `${ boxShadow?.offsetX } ${ boxShadow?.offsetY } ${ ! gkIsEmpty( boxShadow?.blurRadius ) ? boxShadow?.blurRadius : `` } ${ ! gkIsEmpty( boxShadow?.spreadRadius ) ? boxShadow?.spreadRadius : `` } ${ boxShadow?.color } ${ ! gkIsEmpty( boxShadow?.inset ) && boxShadow?.inset ? `inset` : `` }`;
+		data = `${ boxShadow?.offsetX } ${ boxShadow?.offsetY } ${ ! gkIsEmpty( boxShadow?.blurRadius ) ? boxShadow?.blurRadius : `` } ${ ! gkIsEmpty( boxShadow?.spreadRadius ) ? boxShadow?.spreadRadius : `` } ${ gkIsEmpty( boxShadow?.color ) ? ``: getGlobalColorVar( colorGradientSettings, boxShadow?.color ) } ${ ! gkIsEmpty( boxShadow?.inset ) && boxShadow?.inset ? `inset` : `` }`;
 	}
 
 	if ( generateCss ) {
@@ -165,13 +165,13 @@ export const spaceVar = ( spacing, varName ) => {
 }
 
 //Generate border css var borderVar={border:{},radius:2px}, varName = css var
-export const borderVar = ( borderVar , varName ) => {
+export const borderVar = ( borderVar , varName, colorGradientSettings = null ) => {
     let css = '';
 	if ( ! gkIsEmpty( borderVar?.border ) ) {
 		let border = borderVar.border;
         css = gkIsEmpty( border.color) ? (['top','right','bottom','left'].map( (side) => (`
-            ${ gkIsEmpty( border[side] ) ? ``: `${ varName }-${ side }: ${ border[side]?.width }  ${ gkIsEmpty( border[side]?.style ) ? 'solid': border[side]?.style } ${ border[side]?.color }; ` }
-        `) ).join(' ')) : (`${ varName }: ${ border?.width }  ${ gkIsEmpty( border?.style ) ? 'solid': border?.style } ${border?.color}; `);
+            ${ gkIsEmpty( border[side] ) ? ``: `${ varName }-${ side }: ${ border[side]?.width }  ${ gkIsEmpty( border[side]?.style ) ? 'solid': border[side]?.style } ${ gkIsEmpty( border[side]?.color ) ? ``: getGlobalColorVar( colorGradientSettings, border[side]?.color ) }; ` }
+        `) ).join(' ')) : (`${ varName }: ${ border?.width }  ${ gkIsEmpty( border?.style ) ? 'solid': border?.style } ${ gkIsEmpty( border?.color ) ? ``: getGlobalColorVar( colorGradientSettings, border?.color )}; `);
 	}
 	
     return gkIsEmpty( borderVar?.radius ) ? css : css+' '+varName+'-radius:'+borderVar.radius+'; ';
@@ -375,47 +375,51 @@ export const getGlobalTypographyCss = ( gutena_kit_block_editor ) => {
 		 //Media size
 		let media_query_tab = gkIsEmpty( gutena_kit_block_editor?.media_query_tab ) ?'1080px': gutena_kit_block_editor.media_query_tab;
 		let media_query_mobile = gkIsEmpty( gutena_kit_block_editor?.media_query_mobile ) ?'767px': gutena_kit_block_editor.media_query_mobile;
+console.log("gutena_kit_block_editor.globalTypography",gutena_kit_block_editor.globalTypography);
+		Object.keys( gutena_kit_block_editor.globalTypography ).forEach( typographyGroup =>{ 
+			let groupTypography = gutena_kit_block_editor.globalTypography[typographyGroup];
+			console.log("groupTypography",groupTypography);
+			Object.keys( groupTypography ).forEach( slug =>{ 
+				if ( ! gkIsEmpty( groupTypography[slug]?.['cssJson'] ) ) {
+					let cssFont = '';
+					let cssJson = groupTypography[slug]['cssJson'];
+					
+					//Default typography
+					[ 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transform', 'text-decoration' ].forEach( ( font_property ) => {
+						if ( ! gkIsEmpty( cssJson?.[preVar+''+font_property] ) ) {
+							cssFont += ' '+font_property+':'+cssJson[preVar+''+font_property] +' !important;';
+						}
+					});
+					
+					if ( !gkIsEmpty( cssFont ) ) {
+						cssDefault += '.editor-styles-wrapper .has-gutenakit-gt-'+slug+'{'+cssFont+'} ';
+					}
 
-		Object.keys( gutena_kit_block_editor.globalTypography ).forEach( slug =>{ 
-			if ( ! gkIsEmpty( gutena_kit_block_editor.globalTypography[slug]?.['cssJson'] ) ) {
-				let cssFont = '';
-				let cssJson = gutena_kit_block_editor.globalTypography[slug]['cssJson'];
 				
-				//Default typography
-				[ 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transform', 'text-decoration' ].forEach( ( font_property ) => {
-					if ( ! gkIsEmpty( cssJson?.[preVar+''+font_property] ) ) {
-						cssFont += ' '+font_property+':'+cssJson[preVar+''+font_property] +' !important;';
+					//tablet typography
+					cssFont = '';
+					[ 'font-size', 'line-height' ].forEach( ( font_property ) => {
+						if ( ! gkIsEmpty( cssJson?.[preVar+'t-'+font_property] ) ) {
+							cssFont += ' '+font_property+':'+cssJson[preVar+'t-'+font_property] +' !important;';
+						}
+					});
+					if ( !gkIsEmpty( cssFont ) ) {
+						cssTab += '.editor-styles-wrapper .has-gutenakit-gt-'+slug+'{'+cssFont+'} ';
 					}
-				});
-				
-				if ( !gkIsEmpty( cssFont ) ) {
-					cssDefault += '.editor-styles-wrapper .has-gutenakit-gt-'+slug+'{'+cssFont+'} ';
+
+					//mobile typography
+					cssFont = '';
+					[ 'font-size', 'line-height' ].forEach( ( font_property ) => {
+						if ( ! gkIsEmpty( cssJson?.[preVar+'m-'+font_property] ) ) {
+							cssFont += ' '+font_property+':'+cssJson[preVar+'m-'+font_property] +' !important;';
+						}
+					});
+					if ( !gkIsEmpty( cssFont ) ) {
+						cssMobile += '.editor-styles-wrapper .has-gutenakit-gt-'+slug+'{'+cssFont+'} ';
+					}
 				}
 
-			   
-				//tablet typography
-				cssFont = '';
-				[ 'font-size', 'line-height' ].forEach( ( font_property ) => {
-					if ( ! gkIsEmpty( cssJson?.[preVar+'t-'+font_property] ) ) {
-						cssFont += ' '+font_property+':'+cssJson[preVar+'t-'+font_property] +' !important;';
-					}
-				});
-				if ( !gkIsEmpty( cssFont ) ) {
-					cssTab += '.editor-styles-wrapper .has-gutenakit-gt-'+slug+'{'+cssFont+'} ';
-				}
-
-				//mobile typography
-				cssFont = '';
-				[ 'font-size', 'line-height' ].forEach( ( font_property ) => {
-					if ( ! gkIsEmpty( cssJson?.[preVar+'m-'+font_property] ) ) {
-						cssFont += ' '+font_property+':'+cssJson[preVar+'m-'+font_property] +' !important;';
-					}
-				});
-				if ( !gkIsEmpty( cssFont ) ) {
-					cssMobile += '.editor-styles-wrapper .has-gutenakit-gt-'+slug+'{'+cssFont+'} ';
-				}
-			}
-
+			});
 		});
 
 		if ( !gkIsEmpty( cssTab ) ) {
@@ -475,7 +479,7 @@ export const renderBlockCSSForResponsive = ( gutena_kit_block_editor , deviceTyp
  * Get global color as var if use global variable
  */
 export const getGlobalColorVar = ( colorGradientSettings, color ) => {
-	if ( gkIsEmpty( colorGradientSettings ) || gkIsEmpty( colorGradientSettings?.colors ) ) {
+	if ( gkIsEmpty( colorGradientSettings ) || gkIsEmpty( colorGradientSettings?.colors ) || gkIsEmpty( color ) || 15 < color.length ) {
 		return color;
 	}
 	let colorSlug = '';
@@ -523,4 +527,21 @@ export const getGlobalColorVar = ( colorGradientSettings, color ) => {
 	   });
    }
    return gkIsEmpty( colorSlug ) ? color : 'var(--wp--preset--gradient--'+colorSlug+','+color+')';
+}
+
+export const getColorFromVar = ( colorVar ) => {
+
+	if ( gkIsEmpty( colorVar ) || 15 > colorVar.length ) {
+		return colorVar;
+	}
+	
+	let color = colorVar.trim();
+	//separator position: first ','
+	let seprateorPos = color.indexOf(',');
+	//if color value not found
+	if ( -1 === seprateorPos) {
+		return colorVar;
+	}
+	color = color.slice( seprateorPos+1, color.length -1 );
+	return color.trim();
 }

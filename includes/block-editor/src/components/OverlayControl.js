@@ -35,7 +35,7 @@ const OverlayControl = ( {
     const setAttr = ( value, attrName ) => {
         let newAttr = attrValue;
         if ( 'color' === attrName ) {
-            value = getGlobalColorVar( colorGradientSettings, value );
+            //value = getGlobalColorVar( colorGradientSettings, value );
         }
         newAttr[ attrName ] = value;
         onChangeFunc( { ...newAttr } );

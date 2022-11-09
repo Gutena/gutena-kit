@@ -27,12 +27,13 @@ import { gkIsEmpty, getMatchArrObjKeyValue, typographyVar, generateSlug, gkCssJs
 const noop = () => {}; 
 
 const TypographySettings = ({
+    blockName = '',
     attrValue = undefined,
 	onChangeFunc = noop,
     setGlobalTypography = noop,
     globalTypographySlug=undefined,
 }) => {
-    console.log("attrValue",attrValue);
+    
     /*
     Active tab : set_global_typography| add_typography | edit_typography 
     Status : '' | progress | error | success 
@@ -49,7 +50,7 @@ const TypographySettings = ({
         message:'',
         deleteTypography:false,
         deleteTypographyConfirm:false,
-        globalTypography:gutena_kit_block_editor?.globalTypography
+        globalTypography: ( 'core/button' === blockName ) ? gutena_kit_block_editor?.globalTypography?.button : gutena_kit_block_editor?.globalTypography?.default
     } );
 
     //For add|Edit global typography state
@@ -96,6 +97,8 @@ const TypographySettings = ({
                 data.append( 'action', gutena_kit_block_editor.save_typography_action );
                 //set nonce
                 data.append( 'nonce', gutena_kit_block_editor.nonce );
+                //set typography group
+                data.append( 'typography_group', ( 'core/button' === blockName ) ? 'button' : 'default'  );
                 //If typography deleted
                 if ( isDeleteTypographyInitiated() && typographyTab.deleteTypography && typographyTab.deleteTypographyConfirm ) {
                     data.append( 'delete_typography', addEditTypography?.slug ); 
@@ -110,9 +113,14 @@ const TypographySettings = ({
                 } )
                 .then( ( response ) => response.json() )
                 .then( ( response ) => {
+                    //Update global typogrphy
                     if ( ! gkIsEmpty( response?.globalTypography ) ) {
+                        //update global variable
                         gutena_kit_block_editor.globalTypography = response.globalTypography;
+                        //update global variable css
                         renderBlockCSSForResponsive( gutena_kit_block_editor, deviceType);
+                        //update local global variable as per block
+                        response.globalTypography = ( 'core/button' === blockName ) ? response.globalTypography?.button : response.globalTypography?.default;
                     }
                     let activeTab = ( gkIsEmpty( gutena_kit_block_editor.globalTypography ) || 0 === gutena_kit_block_editor.globalTypography.length ) ? { activeTab:'set_global_typography', label: __( 'Saved Typography', 'gutena-kit' ),  } : {};
                     setTypographyTab( {
@@ -156,7 +164,7 @@ const TypographySettings = ({
     const getSlug = ( name = null ) => {
         let slug = addEditTypography?.slug;
         if ( 'add_typography' === typographyTab.activeTab && null !== name ) {
-            slug = generateSlug( name );
+            slug = ( 'core/button' === blockName ) ? 'btn-'+generateSlug( name ) : generateSlug( name );
             let d = new Date();
             let slugkey = d.getTime();
             slug = gkIsEmpty( typographyTab?.globalTypography?.[ slug ] ) ? slug : slug+'-'+slugkey;

@@ -46,7 +46,7 @@ import colorSettingsData from './colorSettingsData';
     //Set attribute
     const setAttr = ( value, attrName ) => {
         let newAttr = attrValue;
-        value = getGlobalColorVar( colorGradientSettings, value );
+        //value = getGlobalColorVar( colorGradientSettings, value );
         //check if active tab has value
         newAttr[ attrName ] = value;
         
