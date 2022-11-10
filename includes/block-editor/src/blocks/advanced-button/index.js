@@ -7,9 +7,7 @@ import { InspectorControls } from '@wordpress/block-editor';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import {
     __experimentalUseCustomUnits as useCustomUnits,
-    __experimentalBorderBoxControl as BorderBoxControl,
     __experimentalUnitControl as UnitControl,
-    __experimentalBoxControl as BoxControl,
     __experimentalSpacer as Spacer,
     __experimentalToggleGroupControl as ToggleGroupControl,
     __experimentalToggleGroupControlOption as ToggleGroupControlOption,
@@ -27,7 +25,7 @@ import EventsControl from '../../components/EventsControl';
 import RangeControlUnit from '../../components/RangeControlUnit';
 
 import DynamicStyles from './styles'
-import { RemixIcons1 } from './icons';
+import { RemixIcons } from './icons';
 import ReactHtmlParser from 'react-html-parser'
 
 import '../../helpers/helpers'
@@ -212,7 +210,7 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
                 </style>
             );
 
-            const icons = Object.keys( RemixIcons1 ).map( ( value ) => {
+            const icons = Object.keys( RemixIcons ).map( ( value ) => {
                 return `ri-${ value }`
             } )
             const eventAttr = Object.keys( DEFAULT_SIZES );
@@ -220,7 +218,7 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
 
             const renderSVG = ( svg ) => (
                 <div style={ { display: 'inline-flex', justifyContent: 'center', alignItems: 'center' } } className="gutena-render-svg">
-                    { ReactHtmlParser( RemixIcons1?.[ svg.replace( 'ri-', '' ) ] ) }
+                    { ReactHtmlParser( RemixIcons?.[ svg.replace( 'ri-', '' ) ] ) }
                 </div>
             )
 
@@ -302,9 +300,10 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
                                 <FontIconPicker
                                     icons={ icons }
                                     value={ btnIcon }
-                                    onChange={ ( select ) => {
-                                        setAttributes( { btnIcon: select } )
-                                        setAttributes( { btnIconSVG: RemixIcons1?.[ select.replace( 'ri-', '' ) ] } )
+                                    onChange={ ( icon ) => {
+                                        console.log(new Date())
+                                        setAttributes( { btnIcon: icon } )
+                                        setAttributes( { btnIconSVG: RemixIcons?.[ icon.replace( 'ri-', '' ) ] } )
                                     } }
                                     renderFunc={ renderSVG }
                                     appendTo="body"

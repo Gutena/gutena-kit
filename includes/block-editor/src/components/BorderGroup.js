@@ -41,11 +41,7 @@ const BorderGroup = ( {
 
     const transformBorder = data => {
         if ( typeof data == 'object' && Object.keys( data ).length == 3 ) {
-            return {
-                width: data?.width,
-                color: data?.color,
-                style: data?.style && data?.style !== 'undefined' ? data?.style : 'solid'
-            }
+            data.style = data?.style && data?.style !== 'undefined' ? data?.style : 'solid'
         }
         return data
     }
