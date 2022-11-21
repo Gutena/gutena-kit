@@ -221,4 +221,5 @@ function create_zip_src(){
 //(cmd: gulp build): run for development. It retain src and all other files
 exports.build = series(clean_files, clone_gutena_blocks, parallel(css_minification,js_minification),create_zip_src);
 //(cmd: gulp): run for production. It delete src and other unnecessary files
-exports.default = series(clean_files, clone_gutena_blocks, clean_gutena_blocks, parallel(css_minification,js_minification),create_zip);
+//exports.default = series(clean_files, clone_gutena_blocks, clean_gutena_blocks, parallel(css_minification,js_minification),create_zip);
+exports.default = series(clean_files, parallel(css_minification,js_minification),create_zip);

@@ -231,7 +231,7 @@ class Gutena_Kit_Admin {
 	 */
 	public function add_blocks_and_settings(){
 		
-		wp_enqueue_script( 'gutena-kit-block-editor', GUTENA_KIT_PLUGIN_URL . 'includes/block-editor/build/index.js', array(), $this->version, false );
+		wp_enqueue_script( 'gutena-kit-block-editor', GUTENA_KIT_PLUGIN_URL . 'includes/block-editor/build/index.js', array('wp-block-editor', 'wp-blocks', 'wp-components', 'wp-compose', 'wp-core-data', 'wp-data', 'wp-element', 'wp-hooks', 'wp-i18n', 'wp-primitives'), $this->version, false );
 
 		wp_enqueue_style( 'gutena-kit-block-editor-style', GUTENA_KIT_PLUGIN_URL . 'admin/css/gutena-kit-editor.css', array(), $this->version, 'all' );
 
@@ -293,19 +293,20 @@ class Gutena_Kit_Admin {
 			);
 		}
 
+		$typography_group = empty( $_POST['typography_group'] ) ? 'default' : sanitize_key( $_POST['typography_group'] );
 		// Get global typography
 		$global_typography = get_option( 'gutena_kit_global_typography', array() );
 
 		$message = '';
 		if ( isset( $_POST['delete_typography'] ) ) {
-			if ( $typography['slug'] === sanitize_key( $_POST['delete_typography'] ) && ! empty( $global_typography[ $typography['slug'] ] ) ) {
+			if ( $typography['slug'] === sanitize_key( $_POST['delete_typography'] ) && ! empty( $global_typography[ $typography_group ] )  && ! empty( $global_typography[ $typography_group ][ $typography['slug'] ] ) ) {
 				// destroy a single element of an array
-				unset( $global_typography[ $typography['slug'] ] );
+				unset( $global_typography[ $typography_group ][ $typography['slug'] ] );
 			}
 			$message = __( 'Typography deleted', 'gutena-kit' );
 		} else {
 			// slug : typography 
-			$global_typography[ $typography['slug'] ] = $typography;
+			$global_typography[ $typography_group ][ $typography['slug'] ] = $typography;
 			$message = __( 'Typography saved', 'gutena-kit' );
 		}
 

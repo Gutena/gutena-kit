@@ -206,9 +206,21 @@ class Gutena_Kit_Public {
 			if ( ! isset( $gutena_kit_global_typography ) ) {
 				$gutena_kit_global_typography = get_option( 'gutena_kit_global_typography', array() );
 			}
+			//global typography array: [slug => global-typography]
+			$global_typography_array = array();
 	
-			if ( ! empty( $gutena_kit_global_typography ) && is_array( $gutena_kit_global_typography ) && ! empty( $gutena_kit_global_typography[ $global_typography ] ) && ! empty( $gutena_kit_global_typography[ $global_typography ]['cssJson'] ) ) { 
-				$attrs['gutenaKitStyle']['cssJson'] = array_merge( $attrs['gutenaKitStyle']['cssJson'],$gutena_kit_global_typography[ $global_typography ]['cssJson'] );
+			//Prepare global typography array by ungrouping 
+			if ( ! empty( $gutena_kit_global_typography ) && is_array( $gutena_kit_global_typography ) ) {
+				foreach ($gutena_kit_global_typography as $gt ) {
+					$global_typography_array = array_merge( $global_typography_array, $gt );
+				}
+			} else {
+				$global_typography = false;
+			}
+	
+			if ( false !== $global_typography && ! empty( $global_typography_array[ $global_typography ] ) && ! empty( $global_typography_array[ $global_typography ]['cssJson'] ) ) { 
+				//print_r($global_typography_array);exit;
+				//$attrs['gutenaKitStyle']['cssJson'] = array_merge( $attrs['gutenaKitStyle']['cssJson'],$global_typography_array[ $global_typography ]['cssJson'] );
 				array_push( $css_slug_array, $global_typography );
 			}else{
 				$global_typography = false;
@@ -301,12 +313,12 @@ class Gutena_Kit_Public {
 			}
 		
 			//Add global typography
-			if ( ! empty( $global_typography ) && ! empty( $gutena_kit_global_typography[ $global_typography ]['cssJson'] ) ) {
+			if ( ! empty( $global_typography ) && ! empty( $global_typography_array[ $global_typography ]['cssJson'] ) ) {
 				$css = '';
 				//typography
 				foreach ( array( 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transform', 'text-decoration' ) as $font_property ) {
-					if ( true === array_key_exists( $preVar.'gt-'.$font_property, $gutena_kit_global_typography[ $global_typography ]['cssJson'] ) ) {
-						$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'gt-'.$font_property] .' !important;';
+					if ( true === array_key_exists( $preVar.'gt-'.$font_property, $global_typography_array[ $global_typography ]['cssJson'] ) ) {
+						$css .= ' '.$font_property.':'. $global_typography_array[ $global_typography ]['cssJson'][$preVar.'gt-'.$font_property] .' !important;';
 					}
 				}
 				
@@ -450,12 +462,12 @@ class Gutena_Kit_Public {
 			//$attrs['gutenaKitCSS']['generatedCss'] .= '@media only screen and (min-width: 768px) and (max-width: '.$media_query_tab.') { .' . $gk_id .' {';
 	
 			// global typography for mobile
-			if ( ! empty( $global_typography ) && ! empty( $gutena_kit_global_typography[ $global_typography ]['cssJson'] ) ) {
+			if ( ! empty( $global_typography ) && ! empty( $global_typography_array[ $global_typography ]['cssJson'] ) ) {
 				$css .= '.has-gutenakit-gt-'.$global_typography.'{';
 				//typography
 				foreach ( array( 'font-size', 'line-height' ) as $font_property ) {
-					if ( true === array_key_exists( $preVar.'gt-t-'.$font_property, $gutena_kit_global_typography[ $global_typography ]['cssJson'] ) ) {
-						$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'gt-t-'.$font_property] .' !important;';
+					if ( true === array_key_exists( $preVar.'gt-t-'.$font_property, $global_typography_array[ $global_typography ]['cssJson'] ) ) {
+						$css .= ' '.$font_property.':'. $global_typography_array[ $global_typography ]['cssJson'][$preVar.'gt-t-'.$font_property] .' !important;';
 					}
 				}
 				$css .='}'; 
@@ -505,12 +517,12 @@ class Gutena_Kit_Public {
 			}
 	
 			// global typography for mobile
-			if ( ! empty( $global_typography ) && ! empty( $gutena_kit_global_typography[ $global_typography ]['cssJson'] ) ) {
+			if ( ! empty( $global_typography ) && ! empty( $global_typography_array[ $global_typography ]['cssJson'] ) ) {
 				$css .= '.has-gutenakit-gt-'.$global_typography.'{';
 				//typography
 				foreach ( array( 'font-size', 'line-height' ) as $font_property ) {
-					if ( true === array_key_exists( $preVar.'gt-m-'.$font_property, $gutena_kit_global_typography[ $global_typography ]['cssJson'] ) ) {
-						$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'gt-m-'.$font_property] .' !important;';
+					if ( true === array_key_exists( $preVar.'gt-m-'.$font_property, $global_typography_array[ $global_typography ]['cssJson'] ) ) {
+						$css .= ' '.$font_property.':'. $global_typography_array[ $global_typography ]['cssJson'][$preVar.'gt-m-'.$font_property] .' !important;';
 					}
 				}
 				$css .='}'; 

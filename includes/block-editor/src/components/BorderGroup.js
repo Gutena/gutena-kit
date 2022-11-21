@@ -52,6 +52,7 @@ import { gkIsEmpty, getGlobalColorVar } from '../helpers/helpers';
         }
 
         //get global color var name
+        /*** 
         if ( 'border' === attrName ) {
             if ( ! gkIsEmpty(value?.color) ) {
                 value.color = getGlobalColorVar( colorGradientSettings, value.color );
@@ -62,7 +63,7 @@ import { gkIsEmpty, getGlobalColorVar } from '../helpers/helpers';
                     }
                 });
             }
-        }
+        }***/
 
         newAttr[activeTab][ attrName ] = value;
         

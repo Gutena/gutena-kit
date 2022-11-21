@@ -18,10 +18,11 @@ import {  PanelBody,
 import SelectDeviceDropdown from './components/SelectDeviceDropdown';
 import  Translate3dControl  from './components/Translate3dControl';
 import BorderGroup from './components/BorderGroup';
+import colorSettingsData from './components/colorSettingsData';
 import RangeControlUnit from './components/RangeControlUnit';
 import EventsControl from './components/EventsControl';
 import TypographySettings from './Supports/Typography/TypographySettings';
-import { gkIsEmpty, spaceCss, spaceVar, borderCss, borderVar, boxShadowCss, typographyCss, typographyVar, gkCamelToDash, getEditorDoc, gkCssJson, renderBlockCSSForResponsive } from './helpers/helpers';
+import { gkIsEmpty, spaceCss, spaceVar, borderCss, borderVar, boxShadowCss, typographyCss, typographyVar, gkCamelToDash, getEditorDoc, gkCssJson, renderBlockCSSForResponsive, getGlobalColorVar } from './helpers/helpers';
 
 //https://make.wordpress.org/core/2019/04/09/the-block-editor-javascript-module-in-5-2/
  
@@ -73,6 +74,8 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             []
         );
         
+        //Color data: wp-core, theme, custom colors
+        const colorGradientSettings = colorSettingsData();
 
         //Allowed margin sides
         const marginSides =  ( gkIsEmpty( supports?.spacing?.margin ) || !Array.isArray( supports.spacing.margin )  ) ? ['top','right','bottom','left'] : supports.spacing.margin;
@@ -596,7 +599,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                             [ 'text', 'background', 'gradient', 'link' ].forEach( ( colorName ) => {
                                 if ( ! gkIsEmpty( styleVar[ cssProperty ][ eventName ][ colorName ] ) ) {
                                     //put gradient color in background var
-                                    cssVar += newVarName+'-'+( ( 'gradient' === colorName ) ? 'background' : colorName )+':'+styleVar[ cssProperty ][ eventName ][ colorName ]+';' ;
+                                    cssVar += newVarName+'-'+( ( 'gradient' === colorName ) ? 'background' : colorName )+':'+getGlobalColorVar( colorGradientSettings, styleVar[ cssProperty ][ eventName ][ colorName ] )+';' ;
                                 }
                             } );
                         }
@@ -604,8 +607,10 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                         // Overlay 
                         if ( 'overlay' === cssProperty && ( ! gkIsEmpty( styleVar[ cssProperty ][ eventName ].color ) || ! gkIsEmpty( styleVar[ cssProperty ][ eventName ].gradient ) ) ) {
                             
+                            let overlayColor = gkIsEmpty( styleVar[ cssProperty ][ eventName ].color ) ? styleVar[ cssProperty ][ eventName ].gradient : styleVar[ cssProperty ][ eventName ].color;
+                            overlayColor = getGlobalColorVar( colorGradientSettings, overlayColor );
                             //color
-                            cssVar += newVarName+'-background:'+( gkIsEmpty( styleVar[ cssProperty ][ eventName ].color ) ? styleVar[ cssProperty ][ eventName ].gradient : styleVar[ cssProperty ][ eventName ].color ) +';';
+                            cssVar += newVarName+'-background:'+overlayColor+';';
         
                             //opacity
                             cssVar += newVarName+'-opacity:'+(gkIsEmpty( styleVar[ cssProperty ][ eventName ]?.opacity ) ? '80%;' : styleVar[ cssProperty ][ eventName ].opacity+'%;');
@@ -614,12 +619,12 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
         
                         // Border
                         if ( 'border' === cssProperty ) {
-                            cssVar += borderVar( styleVar[ cssProperty ][ eventName ] , newVarName);
+                            cssVar += borderVar( styleVar[ cssProperty ][ eventName ] , newVarName, colorGradientSettings);
                         }
                         
                         // Box shadow
                         if ( 'boxShadow' === cssProperty ) {
-                            cssVar += newVarName+':'+boxShadowCss( styleVar[ cssProperty ][ eventName ] , false)+';';
+                            cssVar += newVarName+':'+boxShadowCss( styleVar[ cssProperty ][ eventName ] , false, colorGradientSettings)+';';
                         }
                     }
                 } );
@@ -852,7 +857,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
            
             //CSS json
             newstyle.cssJson = gkIsEmpty( newstyle ) ? undefined : generateCssVar( newstyle, " .gutenakitid-"+clientId, true );
-            console.log("newstyle",newstyle);
+            //console.log("newstyle",newstyle);
 
             let isGutenaKitStyleEmpty = checkGutenaStyleEmpty( newstyle );
 
@@ -955,6 +960,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                     </HStack>
                     { gkSupports.typography &&
                     <TypographySettings 
+                        blockName={ name }
                         attrValue={  gutenaKitStyle?.typography }
                         onChangeFunc = { ( typography ) => setAttr( typography, 'typography' ) }
                         globalTypographySlug = { gutenaKitStyle?.globalTypography }
