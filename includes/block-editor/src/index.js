@@ -25,7 +25,7 @@ const editBlocksComponents = {
 //Register existing block edit controls by custom componenet 
 Object.keys( editBlocksComponents ).forEach( blockSlug =>{
     
-    console.log("blockSlug",blockSlug);
+    //console.log("blockSlug",blockSlug);
     
     addFilter(
         'editor.BlockEdit',
