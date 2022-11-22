@@ -352,8 +352,7 @@ export const gkCssJson = ( cssVar ) => {
 	if ( gkIsEmpty( cssVar ) ) {
 		return {};
 	}
-	//remove spaces
-	cssVar = cssVar.replace(' ', '');
+	//remove new lines
 	cssVar = cssVar.replace(/\n/g, " ");
 
 	//convert into array e.g. --gutenakit-css-property:value;
@@ -387,11 +386,9 @@ export const getGlobalTypographyCss = ( gutena_kit_block_editor ) => {
 		let media_query_tab = gkIsEmpty( gutena_kit_block_editor?.media_query_tab ) ?'1080px': gutena_kit_block_editor.media_query_tab;
 		let media_query_mobile = gkIsEmpty( gutena_kit_block_editor?.media_query_mobile ) ?'767px': gutena_kit_block_editor.media_query_mobile;
 
-		//console.log("gutena_kit_block_editor.globalTypography",gutena_kit_block_editor.globalTypography);
-		Object.keys( gutena_kit_block_editor.globalTypography ).forEach( typographyGroup =>{ 
+		Object.keys( gutena_kit_block_editor.globalTypography ).forEach( typographyGroup => { 
 			let groupTypography = gutena_kit_block_editor.globalTypography[typographyGroup];
 			
-			//console.log("groupTypography",groupTypography);
 			Object.keys( groupTypography ).forEach( slug =>{ 
 				if ( ! gkIsEmpty( groupTypography[slug]?.['cssJson'] ) ) {
 					let cssFont = '';
