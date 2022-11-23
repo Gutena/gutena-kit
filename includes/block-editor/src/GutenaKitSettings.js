@@ -857,7 +857,6 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
            
             //CSS json
             newstyle.cssJson = gkIsEmpty( newstyle ) ? undefined : generateCssVar( newstyle, " .gutenakitid-"+clientId, true );
-            //console.log("newstyle",newstyle);
 
             let isGutenaKitStyleEmpty = checkGutenaStyleEmpty( newstyle );
 

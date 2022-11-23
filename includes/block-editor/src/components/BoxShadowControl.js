@@ -35,7 +35,6 @@ const BoxShadowControl = ( {
 } ) => {
 
 	// props: onBoxShadow : variable use to hide enable box shadow toggle button
-
 	const MAX_SPACE_VALUES = {
 		px: 50,
 		em: 10,

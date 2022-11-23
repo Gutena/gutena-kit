@@ -1,14 +1,14 @@
 /**
  * Box Shadow Group
  */
- import { __ } from '@wordpress/i18n';
- import {  useState } from '@wordpress/element';
- import { 
-     PanelBody, 
-     __experimentalToggleGroupControl as ToggleGroupControl,
-     __experimentalToggleGroupControlOption as ToggleGroupControlOption,
- } from '@wordpress/components';
- import GetComponent from './GetComponent';
+import { __ } from '@wordpress/i18n';
+import { useState } from '@wordpress/element';
+import { 
+    PanelBody, 
+    __experimentalToggleGroupControl as ToggleGroupControl,
+    __experimentalToggleGroupControlOption as ToggleGroupControlOption,
+} from '@wordpress/components';
+import GetComponent from './GetComponent';
  
 const DEFAULT_EVENTS_TABS = {
     normal: __( 'Normal', 'gutena-kit' ),
@@ -17,7 +17,7 @@ const DEFAULT_EVENTS_TABS = {
  
 const noop = () => {};
  
- const EventsControl = ( props ) => {
+const EventsControl = ( props ) => {
     const {
         componentName = '',
         label = '',
@@ -27,28 +27,26 @@ const noop = () => {};
         withPanel = true
     } = props;
 
-     const eventAttr = Object.keys( eventTabs );
-     const [ activeTab, setActiveTab ] = useState( eventAttr[0] );
- 
-     //Set attribute
-     const setAttr = ( value ) => {
+    const eventAttr = Object.keys( eventTabs );
+    const [ activeTab, setActiveTab ] = useState( eventAttr[0] );
+
+    //Set attribute
+    const setAttr = ( value ) => {
         let newAttr = attrValue;
         newAttr[activeTab] = value;
         onChangeFunc( { ...newAttr } );
     };
 
-   
- 
     const controls = (
         <>
             { eventAttr.length > 1 && /* show only if there is multiple items present. */
-               <ToggleGroupControl 
-                   label={ label } 
-                   value={ activeTab } 
-                   onChange={ ( value ) => setActiveTab( value ) } 
-                   isBlock 
-                   hideLabelFromVision={ withPanel } 
-               >
+                <ToggleGroupControl 
+                    label={ label } 
+                    value={ activeTab } 
+                    onChange={ ( value ) => setActiveTab( value ) } 
+                    isBlock 
+                    hideLabelFromVision={ withPanel } 
+                >
                     {
                         eventAttr.map( ( value ) => (
                             <ToggleGroupControlOption key={ value } value={ value } label={ eventTabs[ value ] } />
@@ -64,16 +62,16 @@ const noop = () => {};
             />
         </>
     );
- 
-     if ( withPanel ) {
-         return (
-             <PanelBody title={ label } initialOpen={ false } >
-                 { controls }
-             </PanelBody>
-         );
-     }
- 
-     return controls;
- };
- 
- export default EventsControl;
+
+    if ( withPanel ) {
+        return (
+            <PanelBody title={ label } initialOpen={ false }>
+                { controls }
+            </PanelBody>
+        );
+    }
+
+    return controls;
+};
+
+export default EventsControl;

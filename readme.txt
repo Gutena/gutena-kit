@@ -2,7 +2,7 @@
 Contributors: expresstech
 Tags: gutena, gutena kit
 Requires at least: 5.8
-Tested up to: 6.0
+Tested up to: 6.1
 Requires PHP: 5.6
 Stable tag: 1.0.6
 License: GPLv3
@@ -68,6 +68,7 @@ Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtab
 * Added responsive typography settings
 * Added global typography settings for add or use global typography in a block
 * Added display settings for hide a block in specific device like desktop, tablet or mobile
+* Added Advanced Button Block
 
 = 1.0.6 | 2nd September 2022 =
 * Updated banners and icons

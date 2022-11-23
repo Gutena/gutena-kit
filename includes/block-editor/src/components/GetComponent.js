@@ -27,9 +27,6 @@ const GetComponent = ( props ) => {
             <BoxShadowControl { ...props } />
         );
     }
-
-    
-    
 }
 
- export default GetComponent;
+export default GetComponent;

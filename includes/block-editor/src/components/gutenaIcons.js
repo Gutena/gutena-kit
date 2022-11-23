@@ -1,6 +1,4 @@
-import {
-    Icon,
-} from '@wordpress/components';
+import { Icon } from '@wordpress/components';
 
 export const desktopIcon = () => (
     <Icon
