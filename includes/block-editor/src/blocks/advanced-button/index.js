@@ -16,6 +16,7 @@ import {
     FlexItem,
     Button,
     PanelBody,
+    BaseControl,
     SelectControl,
 } from '@wordpress/components';
 
@@ -40,7 +41,7 @@ import './editor.scss'
 registerBlockVariation( 'core/button', {
     name: 'gutena-advanced-button',
     title: __( 'Advanced Button', 'gutena-forms' ),
-    description: __( 'Advanced Button', 'gutena-forms' ),
+    description: __( 'Prompt visitors to take action with a Advanced Button.', 'gutena-forms' ),
     category: 'gutena',
     attributes: {
         gutenaAdvancedButton: true,
@@ -167,6 +168,8 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
                     } );
                 }
             }, [ btnIcon ] )
+
+            const isStyleOutline = className?.includes( 'is-style-outline' );
     
             const dynamicStyles = DynamicStyles( attributes )
             const renderCSS = (
@@ -199,7 +202,7 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
                         .color-block-support-panel, .typography-block-support-panel, .border-block-support-panel {
                             display: none !important;
                         }
-                        .block-editor-block-inspector > div:nth-child(2) {
+                        .block-editor-blocfk-inspector > div:nth-child(2) {
                             display: none !important;
                         }
                         .components-gk-range-unit-control legend {
@@ -232,7 +235,7 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
                             <HStack>
                                 <FlexItem>
                                     <Text isBlock>
-                                        { __( 'Size', 'gutena-kit' ) } { currentSize && <Text variant="muted" size="12">({ DEFAULT_SIZES[ btnSize?.size ]?.name })</Text> }
+                                        { __( 'Size', 'gutena-kit' ) } { currentSize && <Text variant="muted" size="13">({ DEFAULT_SIZES[ btnSize?.size ]?.name })</Text> }
                                     </Text>
                                 </FlexItem>
                                 <FlexItem>
@@ -296,7 +299,7 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
                             }
                         </PanelBody>
                         <PanelBody title={ __( 'Icon', 'gutena-kit-pro' ) } initialOpen={ false }>
-                            <Spacer marginBottom={ 3 } className="gutena-font-icon-picker">
+                            <BaseControl label={ __( 'Select Icon', 'gutena-btns' ) } __nextHasNoMarginBottom={ true } className="gutena-font-icon-picker">
                                 <FontIconPicker
                                     icons={ icons }
                                     value={ btnIcon }
@@ -310,7 +313,7 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
                                     theme="default"
                                     isMulti={ false }
                                 />
-                            </Spacer>
+                            </BaseControl>
                             { btnIcon && (
                                 <Spacer marginTop={ 5 } marginBottom={ 0 }>
                                     <SelectControl

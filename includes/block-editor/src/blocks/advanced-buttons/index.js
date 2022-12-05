@@ -60,8 +60,6 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
                         btnFontSize: '15px',
                         btnColors: {
                             normal: {
-                                text: '#21222F',
-                                background: '#F6B642',
                                 icon: '#21222F'
                             }
                         },
