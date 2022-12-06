@@ -28,9 +28,7 @@ import { gkIsEmpty, spaceCss, spaceVar, borderCss, borderVar, boxShadowCss, typo
  
 //Edit Function
 export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
-
     return ( props ) => {
-
         const {
 			name,
 			attributes,
@@ -47,7 +45,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
         //     return ( <BlockEdit { ...props } /> );
         // }
 
-        if( -1 === [ 'core/group', 'core/cover', 'core/column', 'core/paragraph', 'core/heading', 'gutena/navigation-child' ].indexOf( name ) ){
+        if ( -1 === [ 'core/group', 'core/cover', 'core/column', 'core/paragraph', 'core/heading', 'gutena/navigation-child' ].indexOf( name ) ){
             return ( <BlockEdit { ...props } /> );
         }
         
@@ -68,7 +66,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
         /**
          * https://developer.wordpress.org/block-editor/reference-guides/data/data-core-blocks/#getblocktype
          */
-        const { supports={}  } = useSelect(
+         const { supports={}  } = useSelect(
             ( select ) =>
                 select( blocksStore ).getBlockType( name, '' ),
             []
@@ -106,7 +104,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                     }
                 }
             }
-        }else{
+        } else {
             DefaultStyle = {};
         }
 
@@ -119,9 +117,9 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
         } = attributes;
 
          //Get Device preview type
-        const deviceType = useSelect((select) => {
+        const deviceType = useSelect( ( select ) => {
             return select("core/edit-post").__experimentalGetPreviewDeviceType();
-            }, []);
+        }, [] );
         
         //Style name based on device type
         const styleName = ( 'Desktop' === deviceType ) ? 'default' : ( ( 'Tablet' === deviceType ) ? 'tablet' : 'mobile' ) ;

@@ -100,7 +100,7 @@ class Gutena_Kit_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-		// wp_enqueue_script( $this->gutena_kit, plugin_dir_url( __FILE__ ) . 'js/gutena-kit-public.js', array( 'wp-hooks' ), $this->version, false );
+		// wp_enqueue_script( $this->gutena_kit, plugin_dir_url( __FILE__ ) . 'js/gutena-kit-public.js', array( 'wp-hooks' ), $this->version, false );	
 	}
 
 	/**
@@ -197,6 +197,7 @@ class Gutena_Kit_Public {
 
 		return $metadata;
 	}
+
 	// block_type_metadata Filter
 	public function edit_block_metadata( $metadata ) {
 		if ( ! empty( $metadata['name'] ) ) {
@@ -210,6 +211,7 @@ class Gutena_Kit_Public {
 	// Get gutena Kit settings
 	private function get_gutena_kit_settings_css( $attrs ){
 		static $css_slug_array = array();
+		
 		if ( empty( $attrs['gutenaKitID'] ) || empty( $attrs['gutenaKitStyle'] ) ) {
 			return $attrs;
 		}
@@ -259,6 +261,8 @@ class Gutena_Kit_Public {
 	
 		$media_query_tab = apply_filters('gutena-kit-media-query-tab', '1080px' );
 		$media_query_mobile = apply_filters('gutena-kit-media-query-mobile', '767px' );
+		$media_query_desktop = intval( $media_query_tab ) + 1;
+		$media_query_desktop = $media_query_desktop.'px';
 	
 		$attrs['gutenaKitCSS']['generatedCss'] = '';
 		$preVar = '';//--gutenakit--
@@ -269,91 +273,94 @@ class Gutena_Kit_Public {
 		/*******************
 		 Default :start
 		 *********************/
-			//spacing
-			foreach ( array( 'margin', 'padding' ) as $spacing ) {
-				foreach ( array( 'top', 'right', 'bottom', 'left' ) as $position ) {
-					if ( true === array_key_exists( $preVar.'default-'.$spacing.'-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-						$css .= ' '.$spacing.'-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'default-'.$spacing.'-'.$position] .' !important;';
-					}
+		//spacing
+		foreach ( array( 'margin', 'padding' ) as $spacing ) {
+			foreach ( array( 'top', 'right', 'bottom', 'left' ) as $position ) {
+				if ( true === array_key_exists( $preVar.'default-'.$spacing.'-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
+					$css .= ' '.$spacing.'-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'default-'.$spacing.'-'.$position] .' !important;';
 				}
 			}
-	
-			// Text color
-			if ( true === array_key_exists( $preVar.'color-normal-text', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= ' color:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'color-normal-text'] .' !important;';
-			}
-	
-			// Background color
-			if ( true === array_key_exists( $preVar.'color-normal-background', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= ' background:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'color-normal-background'] .' !important;';
-			}
-	
-			// Border
-			if ( true === array_key_exists( $preVar.'border-normal', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= ' border:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-normal'] .' !important;';
-			} else {
-				foreach ( array( 'top', 'right', 'bottom', 'left' ) as $position ) {
-					if ( true === array_key_exists( $preVar.'border-normal-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-						$css .= ' border-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-normal-'.$position] .' !important;';
-					}
+		}
+
+		// Text color
+		if ( true === array_key_exists( $preVar.'color-normal-text', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			$css .= ' color:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'color-normal-text'] .' !important;';
+		}
+
+		// Background color
+		if ( true === array_key_exists( $preVar.'color-normal-background', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			$css .= ' background:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'color-normal-background'] .' !important;';
+		}
+
+		// Border
+		if ( true === array_key_exists( $preVar.'border-normal', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			$css .= ' border:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-normal'] .' !important;';
+		} else {
+			foreach ( array( 'top', 'right', 'bottom', 'left' ) as $position ) {
+				if ( true === array_key_exists( $preVar.'border-normal-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
+					$css .= ' border-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-normal-'.$position] .' !important;';
 				}
 			}
-	
-			// Border radius
-			if ( true === array_key_exists( $preVar.'border-normal-radius', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= ' border-radius:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-normal-radius'] .' !important;';
-			}
-	
-			// Box Shadow
-			if ( true === array_key_exists( $preVar.'boxshadow-normal', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= 'box-shadow:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'boxshadow-normal'] .' !important;';
-			}
-	
-			// Overlay parent
-			if ( true === array_key_exists( $preVar.'overlay-normal-background', $attrs['gutenaKitStyle']['cssJson'] ) || true === array_key_exists( $preVar.'overlay-hover-background', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= ' position: relative;';
-			}
-	
-			//typography
-			if ( empty( $global_typography ) ) {
-				foreach ( array( 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transform', 'text-decoration' ) as $font_property ) {
-					if ( true === array_key_exists( $preVar.''.$font_property, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-						$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.''.$font_property] .' !important;';
-					}
+		}
+
+		// Border radius
+		if ( true === array_key_exists( $preVar.'border-normal-radius', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			$css .= ' border-radius:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-normal-radius'] .' !important;';
+		}
+
+		// Box Shadow
+		if ( true === array_key_exists( $preVar.'boxshadow-normal', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			$css .= 'box-shadow:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'boxshadow-normal'] .' !important;';
+		}
+
+		// Overlay parent
+		if ( true === array_key_exists( $preVar.'overlay-normal-background', $attrs['gutenaKitStyle']['cssJson'] ) || true === array_key_exists( $preVar.'overlay-hover-background', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			$css .= ' position: relative;';
+		}
+
+		//typography
+		if ( empty( $global_typography ) ) {
+			foreach ( array( 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transform', 'text-decoration' ) as $font_property ) {
+				if ( true === array_key_exists( $preVar.''.$font_property, $attrs['gutenaKitStyle']['cssJson'] ) ) {
+					$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.''.$font_property] .' !important;';
 				}
 			}
-	
-			//Hide in desktop
-			if ( true === array_key_exists( $preVar.'display-default', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= ' display: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'display-default'].';';
-			} elseif (true === array_key_exists( $preVar.'textcontentgap', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				 //text content gap, usually use for inline image gap
-				$css .= ' display:flex; gap:'.$attrs['gutenaKitStyle']['cssJson'][$preVar.'textcontentgap'].';';
-			}
-	
-			//translate3d in desktop
-			if ( true === array_key_exists( $preVar.'translate3d-default', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'translate3d-default'].';';
-			}
-	
-			if ( ! empty( $css ) ) {
-				$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .'{ ' . $css . '}';
-			}
+		}
+
 		
-			//Add global typography
-			if ( ! empty( $global_typography ) && ! empty( $global_typography_array[ $global_typography ]['cssJson'] ) ) {
-				$css = '';
-				//typography
-				foreach ( array( 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transform', 'text-decoration' ) as $font_property ) {
-					if ( true === array_key_exists( $preVar.'gt-'.$font_property, $global_typography_array[ $global_typography ]['cssJson'] ) ) {
-						$css .= ' '.$font_property.':'. $global_typography_array[ $global_typography ]['cssJson'][$preVar.'gt-'.$font_property] .' !important;';
-					}
-				}
-				
-				if ( ! empty( $css ) ) {
-					$attrs['gutenaKitCSS']['generatedCss'] .= ' .has-gutenakit-gt-'.$global_typography.'{' . $css . '}';
+		if (true === array_key_exists( $preVar.'textcontentgap', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+				//text content gap, usually use for inline image gap
+			$css .= ' display:flex; gap:'.$attrs['gutenaKitStyle']['cssJson'][$preVar.'textcontentgap'].';';
+		}
+
+		//translate3d in desktop
+		if ( true === array_key_exists( $preVar.'translate3d-default', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'translate3d-default'].';';
+		}
+
+		if ( ! empty( $css ) ) {
+			$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .'{ ' . $css . '}';
+		}
+
+		//Hide in desktop
+		if ( true === array_key_exists( $preVar.'display-default', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			$attrs['gutenaKitCSS']['generatedCss'] .= '@media only screen and (min-width: '.$media_query_desktop .') { '  . $gk_id .'{ display: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'display-default'].'; } } ';
+		}
+	
+		//Add global typography
+		if ( ! empty( $global_typography ) && ! empty( $global_typography_array[ $global_typography ]['cssJson'] ) ) {
+			$css = '';
+			//typography
+			foreach ( array( 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transform', 'text-decoration' ) as $font_property ) {
+				if ( true === array_key_exists( $preVar.'gt-'.$font_property, $global_typography_array[ $global_typography ]['cssJson'] ) ) {
+					$css .= ' '.$font_property.':'. $global_typography_array[ $global_typography ]['cssJson'][$preVar.'gt-'.$font_property] .' !important;';
 				}
 			}
+			
+			if ( ! empty( $css ) ) {
+				$attrs['gutenaKitCSS']['generatedCss'] .= ' .has-gutenakit-gt-'.$global_typography.'{' . $css . '}';
+			}
+		}
 		/*******************
 		 Default :end
 		 *********************/
