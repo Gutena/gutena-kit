@@ -185,7 +185,6 @@ class Gutena_Kit_Public {
 				'btnSize' => 'object',
 				'btnFontSize' => 'string',
 				'btnBorder' => 'object',
-				'btnTypography' => 'string',
 				'btnColors' => 'object',
 				'btnIcon' => 'string',
 				'btnIconSVG' => 'string',

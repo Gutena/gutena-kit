@@ -1,4 +1,7 @@
 .gutena-advanced-button .wp-block-button__link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-family: inherit !important;
     font-size: var(--gutena--advanced-button-font-size, inherit) !important;
     color: var(--gutena--advanced-button-text-color, var(--wp--preset--color--background)) !important;
