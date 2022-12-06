@@ -16,6 +16,7 @@ import {
     FlexItem,
     Button,
     PanelBody,
+    BaseControl,
     SelectControl,
 } from '@wordpress/components';
 
@@ -39,15 +40,26 @@ import './editor.scss'
  **************************************/
 registerBlockVariation( 'core/button', {
     name: 'gutena-advanced-button',
-    title: __( 'Advanced Button', 'gutena-forms' ),
-    description: __( 'Advanced Button', 'gutena-forms' ),
+    title: __( 'Advanced Button', 'gutena-kit' ),
+    description: __( 'Prompt visitors to take action with a Advanced Button.', 'gutena-kit' ),
     category: 'gutena',
     attributes: {
         gutenaAdvancedButton: true,
         className: 'gutena-advanced-button',
     },
     scope: [ 'block', 'inserter' ],
-    //icon: hamburgerIcon,
+    icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clipPath="url(#clip0_1026_34)">
+                <path d="M13 18H11H4C3.73478 18 3.48043 17.8946 3.29289 17.7071C3.10536 17.5196 3 17.2652 3 17V7C3 6.73478 3.10536 6.48043 3.29289 6.29289C3.48043 6.10536 3.73478 6 4 6H20C20.2652 6 20.5196 6.10536 20.7071 6.29289C20.8946 6.48043 21 6.73478 21 7V17C21 17.2652 20.8946 17.5196 20.7071 17.7071C20.5196 17.8946 20.2652 18 20 18H13ZM5 16H19V8H5V16ZM8 11H16V13H8V11Z" fill="#3F6DE4"/>
+            </g>
+            <defs>
+                <clipPath id="clip0_1026_34">
+                    <rect width="24" height="24" fill="white"/>
+                </clipPath>
+            </defs>
+        </svg>
+    ),
     isActive: ( { className }, variationAttributes ) =>
         true === variationAttributes.gutenaAdvancedButton &&
         'undefined' !== typeof className &&
@@ -117,7 +129,6 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
             btnSize,
             btnFontSize,
             btnBorder,
-            btnTypography,
             btnColors,
             btnIcon,
             btnIconSVG,
@@ -167,6 +178,8 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
                     } );
                 }
             }, [ btnIcon ] )
+
+            const isStyleOutline = className?.includes( 'is-style-outline' );
     
             const dynamicStyles = DynamicStyles( attributes )
             const renderCSS = (
@@ -199,7 +212,7 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
                         .color-block-support-panel, .typography-block-support-panel, .border-block-support-panel {
                             display: none !important;
                         }
-                        .block-editor-block-inspector > div:nth-child(2) {
+                        .block-editor-blocfk-inspector > div:nth-child(2) {
                             display: none !important;
                         }
                         .components-gk-range-unit-control legend {
@@ -232,7 +245,7 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
                             <HStack>
                                 <FlexItem>
                                     <Text isBlock>
-                                        { __( 'Size', 'gutena-kit' ) } { currentSize && <Text variant="muted" size="12">({ DEFAULT_SIZES[ btnSize?.size ]?.name })</Text> }
+                                        { __( 'Size', 'gutena-kit' ) } { currentSize && <Text variant="muted" size="13">({ DEFAULT_SIZES[ btnSize?.size ]?.name })</Text> }
                                     </Text>
                                 </FlexItem>
                                 <FlexItem>
@@ -296,12 +309,11 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
                             }
                         </PanelBody>
                         <PanelBody title={ __( 'Icon', 'gutena-kit-pro' ) } initialOpen={ false }>
-                            <Spacer marginBottom={ 3 } className="gutena-font-icon-picker">
+                            <BaseControl label={ __( 'Select Icon', 'gutena-btns' ) } __nextHasNoMarginBottom={ true } className="gutena-font-icon-picker">
                                 <FontIconPicker
                                     icons={ icons }
                                     value={ btnIcon }
                                     onChange={ ( icon ) => {
-                                        console.log(new Date())
                                         setAttributes( { btnIcon: icon } )
                                         setAttributes( { btnIconSVG: RemixIcons?.[ icon.replace( 'ri-', '' ) ] } )
                                     } }
@@ -310,7 +322,7 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
                                     theme="default"
                                     isMulti={ false }
                                 />
-                            </Spacer>
+                            </BaseControl>
                             { btnIcon && (
                                 <Spacer marginTop={ 5 } marginBottom={ 0 }>
                                     <SelectControl
