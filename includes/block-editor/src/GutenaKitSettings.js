@@ -47,22 +47,22 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
         //     return ( <BlockEdit { ...props } /> );
         // }
 
-        if( -1 === [ 'core/group', 'core/cover', 'core/column', 'core/paragraph', 'core/heading' ].indexOf( name ) ){
+        if( -1 === [ 'core/group', 'core/cover', 'core/column', 'core/paragraph', 'core/heading', 'gutena/navigation-child' ].indexOf( name ) ){
             return ( <BlockEdit { ...props } /> );
         }
         
         //Show or hide controls in gutena kit settings
         const gkSupports = {
-            color:( -1 === [ 'core/cover' ].indexOf( name ) ),
-            overlay:( -1 !== [ 'core/group', 'core/column' ].indexOf( name ) ),
-            spacing:true,
-            border:( -1 !== [ 'core/group', 'core/column' ].indexOf( name ) ),
-            boxShadow:( -1 === [ 'core/cover' ].indexOf( name ) ),
-            display:true,
-            typography:( -1 !== [ 'core/paragraph', 'core/heading', 'core/group' ].indexOf( name ) ),
-            translate3d:false,
-            textContentGap:( -1 !== [ 'core/paragraph', 'core/heading' ].indexOf( name ) ),
-            linkSettings:( -1 !== [ 'core/paragraph', 'core/heading', 'core/group' ].indexOf( name ) ),
+            color: ( -1 === [ 'core/cover', 'gutena/navigation-child' ].indexOf( name ) ),
+            overlay: ( -1 !== [ 'core/group', 'core/column' ].indexOf( name ) ),
+            spacing: ( -1 === [ 'gutena/navigation-child' ].indexOf( name ) ),
+            border: ( -1 !== [ 'core/group', 'core/column' ].indexOf( name ) ),
+            boxShadow: ( -1 === [ 'core/cover' ].indexOf( name ) ),
+            display: true,
+            typography: ( -1 !== [ 'core/paragraph', 'core/heading', 'core/group' ].indexOf( name ) ),
+            translate3d: false,
+            textContentGap: ( -1 !== [ 'core/paragraph', 'core/heading' ].indexOf( name ) ),
+            linkSettings: ( -1 !== [ 'core/paragraph', 'core/heading', 'core/group' ].indexOf( name ) ),
         };
         /***** Check Core support for block : start ******/
         /**

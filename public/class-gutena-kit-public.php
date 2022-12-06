@@ -48,10 +48,8 @@ class Gutena_Kit_Public {
 	 * @param      string $version    The version of this plugin.
 	 */
 	public function __construct( $gutena_kit, $version ) {
-
 		$this->gutena_kit = $gutena_kit;
 		$this->version    = $version;
-
 	}
 
 	/**
@@ -77,14 +75,12 @@ class Gutena_Kit_Public {
 	public function add_editor_styles() {
 		add_editor_style( GUTENA_KIT_PLUGIN_URL . 'public/css/block-editor' . GUTENA_KIT_MIN_FILE . '.css' );
 
-		 // Add support for Block Styles.
-		 add_theme_support( 'wp-block-styles' );
+		// Add support for Block Styles.
+		add_theme_support( 'wp-block-styles' );
 
-		 // Add support for editor styles.
-		 add_theme_support( 'editor-styles' );
-
+		// Add support for editor styles.
+		add_theme_support( 'editor-styles' );
 	}
-
 
 	/**
 	 * Register the JavaScript for the public-facing side of the site.
@@ -104,8 +100,8 @@ class Gutena_Kit_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
+		// wp_enqueue_script( $this->gutena_kit, plugin_dir_url( __FILE__ ) . 'js/gutena-kit-public.js', array( 'wp-hooks' ), $this->version, false );
 	}
-	// wp_enqueue_script( $this->gutena_kit, plugin_dir_url( __FILE__ ) . 'js/gutena-kit-public.js', array( 'wp-hooks' ), $this->version, false );	}
 
 	/**
 	 * Add typography support to Blocks
@@ -263,8 +259,6 @@ class Gutena_Kit_Public {
 	
 		$media_query_tab = apply_filters('gutena-kit-media-query-tab', '1080px' );
 		$media_query_mobile = apply_filters('gutena-kit-media-query-mobile', '767px' );
-		$media_query_desktop = intval( $media_query_tab ) + 1;
-		$media_query_desktop = $media_query_desktop.'px';
 	
 		$attrs['gutenaKitCSS']['generatedCss'] = '';
 		$preVar = '';//--gutenakit--
@@ -329,8 +323,10 @@ class Gutena_Kit_Public {
 				}
 			}
 	
-			
-			if (true === array_key_exists( $preVar.'textcontentgap', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			//Hide in desktop
+			if ( true === array_key_exists( $preVar.'display-default', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+				$css .= ' display: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'display-default'].';';
+			} elseif (true === array_key_exists( $preVar.'textcontentgap', $attrs['gutenaKitStyle']['cssJson'] ) ) {
 				 //text content gap, usually use for inline image gap
 				$css .= ' display:flex; gap:'.$attrs['gutenaKitStyle']['cssJson'][$preVar.'textcontentgap'].';';
 			}
@@ -342,11 +338,6 @@ class Gutena_Kit_Public {
 	
 			if ( ! empty( $css ) ) {
 				$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .'{ ' . $css . '}';
-			}
-
-			//Hide in desktop
-			if ( true === array_key_exists( $preVar.'display-default', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$attrs['gutenaKitCSS']['generatedCss'] .= '@media only screen and (min-width: '.$media_query_desktop .') { '  . $gk_id .'{ display: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'display-default'].'; } } ';
 			}
 		
 			//Add global typography

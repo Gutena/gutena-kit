@@ -13,6 +13,7 @@ import { joinObjectValues } from './helpers/helpers';
 
 import './blocks/advanced-buttons'
 import './blocks/advanced-button'
+import './blocks/navigation-child'
 
 /*************************************
  Add controls in existing blocks
