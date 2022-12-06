@@ -5,119 +5,119 @@
  * OR
  * { normal: { border: {color: '#1a4548', style: 'solid', width: '50px'}, radius:npx }, hover:{} }
  */
- import { __ } from '@wordpress/i18n';
- import {useState } from '@wordpress/element'
- import { 
-     PanelBody,
-     __experimentalBorderBoxControl as BorderBoxControl,
-     __experimentalToggleGroupControl as ToggleGroupControl,
-     __experimentalToggleGroupControlOption as ToggleGroupControlOption,
- } from '@wordpress/components';
- import colorSettingsData from './colorSettingsData';
- import  RangeControlUnit  from './RangeControlUnit';
+import { __ } from '@wordpress/i18n';
+import { useState } from '@wordpress/element'
+import { 
+    PanelBody,
+    __experimentalSpacer as Spacer,
+    __experimentalBoxControl as BoxControl,
+    __experimentalBorderBoxControl as BorderBoxControl,
+    __experimentalToggleGroupControl as ToggleGroupControl,
+    __experimentalToggleGroupControlOption as ToggleGroupControlOption,
+} from '@wordpress/components';
+import colorSettingsData from './colorSettingsData';
 import { gkIsEmpty, getGlobalColorVar } from '../helpers/helpers';
  
- const DEFAULT_PROPS = {
-     normal: __( 'Normal', 'gutena-kit' ),
-     hover: __( 'Hover', 'gutena-kit' )
- }
- 
- const noop = () => {};
+const DEFAULT_PROPS = {
+    normal: __( 'Normal', 'gutena-kit' ),
+    hover: __( 'Hover', 'gutena-kit' )
+}
 
- const MAX_SPACE_VALUES = {
-    px: 200,
-    em: 40,
-    rem: 40,
-    vh: 100,
-    vw: 100,
-};
- 
- const BorderGroup = ( {
-     label = __( 'Border Settings', 'gutena-kit' ),
-     panelLabel = __( 'Border', 'gutena-kit' ),
-     attrValue = {},
-     attrProps = DEFAULT_PROPS,
-     onChangeFunc = noop,
-     rangeMax=MAX_SPACE_VALUES,
-     withPanel = true
- } ) => {
-     const propsData = Object.keys( attrProps );
-     const [ activeTab, setActiveTab ] = useState( propsData[0] );
-     const colorGradientSettings = colorSettingsData();
-     //Set attribute
-     const setAttr = ( value , attrName ) => {
+const noop = () => {};
+
+const BorderGroup = ( {
+    panelLabel = __( 'Border', 'gutena-kit' ),
+    attrValue = {},
+    attrProps = DEFAULT_PROPS,
+    onChangeFunc = noop,
+    withPanel = true,
+    borderRadius = true,
+    colorVar = false
+} ) => {
+    const propsData = Object.keys( attrProps );
+    const [ activeTab, setActiveTab ] = useState( propsData[0] );
+    const colorGradientSettings = colorSettingsData();
+    const { colors } = colorGradientSettings;
+
+    const transformBorder = data => {
+        if ( typeof data == 'object' && Object.keys( data ).length == 3 ) {
+            data.style = data?.style && data?.style !== 'undefined' ? data?.style : 'solid'
+        }
+        return data
+    }
+
+    //Set attribute
+    const setAttr = ( value , attrName ) => {
         let newAttr = attrValue;
-        if( gkIsEmpty( newAttr[activeTab] ) ){
-            newAttr[activeTab] = {};
+        if( gkIsEmpty( newAttr[ activeTab ] ) ) {
+            newAttr[ activeTab ] = {};
         }
 
         //get global color var name
-        /*** 
-        if ( 'border' === attrName ) {
-            if ( ! gkIsEmpty(value?.color) ) {
+        if ( colorVar && 'border' === attrName ) {
+            if ( ! gkIsEmpty( value?.color ) ) {
                 value.color = getGlobalColorVar( colorGradientSettings, value.color );
             } else {
                 [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
                     if ( ! gkIsEmpty( value?.[ position ]?.color ) ) {
                         value[ position ]['color'] = getGlobalColorVar( colorGradientSettings, value[ position ]['color'] );
                     }
-                });
+                } );
             }
-        }***/
+        }
 
-        newAttr[activeTab][ attrName ] = value;
+        newAttr[ activeTab ][ attrName ] = transformBorder( value );
         
         onChangeFunc( { ...newAttr } );
     };
 
-     const { colors } = colorSettingsData();
-     
-     const controls = (
-         <>
-             { propsData.length > 1 && /* show only if there is multiple items present. */
+    const controls = (
+        <>
+            { propsData.length > 1 && /* show only if there is multiple items present. */
                 <ToggleGroupControl 
-                  label={ label } 
-                  value={ activeTab } 
-                  onChange={ ( value ) => setActiveTab( value ) } 
-                  isBlock
-                  hideLabelFromVision={ withPanel }
+                    value={ activeTab } 
+                    onChange={ ( value ) => setActiveTab( value ) } 
+                    isBlock
+                    hideLabelFromVision={ withPanel }
                 >
-                     {
-                         propsData.map( ( value ) => (
-                             <ToggleGroupControlOption key={ value } value={ value } label={ attrProps[ value ] } />
-                         ) )
-                     }
-                 </ToggleGroupControl>
-             }
-             <BorderBoxControl
+                    {
+                        propsData.map( ( value ) => (
+                            <ToggleGroupControlOption key={ value } value={ value } label={ attrProps[ value ] } />
+                        ) )
+                    }
+                </ToggleGroupControl>
+            }
+            <BorderBoxControl
+                label={ __( "Border", "gutena-kit" ) }
                 onChange={ ( value ) => setAttr( value, 'border' ) }
                 value={ attrValue[ activeTab ]?.border }
                 colors={ colors }
                 enableAlpha={ true }
                 popoverOffset={ 40 }
-				popoverPlacement="left-start"
+                popoverPlacement="left-start"
                 __experimentalHasMultipleOrigins={ true }
-             />
-              <RangeControlUnit 
-                rangeLabel={ __( "Radius", "gutena-kit" ) }
-                attrValue={ attrValue[ activeTab ]?.radius }
-                onChangeFunc={ ( radius ) => setAttr( radius, 'radius' ) }
-                rangeMin={ 0 }
-                rangeMax={ rangeMax }
-                rangeStep={ 5 }
             />
-         </>
-     )
- 
-     if ( withPanel ) {
-         return (
-             <PanelBody title={ panelLabel } initialOpen={ false } >
-                 { controls }
-             </PanelBody>
-         );
-     }
- 
-     return controls;
- };
- 
- export default BorderGroup;
+            { borderRadius &&
+                <Spacer marginTop={ 6 } marginBottom={ 0 }>
+                    <BoxControl
+                        label={ __( "Radius", "gutena-kit" ) }
+                        values={ attrValue[ activeTab ]?.radius }
+                        onChange={ ( radius ) => setAttr( radius, 'radius' ) }
+                    />
+                </Spacer>
+            }
+        </>
+    )
+
+    if ( withPanel ) {
+        return (
+            <PanelBody title={ panelLabel } initialOpen={ false } >
+                { controls }
+            </PanelBody>
+        );
+    }
+
+    return controls;
+};
+
+export default BorderGroup;

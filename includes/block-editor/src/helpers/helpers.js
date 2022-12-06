@@ -149,8 +149,8 @@ export const boxShadowCss = ( boxShadow, generateCss = true, colorGradientSettin
 //Generate padding|margin css: spacing: value, spaceName: padding|margin
 export const spaceCss = ( spacing, spaceName ) => {
 	if ( gkIsEmpty( spacing ) ) {
-			return ``;
-	  }
+		return ``;
+	}
 
 	return ['top','right','bottom','left'].map( (side) => ( gkIsEmpty( spacing[side] ) ? '':  spaceName+'-'+side+':'+spacing[side]+' !important; ') ).join(' ');
 }
@@ -169,12 +169,17 @@ export const borderVar = ( borderVar , varName, colorGradientSettings = null ) =
     let css = '';
 	if ( ! gkIsEmpty( borderVar?.border ) ) {
 		let border = borderVar.border;
-        css = gkIsEmpty( border.color) ? (['top','right','bottom','left'].map( (side) => (`
-            ${ gkIsEmpty( border[side] ) ? ``: `${ varName }-${ side }: ${ border[side]?.width }  ${ gkIsEmpty( border[side]?.style ) ? 'solid': border[side]?.style } ${ gkIsEmpty( border[side]?.color ) ? ``: getGlobalColorVar( colorGradientSettings, border[side]?.color ) }; ` }
-        `) ).join(' ')) : (`${ varName }: ${ border?.width }  ${ gkIsEmpty( border?.style ) ? 'solid': border?.style } ${ gkIsEmpty( border?.color ) ? ``: getGlobalColorVar( colorGradientSettings, border?.color )}; `);
+        css = gkIsEmpty( border.color) ? ( [ 'top', 'right', 'bottom', 'left' ].map( side => (`
+            ${ gkIsEmpty( border[side] ) ? `` : `${ varName }-${ side } : ${ border[side]?.width } ${ gkIsEmpty( border[side]?.style ) ? 'solid' : border[side]?.style } ${ gkIsEmpty( border[side]?.color ) ? `` : getGlobalColorVar( colorGradientSettings, border[side]?.color ) };` }
+        `) ).join(' ') ) : ( `${ varName }: ${ border?.width } ${ gkIsEmpty( border?.style ) ? 'solid': border?.style } ${ gkIsEmpty( border?.color ) ? `` : getGlobalColorVar( colorGradientSettings, border?.color )};`);
 	}
 	
-    return gkIsEmpty( borderVar?.radius ) ? css : css+' '+varName+'-radius:'+borderVar.radius+'; ';
+	if ( ! gkIsEmpty( borderVar?.radius ) ) {
+        let radius = borderVar.radius;
+        css = css + ` ${ varName }-radius: ${ radius?.top } ${ radius?.right } ${ radius?.bottom } ${ radius?.left };`;
+    }
+
+	return css;
 };
 
 //Generate border css
@@ -182,12 +187,17 @@ export const borderCss = ( borderVar ) => {
     let css = '';
 	if ( ! gkIsEmpty( borderVar?.border ) ) {
 		let border = borderVar.border;
-        css = gkIsEmpty( border.color) ? (['top','right','bottom','left'].map( (side) => (`
-            ${ gkIsEmpty( border[side] ) ? ``: `border-${ side }: ${ border[side]?.width }  ${ gkIsEmpty( border[side]?.style ) ? 'solid': border[side]?.style } ${ border[side]?.color } !important; ` }
-        `) ).join(' ')) : (`border: ${ border?.width }  ${ gkIsEmpty( border?.style ) ? 'solid': border?.style } ${border?.color} !important; `);
+        css = gkIsEmpty( border.color ) ? ( [ 'top', 'right', 'bottom', 'left' ].map( side => (`
+            ${ gkIsEmpty( border[side] ) ? `` : `border-${ side }: ${ border[side]?.width } ${ gkIsEmpty( border[side]?.style ) ? 'solid': border[side]?.style } ${ border[side]?.color } !important; ` }
+        `) ).join(' ') ) : ( `border: ${ border?.width } ${ gkIsEmpty( border?.style ) ? 'solid': border?.style } ${border?.color} !important;` );
 	}
-	
-    return gkIsEmpty( borderVar?.radius ) ? css : css+' border-radius:'+borderVar.radius+' !important;';
+
+	if ( ! gkIsEmpty( borderVar?.radius ) ) {
+        let radius = borderVar.radius;
+        css = css + ` border-radius: ${ radius?.top } ${ radius?.right } ${ radius?.bottom } ${ radius?.left } !important;`;
+    }
+
+	return css;
 };
 
 //Generate typographyCss
@@ -371,11 +381,12 @@ export const getGlobalTypographyCss = ( gutena_kit_block_editor ) => {
 		let cssTab = '';
 		let cssMobile = '';
         let preVar = 'gt-';
-		 //Media size
+		 
+		//Media size
 		let media_query_tab = gkIsEmpty( gutena_kit_block_editor?.media_query_tab ) ?'1080px': gutena_kit_block_editor.media_query_tab;
 		let media_query_mobile = gkIsEmpty( gutena_kit_block_editor?.media_query_mobile ) ?'767px': gutena_kit_block_editor.media_query_mobile;
 
-		Object.keys( gutena_kit_block_editor.globalTypography ).forEach( typographyGroup =>{ 
+		Object.keys( gutena_kit_block_editor.globalTypography ).forEach( typographyGroup => { 
 			let groupTypography = gutena_kit_block_editor.globalTypography[typographyGroup];
 			
 			Object.keys( groupTypography ).forEach( slug =>{ 

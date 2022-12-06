@@ -58,6 +58,7 @@ const colorSettingsData = () => {
 				colors: customColors,
 			} );
 		}
+		
 		return result;
 	}, [ defaultColors, themeColors, customColors ] );
 
