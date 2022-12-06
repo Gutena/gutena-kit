@@ -334,14 +334,14 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             });
         
             // Text color
-             if ( ! gkIsEmpty( cssJson?.[preVar+'color-normal-text'] ) ) {
-                 css += ' color:'+cssJson[preVar+'color-normal-text'] +' !important;';
-             }
+            if ( ! gkIsEmpty( cssJson?.[preVar+'color-normal-text'] ) ) {
+                css += ' color:'+cssJson[preVar+'color-normal-text'] +' !important;';
+            }
         
-             // Background color
-             if ( ! gkIsEmpty( cssJson?.[preVar+'color-normal-background'] ) ) {
-                 css += ' background:'+cssJson[preVar+'color-normal-background'] +' !important;';
-             }
+            // Background color
+            if ( ! gkIsEmpty( cssJson?.[preVar+'color-normal-background'] ) ) {
+                css += ' background:'+cssJson[preVar+'color-normal-background'] +' !important;';
+            }
         
              // Border
              if ( ! gkIsEmpty( cssJson?.[preVar+'border-normal'] ) ) {
@@ -378,13 +378,10 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                  });
              } 
         
-             //Hide in desktop
-             if ( ! gkIsEmpty( cssJson?.[preVar+'display-default'] ) ) {
-                 css += ' display: '+cssJson[preVar+'display-default']+';';
-             } else if ( ! gkIsEmpty( cssJson?.[preVar+'textcontentgap'] ) ) {
+            if ( ! gkIsEmpty( cssJson?.[preVar+'textcontentgap'] ) ) {
                  //text content gap, usually use for inline image gap
                  css += 'display:flex; gap:'+cssJson[preVar+'textcontentgap']+';';
-             }
+            }
         
              //translate3d in desktop
              if ( ! gkIsEmpty( cssJson?.[preVar+'translate3d-default'] ) ) {
@@ -392,6 +389,11 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
              }
              
              css += ' }';
+
+             //Hide in desktop
+             if ( ! gkIsEmpty( cssJson?.[preVar+'display-default'] ) ) {
+                css += ' @media only screen and (min-width: '+( parseInt( media_query_tab ) + 1 + 'px'  )+') { '+id+' { display: '+cssJson[preVar+'display-default']+'; } } ';
+            }
         
              /************************
               Block hover : START
