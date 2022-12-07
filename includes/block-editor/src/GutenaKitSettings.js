@@ -4,7 +4,7 @@ import { createHigherOrderComponent } from  '@wordpress/compose';
 import { useSelect } from "@wordpress/data";
 import { useEntityRecords } from '@wordpress/core-data';
 import { store as blocksStore } from '@wordpress/blocks';
-import { Fragment } from  '@wordpress/element';
+import { Fragment, useEffect } from '@wordpress/element';
 import { InspectorControls } from '@wordpress/block-editor';
 import { PanelBody, 
     __experimentalHStack as HStack,
@@ -67,7 +67,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
         /**
          * https://developer.wordpress.org/block-editor/reference-guides/data/data-core-blocks/#getblocktype
          */
-        const { supports = {}  } = useSelect(
+        const { supports = {} } = useSelect(
             ( select ) =>
                 select( blocksStore ).getBlockType( name, '' ),
             []
@@ -795,7 +795,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             return isGutenaKitStyleEmpty;
         }
 
-        const isDeepEmpty = input => {
+        const checkGutenaStyleDeepEmpty = input => {
             if ( isEmpty( input ) ) {
                 return true
             }
@@ -804,7 +804,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                 for ( const item of Object.values( input ) ) {
                     // if item is not undefined and is a primitive, return false
                     // otherwise dig deeper
-                    if ( ( item !== undefined && item !== false && item !== '' && typeof item !== 'object' ) || ! isDeepEmpty( item ) ) {
+                    if ( ( item !== undefined && item !== false && item !== '' && typeof item !== 'object' ) || ! checkGutenaStyleDeepEmpty( item ) ) {
                         return false
                     }
                 }
@@ -864,7 +864,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             //CSS json
             newstyle.cssJson = gkIsEmpty( newstyle ) ? undefined : generateCssVar( newstyle, " .gutenakitid-"+clientId, true );
             
-            let isGutenaKitStyleEmpty = isDeepEmpty( newstyle );
+            let isGutenaKitStyleEmpty = checkGutenaStyleDeepEmpty( newstyle );
             let gutenaKitClassVar = {
                 ...gutenaKitClass,
                 blockClasses: isGutenaKitStyleEmpty ? undefined : generateClassesMinimal( newstyle )
@@ -873,9 +873,8 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             setAttributes( {
                 gutenaKitStyle: isGutenaKitStyleEmpty ? undefined : { ...newstyle }, 
                 gutenaKitID: clientId,
-                gutenaKitClass: isDeepEmpty( gutenaKitClassVar ) ? undefined : gutenaKitClassVar
+                gutenaKitClass: checkGutenaStyleDeepEmpty( gutenaKitClassVar ) ? undefined : gutenaKitClassVar
             } );
-            
         };
 
         /******** Regenerate css json 
@@ -917,7 +916,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
         };
 
         const Style = generateCssFromVar()+''+renderBlockCSSForResponsive( gutena_kit_block_editor , deviceType );
-      
+
         return (
             <Fragment>
                 <BlockEdit { ...props } />
@@ -927,18 +926,33 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                         <PanelBody 
                             icon={ gutenaKitIcon }
                             iconPosition='left'
-                            title={__("Gutena Kit Settings", "gutena-kit")}
+                            title={ __( "Gutena Kit Settings", "gutena-kit" ) }
                             className="gutena-kit-settings"
                             initialOpen={ true }
                         >
+                            <HStack style={ { 'margin-bottom': '10px' } }>
+                                <FlexItem></FlexItem>
+                                <FlexItem>
+                                    <Button 
+                                        variant="secondary"
+                                        isSmall
+                                        disabled={ checkGutenaStyleDeepEmpty( attributes?.gutenaKitStyle ) }
+                                        onClick={ () => setAttributes( { 
+                                            gutenaKitStyle: undefined
+                                        } ) }
+                                    >
+                                        { __('Reset') }
+                                    </Button>
+                                </FlexItem>
+                            </HStack>
                             { gkSupports.typography &&
                                 <TypographySettings 
                                     blockName={ name }
-                                    attrValue={  gutenaKitStyle?.typography }
+                                    attrValue={ gutenaKitStyle?.typography }
                                     onChangeFunc = { ( typography ) => setAttr( typography, 'typography' ) }
                                     globalTypographySlug = { gutenaKitStyle?.globalTypography }
                                     setGlobalTypography = { ( gt ) => setAttr( gt, 'globalTypography' ) }
-                                    openPanel={ ! isDeepEmpty( gutenaKitStyle?.typography ) }
+                                    openPanel={ ! checkGutenaStyleDeepEmpty( attributes?.gutenaKitStyle?.typography ) }
                                 />
                             }
                             { gkSupports.color && 
@@ -948,7 +962,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                                     attrValue ={ gutenaKitStyle?.color }
                                     onChangeFunc ={ ( value ) => setAttr( value, 'color' ) }
                                     panelId={ clientId }
-                                    openPanel={ ! isDeepEmpty( gutenaKitStyle?.color ) }
+                                    openPanel={ ! checkGutenaStyleDeepEmpty( attributes?.gutenaKitStyle?.color ) }
                                 />
                             }
                             { gkSupports.overlay && 
@@ -957,11 +971,11 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                                     label={ __("Overlay", "gutena-kit") }
                                     attrValue ={ gutenaKitStyle?.overlay }
                                     onChangeFunc ={ ( value ) => setAttr( value, 'overlay' ) }
-                                    openPanel={ ! isDeepEmpty( gutenaKitStyle?.overlay ) }
+                                    openPanel={ ! checkGutenaStyleDeepEmpty( attributes?.gutenaKitStyle?.overlay ) }
                                 />
                             }
                             { gkSupports.spacing && 
-                                <PanelBody title={ __( 'Spacing', 'gutena-kit' ) } initialOpen={ ! isDeepEmpty( gutenaKitStyle?.spacing ) }>
+                                <PanelBody title={ __( 'Spacing', 'gutena-kit' ) } initialOpen={ ! checkGutenaStyleDeepEmpty( attributes?.gutenaKitStyle?.spacing ) }>
                                     <BoxControl
                                         label={ <SelectDeviceDropdown sideLabel={ __( 'Padding', 'gutena-tabs' ) } labelAtLeft={ true } /> }
                                         values={ gutenaKitStyle?.spacing?.padding?.[styleName] }
@@ -983,7 +997,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                                 <BorderGroup 
                                     attrValue={ gutenaKitStyle?.border }
                                     onChangeFunc = { ( value ) => setAttr( value, 'border' ) }
-                                    openPanel={ ! isDeepEmpty( gutenaKitStyle?.border ) }
+                                    openPanel={ ! checkGutenaStyleDeepEmpty( attributes?.gutenaKitStyle?.border ) }
                                 />
                             }
                             { gkSupports.border &&
@@ -993,23 +1007,23 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                                     attrValue={ gutenaKitStyle?.boxShadow }
                                     onChangeFunc={ ( value ) => setAttr( value, 'boxShadow' ) }
                                     onBoxShadow={ true }
-                                    openPanel={ ! isDeepEmpty( gutenaKitStyle?.boxShadow ) }
+                                    openPanel={ ! checkGutenaStyleDeepEmpty( attributes?.gutenaKitStyle?.boxShadow ) }
                                 />
                             }
                             { gkSupports.display &&
                                 <PanelBody 
                                     title={__("Display", "gutena-kit")}
-                                    initialOpen={ ! isDeepEmpty( gutenaKitStyle?.hideDisplay ) }
+                                    initialOpen={ ! checkGutenaStyleDeepEmpty( attributes?.gutenaKitStyle?.hideDisplay ) }
                                 >
                                     { 
                                         [ 'Desktop', 'Tablet', 'Mobile' ].map( ( deviceName ) => {
                                             let deviceStyle = ( 'Desktop' === deviceName ) ? 'default' : ( ( 'Tablet' === deviceName ) ? 'tablet' : 'mobile' );
-                                            return(<ToggleControl
+                                            return( <ToggleControl
                                                 key={ deviceName }
                                                 label={ deviceAvailable[ deviceName ] }
                                                 checked={ gkIsEmpty( gutenaKitStyle?.hideDisplay?.[deviceStyle] ) ? false : gutenaKitStyle?.hideDisplay?.[deviceStyle]  }
                                                 onChange={ ( value ) =>  setAttr( value, 'hideDisplay', null, deviceStyle  ) }
-                                            /> )} 
+                                            /> ) } 
                                         )
                                     }
                                 </PanelBody>
@@ -1018,12 +1032,13 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                                 <Translate3dControl 
                                     attrValue={ gutenaKitStyle?.translate3d?.[styleName] }
                                     onChangeFunc={ ( value ) =>  setAttr( value, 'translate3d', null, styleName  ) }
+                                    openPanel={ ! checkGutenaStyleDeepEmpty( attributes?.gutenaKitStyle?.translate3d ) }
                                 />
                             }
                             { ( gkSupports.textContentGap || gkSupports.linkSettings ) && 
                                 <PanelBody 
                                     title={__("Content Settings", "gutena-kit")}
-                                    initialOpen={ false }
+                                    initialOpen={ attributes?.gutenaKitStyle?.textContentGap || ! gkIsEmpty( attributes?.gutenaKitStyle?.linkDecorationLineNone ) }
                                 >
                                     { gkSupports.textContentGap && 
                                         <RangeControlUnit
@@ -1043,27 +1058,12 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                                     { gkSupports.linkSettings &&
                                         <ToggleControl
                                             label={ __("Unset link text decoration line", "gutena-kit") }
-                                            checked={ gkIsEmpty( gutenaKitStyle?.linkDecorationLineNone ) ? false : gutenaKitStyle.linkDecorationLineNone  }
-                                            onChange={ ( value ) =>  setAttr( value, 'linkDecorationLineNone' ) }
+                                            checked={ gkIsEmpty( gutenaKitStyle?.linkDecorationLineNone ) ? false : gutenaKitStyle.linkDecorationLineNone }
+                                            onChange={ ( value ) => setAttr( value, 'linkDecorationLineNone' ) }
                                         />
                                     }
                                 </PanelBody>
                             }
-                            <HStack style={ { 'margin-top': '10px' } }>
-                                <FlexItem></FlexItem>
-                                <FlexItem>
-                                    <Button 
-                                        variant="secondary"
-                                        isSmall
-                                        disabled={ isDeepEmpty( gutenaKitStyle ) }
-                                        onClick={ () => setAttributes( { 
-                                            gutenaKitStyle: undefined
-                                        } ) }
-                                    >
-                                        { __('Reset') }
-                                    </Button>
-                                </FlexItem>
-                            </HStack>
                         </PanelBody>    
                     </InspectorControls>
                 }

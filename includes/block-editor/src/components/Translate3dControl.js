@@ -24,7 +24,8 @@ const noop = () => {};
 const Translate3dControl = ( {
     label = __( 'Offset', 'gutena-kit' ),
     attrValue = DEFAULT_TRANSLATE3D,
-    onChangeFunc = noop
+    onChangeFunc = noop,
+    openPanel = false
 } ) => {
 
     const MAX_SPACE_VALUES = {
@@ -49,7 +50,7 @@ const Translate3dControl = ( {
     };
 
     return(
-        <PanelBody title={ label } initialOpen={ false }>
+        <PanelBody title={ label } initialOpen={ openPanel }>
             <SelectDeviceDropdown />
             { [ 'x', 'y', 'z' ].map( ( attrName ) => (
                 <RangeControlUnit
