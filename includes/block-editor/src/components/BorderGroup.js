@@ -31,6 +31,7 @@ const BorderGroup = ( {
     attrProps = DEFAULT_PROPS,
     onChangeFunc = noop,
     withPanel = true,
+    openPanel = false,
     borderRadius = true,
     colorVar = false
 } ) => {
@@ -111,7 +112,7 @@ const BorderGroup = ( {
 
     if ( withPanel ) {
         return (
-            <PanelBody title={ panelLabel } initialOpen={ false } >
+            <PanelBody title={ panelLabel } initialOpen={ openPanel } >
                 { controls }
             </PanelBody>
         );

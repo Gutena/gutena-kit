@@ -26,13 +26,14 @@ import { gkIsEmpty, getMatchArrObjKeyValue, typographyVar, generateSlug, gkCssJs
 
 const noop = () => {}; 
 
-const TypographySettings = ({
+const TypographySettings = ( {
     blockName = '',
     attrValue = undefined,
 	onChangeFunc = noop,
     setGlobalTypography = noop,
-    globalTypographySlug=undefined,
-}) => {
+    globalTypographySlug = undefined,
+    openPanel = false
+} ) => {
     
     /*
     Active tab : set_global_typography| add_typography | edit_typography 
@@ -202,15 +203,13 @@ const TypographySettings = ({
     const [ activeTab, setActiveTab ] = useState( gkIsEmpty( globalTypographySlug ) ? 'default' : 'global' );
  
     return(
-        <PanelBody 
-            title={ __( 'Typography', 'gutena-kit' ) }
-            initialOpen={ false }
-        >
+        <PanelBody title={ __( 'Typography', 'gutena-kit' ) } initialOpen={ openPanel }>
             { eventAttr.length > 1 && /* show only if there is multiple items present. */
                <ToggleGroupControl 
                    value={ activeTab } 
                    onChange={ ( value ) => setActiveTab( value ) } 
                    isBlock 
+                   hideLabelFromVision={ true } 
                >
                     {
                         eventAttr.map( ( value ) => (
@@ -222,15 +221,15 @@ const TypographySettings = ({
 
             {  'default' === activeTab ? 
                 <TypographyControl 
-                attrValue = { attrValue }
-                onChangeFunc = { ( value ) => onChangeFunc( value ) }
-                withPanel = { false }
+                    attrValue = { attrValue }
+                    onChangeFunc = { ( value ) => onChangeFunc( value ) }
+                    withPanel = { false }
                 />
             :
             <>
-                <HStack>
+                <HStack style={ { 'margin-bottom': '12px' } }>
                     <FlexItem>
-                        <Text isBlock  >
+                        <Text isBlock>
                             { typographyTab.label }
                         </Text>
                     </FlexItem>
@@ -258,25 +257,23 @@ const TypographySettings = ({
                         }
                     </FlexItem>
                 </HStack>
-                { 'set_global_typography' === typographyTab.activeTab && ( isGlobalTypographyEmpty ? 
-                    <>
-                    <Text align="center" className="gutena-kit-border-text" isBlock  >
-                        { __( 'No typography found', 'gutena-kit' ) }
-                    </Text>
-                    <p>
-                        { __( 'Add a new Typography by clicking on', 'gutena-kit' ) }
-                        <strong> + </strong>
-                        { __( 'icon', 'gutena-kit' ) }
-                    </p>
+                { 'set_global_typography' === typographyTab.activeTab && ( isGlobalTypographyEmpty 
+                    ? <>
+                        <Text align="center" className="gutena-kit-border-text" isBlock  >
+                            { __( 'No typography found', 'gutena-kit' ) }
+                        </Text>
+                        <p>
+                            { __( 'Add a new Typography by clicking on', 'gutena-kit' ) }
+                            <strong> + </strong>
+                            { __( 'icon', 'gutena-kit' ) }
+                        </p>
                     </>
-                    :
-                    <SelectControl
+                    : <SelectControl
                         value={ globalTypographySlug }
                         options={ globalTypographyOptions() }
                         onChange={ ( value ) => setGlobalTypography( value )  }
                         __nextHasNoMarginBottom
-                    />  
-                )
+                    /> )
                 }
                 { 'edit_typography' === typographyTab.activeTab && ! isGlobalTypographyEmpty && 
                     <SelectControl
@@ -322,34 +319,31 @@ const TypographySettings = ({
                                         ...typographyTab,
                                         status:'progress',
                                     } ) }
-                                    
                                 >
                                         { __( 'Save', 'gutena-kit' ) }
                                 </Button>
-                                
-                                
                             </FlexItem>
                             { 'edit_typography' === typographyTab.activeTab && 
-                            <FlexItem>
-                                <Button 
-                                    label={ __( 'Delete typography', 'gutena-kit' ) }
-                                    variant="link"
-                                    disabled={ isProgressStatus() }
-                                    onClick={ () => setTypographyTab( {
-                                        ...typographyTab,
-                                        status:'progress',
-                                        deleteTypography:true,
-                                    } ) }
-                                    isDestructive={ true }
-                                    icon={ deleteIcon }
-                                    className="gutena-kit-delete-btn"
-                                >
-                                        {  __( 'Delete', 'gutena-kit' ) }
-                                </Button>
-                            </FlexItem>
+                                <FlexItem>
+                                    <Button 
+                                        label={ __( 'Delete typography', 'gutena-kit' ) }
+                                        variant="link"
+                                        disabled={ isProgressStatus() }
+                                        onClick={ () => setTypographyTab( {
+                                            ...typographyTab,
+                                            status:'progress',
+                                            deleteTypography:true,
+                                        } ) }
+                                        isDestructive={ true }
+                                        icon={ deleteIcon }
+                                        className="gutena-kit-delete-btn"
+                                    >
+                                            {  __( 'Delete', 'gutena-kit' ) }
+                                    </Button>
+                                </FlexItem>
                             }
                         </HStack>
-                        <HStack>
+                        <HStack style={ { 'margin-top': '10px' } }>
                             <Text isDestructive={ ( 'error' === typographyTab.status ) }  >
                                 { isProgressStatus() ? 
                                 __( 'Please wait...', 'gutena-kit' ) : 

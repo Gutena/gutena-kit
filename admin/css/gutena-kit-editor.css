@@ -28,8 +28,8 @@
     margin-bottom: 8px;
 }
 
-.components-gk-range-unit-control legend{
-    padding-top: 1rem;
+.components-gk-range-unit-control legend {
+    padding-top: 0;
     padding-bottom: 0.8rem;
 }
 
@@ -70,7 +70,34 @@
 }*/
 
 .block-editor-block-inspector .gutena-kit-settings .components-panel__body {
-    border-top:none;
+    border: 1px solid #e0e0e0;
+}
+
+.block-editor-block-inspector .gutena-kit-settings .components-base-control {
+    margin-bottom: 16px;
+}
+
+.block-editor-block-inspector .gutena-kit-settings .components-base-control.components-toggle-control:last-of-type {
+    margin-bottom: 0;
+}
+
+.block-editor-block-inspector .gutena-kit-settings .gutena-kit-typography-control {
+    grid-template-columns: repeat(2, 100px);
+}
+
+.block-editor-block-inspector .gutena-kit-settings .gutena-kit-typography-control .components-unit-control-wrapper .components-unit-control .components-input-control__input {
+    height: 30px;
+    min-height: 30px;
+}
+
+.block-editor-block-inspector .gutena-kit-settings .gutena-kit-typography-control .components-unit-control-wrapper .components-unit-control .components-input-control__suffix .components-unit-control__select {
+    line-height: 1.3;
+    padding: 0;
+}
+
+.block-editor-block-inspector .gutena-kit-settings .gutena-kit-typography-control .block-editor-text-transform-control .block-editor-text-transform-control__buttons .components-button.has-icon {
+    min-width: 0;
+    height: 21px;
 }
 
 .block-editor-block-inspector .gutena-kit-settings .edit-site-typography-panel__full-width-control {
@@ -90,9 +117,9 @@
     margin-bottom: 0.5rem;
 } */
 
-.gutena-kit-settings .components-h-stack .components-h-stack{
+/* .gutena-kit-settings .components-h-stack .components-h-stack {
     margin-bottom: 0;
-}
+} */
 
 .gutena-kit-settings .components-h-stack.gutena-kit-h-stack {
     margin: 1rem 0;
@@ -101,7 +128,9 @@
 /*Hstack flex item*/
 .block-editor-block-inspector .gutena-kit-settings .components-h-stack .components-flex-item {
     display: flex;
-    gap: 0.5rem;
+    flex-direction: row;
+    gap: 4px;
+    justify-content: center;
     align-items: center;
 }
 
@@ -139,13 +168,30 @@
 
 /*gutena-kit-fluid-typography-toggle-hstack text hstack*/
 .gutena-kit-fluid-typography-toggle-hstack {
-    margin-bottom: 2rem !important;
+    margin-bottom: 1rem !important;
 }
 
-.gutena-kit-fluid-typography-toggle-hstack .components-base-control,
+/* .gutena-kit-fluid-typography-toggle-hstack .components-base-control,
 .gutena-kit-fluid-typography-toggle-hstack .components-toggle-control .components-base-control__field {
     margin-bottom: 0;
     max-width: 130px;
+} */
+
+.gutena-kit-settings .gutena-kit-fluid-typography-toggle-hstack .components-toggle-control {
+    margin-bottom: 0 ;
+}
+
+.gutena-kit-fluid-typography-toggle-hstack .components-toggle-control .components-base-control__field .components-h-stack {
+    gap: 6px;
+}
+
+.gutena-kit-fluid-typography-toggle-hstack .components-toggle-control .components-base-control__field .components-h-stack .components-toggle-control__label {
+    font-size: 13px;
+}
+
+.gutena-kit-fluid-typography-toggle-hstack .gutena-kit-popover-help-text svg {
+    width: 20px;
+    padding-top: 5px;
 }
 
 .gutena-kit-popover-help-content .components-popover__content {
@@ -170,7 +216,7 @@
 
 /* Color panel settings*/
 .gutena-kit-color-toolpanel {
-    padding: 0.1rem !important;
+    padding: 0 !important;
     border: 0;
     gap: 0 !important;
 }

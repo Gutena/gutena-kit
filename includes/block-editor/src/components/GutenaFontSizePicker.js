@@ -7,14 +7,13 @@ import {
     useSetting,
 } from '@wordpress/block-editor';
 import {
-    SelectControl,
     __experimentalUnitControl as UnitControl,
     __experimentalHStack as HStack,
+    __experimentalSpacer as Spacer,
     FlexItem,
-    TextControl,
+    BaseControl,
+    SelectControl,
     Button,
-    Icon,
-    __experimentalText as Text,
 } from '@wordpress/components';
 import { useSelect } from "@wordpress/data";
 import { settings } from '@wordpress/icons';
@@ -81,12 +80,12 @@ const GutenaFontSizePicker = ( props ) => {
     return (
         reponsive ? 
         <>
-            <HStack>
+            <HStack className="components-font-size-picker__header">
                 <FlexItem>
-                    <label >
+                    <BaseControl.VisualLabel aria-label={ `${ __( 'Size', 'gutena-kit' ) } ${ customLabel || '' }` }>
                         { label }
-                        <span className="components-font-size-picker__header__hint">{  customLabel }</span>
-                    </label>
+                        <span className="components-font-size-picker__header__hint">{ customLabel }</span>
+                    </BaseControl.VisualLabel>
                     { customSize &&
                         <SelectDeviceDropdown />
                     }
@@ -102,20 +101,22 @@ const GutenaFontSizePicker = ( props ) => {
                     />
                 </FlexItem>
             </HStack>
-            {
-                   customSize ?
-                    <UnitControl
-                        value={  fontSize }
-                        onChange={ ( value ) =>  onChangeFunc( value ) }
+            <Spacer marginBottom={ 5 }>
+                {
+                    customSize 
+                    ? <UnitControl
+                        value={ fontSize }
+                        onChange={ ( value ) => onChangeFunc( value ) }
+                        __nextHasNoMarginBottom
                     />
-                    :
-                    <SelectControl
-                    value={ fontSize }
-                    options={ fonSizesArray }
-                    onChange={ ( newSize ) => onChangeFunc( newSize ) }
-                    __nextHasNoMarginBottom
-                />
+                    : <SelectControl
+                        value={ fontSize }
+                        options={ fonSizesArray }
+                        onChange={ ( newSize ) => onChangeFunc( newSize ) }
+                        __nextHasNoMarginBottom
+                    />
                 }
+            </Spacer>
         </> :
         <FontSizePicker
             value={ fontSize }

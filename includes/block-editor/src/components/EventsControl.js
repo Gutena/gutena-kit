@@ -24,7 +24,8 @@ const EventsControl = ( props ) => {
         attrValue = {},
         eventTabs = DEFAULT_EVENTS_TABS,
         onChangeFunc = noop,
-        withPanel = true
+        withPanel = true,
+        openPanel = false
     } = props;
 
     const eventAttr = Object.keys( eventTabs );
@@ -65,7 +66,7 @@ const EventsControl = ( props ) => {
 
     if ( withPanel ) {
         return (
-            <PanelBody title={ label } initialOpen={ false }>
+            <PanelBody title={ label } initialOpen={ openPanel }>
                 { controls }
             </PanelBody>
         );

@@ -1,22 +1,21 @@
 //Common Text Block : Add gap controls between media and text
 import { __ } from '@wordpress/i18n';
 import { createHigherOrderComponent } from  '@wordpress/compose';
-import {  useSelect } from "@wordpress/data";
+import { useSelect } from "@wordpress/data";
 import { useEntityRecords } from '@wordpress/core-data';
 import { store as blocksStore } from '@wordpress/blocks';
 import { Fragment } from  '@wordpress/element';
-import { useEffect } from '@wordpress/element';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import {  PanelBody, 
+import { InspectorControls } from '@wordpress/block-editor';
+import { PanelBody, 
     __experimentalHStack as HStack,
-    FlexItem,
     __experimentalBoxControl as BoxControl,
     ToggleControl,
+    FlexItem,
     Button,
     Icon,
-} from  '@wordpress/components';
+} from '@wordpress/components';
 import SelectDeviceDropdown from './components/SelectDeviceDropdown';
-import  Translate3dControl  from './components/Translate3dControl';
+import Translate3dControl  from './components/Translate3dControl';
 import BorderGroup from './components/BorderGroup';
 import colorSettingsData from './components/colorSettingsData';
 import RangeControlUnit from './components/RangeControlUnit';
@@ -24,8 +23,10 @@ import EventsControl from './components/EventsControl';
 import TypographySettings from './Supports/Typography/TypographySettings';
 import { gkIsEmpty, spaceCss, spaceVar, borderCss, borderVar, boxShadowCss, typographyCss, typographyVar, gkCamelToDash, getEditorDoc, gkCssJson, renderBlockCSSForResponsive, getGlobalColorVar } from './helpers/helpers';
 
+import { isEmpty } from 'lodash';
+
 //https://make.wordpress.org/core/2019/04/09/the-block-editor-javascript-module-in-5-2/
- 
+
 //Edit Function
 export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
     return ( props ) => {
@@ -66,7 +67,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
         /**
          * https://developer.wordpress.org/block-editor/reference-guides/data/data-core-blocks/#getblocktype
          */
-         const { supports={}  } = useSelect(
+        const { supports = {}  } = useSelect(
             ( select ) =>
                 select( blocksStore ).getBlockType( name, '' ),
             []
@@ -86,7 +87,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
         //Default sides
         let DefaultStyle = attributes.style;
 
-        if ( !gkIsEmpty( DefaultStyle ) ) {
+        if ( ! gkIsEmpty( DefaultStyle ) ) {
             DefaultStyle = {
                 ...DefaultStyle,
                 border:{
@@ -109,11 +110,11 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
         }
 
         const { 
-            gutenaKitID=clientId,
+            gutenaKitID = clientId, 
             gutenaKitCSS,
-            gutenaKitClass={},
-            gutenaKitStyle=DefaultStyle, 
-            style={},
+            gutenaKitClass = {},
+            gutenaKitStyle = DefaultStyle, 
+            style = {},
         } = attributes;
 
          //Get Device preview type
@@ -128,20 +129,18 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             <Icon
                 icon={ () => (
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4.22391 11.3335H0.00208904L11.3348 0.000746265V4.18958L4.22391 11.3335Z" fill="#0DA88C"/>
-                    <path d="M19.7791 11.3325H24.001L12.6682 -0.000230298V4.18861L19.7791 11.3325Z" fill="#0DA88C"/>
-                    <path d="M4.22184 12.6655H1.3843e-05L11.3328 23.9983V19.8094L4.22184 12.6655Z" fill="#0DA88C"/>
-                    <path d="M19.7772 12.6675H23.999L12.6663 24.0002V19.8114L19.7772 12.6675Z" fill="#0DA88C"/>
-                    <rect width="8.81436" height="2.60358" transform="matrix(1 0 0 -1 11.9625 15.2695)" fill="#0DA88C"/>
+                        <path d="M4.22391 11.3335H0.00208904L11.3348 0.000746265V4.18958L4.22391 11.3335Z" fill="#0DA88C"/>
+                        <path d="M19.7791 11.3325H24.001L12.6682 -0.000230298V4.18861L19.7791 11.3325Z" fill="#0DA88C"/>
+                        <path d="M4.22184 12.6655H1.3843e-05L11.3328 23.9983V19.8094L4.22184 12.6655Z" fill="#0DA88C"/>
+                        <path d="M19.7772 12.6675H23.999L12.6663 24.0002V19.8114L19.7772 12.6675Z" fill="#0DA88C"/>
+                        <rect width="8.81436" height="2.60358" transform="matrix(1 0 0 -1 11.9625 15.2695)" fill="#0DA88C"/>
                     </svg>
                 ) }
             />
         );
         
-
         //Generate css 
-        const generateCss = ( styleVar = gutenaKitStyle, id = '#block-'+clientId ) => {
-            
+        const generateCss = ( styleVar = gutenaKitStyle, id = '#block-' + clientId ) => {
             let css = '';
             let cssHover = '';
             let cssLink = '';
@@ -158,7 +157,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             //Spacing Css 
             if ( ! gkIsEmpty( styleVar?.spacing?.padding ) || ! gkIsEmpty( styleVar?.spacing?.margin )  ) {
                 //Spacing variables
-                [ 'padding', 'margin' ].forEach( ( spaceName ) => {
+                [ 'padding', 'margin' ].forEach( spaceName => {
                     //Check if exists
                     if ( ! gkIsEmpty( styleVar?.spacing?.[spaceName] ) ) {
                         //Responsive styles
@@ -169,9 +168,9 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                                 let spacing = spaceCss( styleVar?.spacing?.[spaceName]?.[deviceName], spaceName );
                                 if ( 'default' === deviceName ) {
                                     css += spacing;
-                                }else if ( 'tablet' === deviceName ) {
+                                } else if ( 'tablet' === deviceName ) {
                                     cssTablet += spacing;
-                                }else{
+                                } else {
                                     cssMobile += spacing;
                                 }
                             }
@@ -180,7 +179,6 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                 } );
             }
         
-           
             //color normal
             if ( ! gkIsEmpty( styleVar?.color?.normal ) ) {
                 // Text Color
@@ -253,21 +251,21 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             //responsive typography stored in style variable only due to most of its variable same across all device
             let typography = typographyCss( styleVar?.typography );
             let fluidTypograph = false;
-            if( -1 == typography.indexOf('font-size:clamp') ){
+            if ( -1 == typography.indexOf( 'font-size:clamp' ) ) {
                 fluidTypograph = true;
             }
         
             //Font size and line height. leave font size if fluidTypograph true
             let device = ( 'Tstyle' === style ) ? 'T': 'M';
-            css += [ 'fontSize', 'lineHeight' ].map( ( fontProperty ) => ( 'fontSize' === fontProperty && fluidTypograph) ? '' : ( 
-                gkIsEmpty( styleVar?.typography?.[ device+''+fontProperty ] ) ? '': gkCamelToDash( fontProperty )+':' + styleVar.typography[device+''+fontProperty]+';'
+            css += [ 'fontSize', 'lineHeight' ].map( fontProperty => ( 'fontSize' === fontProperty && fluidTypograph) ? '' : ( 
+                gkIsEmpty( styleVar?.typography?.[ device + '' + fontProperty ] ) ? '' : gkCamelToDash( fontProperty ) + ':' + styleVar.typography[ device + '' + fontProperty ] + ';'
                 )
-            ).join(' ');
+            ).join( ' ' );
             
             //if hide in device then do not generate any other css
             //Responsive styles
             if ( ! gkIsEmpty( styleVar?.hideDisplay ) ) {
-                ['default', 'tablet', 'mobile'].forEach( ( deviceName ) => {
+                [ 'default', 'tablet', 'mobile' ].forEach( deviceName => {
                     if ( ! gkIsEmpty( styleVar?.hideDisplay?.[ deviceName ] ) && true === styleVar?.hideDisplay?.[ deviceName ] ) {
                         if ( 'default' === deviceName ) {
                             css += ' display:none; ';
@@ -277,8 +275,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                             cssMobile = ' display:none; ';
                         }
                     }
-                });
-                
+                } );
             }
             
             //Normal Css 
@@ -307,7 +304,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
         }
 
         const generateCssFromVar = ( styleVar = gutenaKitStyle, id = '#block-'+clientId ) => {
-            let cssJson = generateCssVar( styleVar = gutenaKitStyle, id = '#block-'+clientId, true  );
+            let cssJson = generateCssVar( styleVar = gutenaKitStyle, id = '#block-'+clientId, true );
             //console.log("json",cssJson);
             //global typography flag
             let global_typography = '';
@@ -322,14 +319,15 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             //let preVar = '--gutenakit--';
             let preVar = '';
             let css = id+' {';
+
             //spacing 
             [ 'padding', 'margin' ].forEach( ( spaceName ) => {
-                 [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
-                     if ( ! gkIsEmpty( cssJson?.[preVar+'default-'+spaceName+'-'+position] ) ) {
-                         css += spaceName+'-'+position+':'+cssJson[preVar+'default-'+spaceName+'-'+position]+' !important;';
-                     }
-                 });
-            });
+                [ 'top', 'right', 'bottom', 'left' ].forEach( position => {
+                    if ( ! gkIsEmpty( cssJson?.[preVar+'default-'+spaceName+'-'+position] ) ) {
+                        css += spaceName+'-'+position+':'+cssJson[preVar+'default-'+spaceName+'-'+position]+' !important;';
+                    }
+                } );
+            } );
         
             // Text color
             if ( ! gkIsEmpty( cssJson?.[preVar+'color-normal-text'] ) ) {
@@ -341,231 +339,225 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                 css += ' background:'+cssJson[preVar+'color-normal-background'] +' !important;';
             }
         
-             // Border
-             if ( ! gkIsEmpty( cssJson?.[preVar+'border-normal'] ) ) {
-                 css += ' border:'+cssJson[preVar+'border-normal'] +' !important;';
-             } else {
-                 [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
-                     if ( ! gkIsEmpty( cssJson?.[preVar+'border-normal-'+position] ) ) {
-                         css += ' border-'+position+':'+cssJson[preVar+'border-normal-'+position] +' !important;';
-                     }
-                 });
-             }
-        
-             // Border radius
-             if ( ! gkIsEmpty( cssJson?.[preVar+'border-normal-radius'] ) ) {
-                 css += ' border-radius:'+cssJson[preVar+'border-normal-radius'] +' !important;';
-             }
-        
-             // Box Shadow
-             if ( ! gkIsEmpty( cssJson?.[preVar+'boxshadow-normal'] ) ) {
-                 css += 'box-shadow:'+cssJson[preVar+'boxshadow-normal'] +' !important;';
-             }
-        
-             // Overlay parent
-             if ( ! gkIsEmpty( cssJson?.[preVar+'overlay-normal-background'] ) || ! gkIsEmpty( cssJson?.[preVar+'overlay-hover-background'] ) ) {
-                 css += ' position: relative;';
-             }
-        
-             //typography
-             if ( gkIsEmpty( global_typography ) ) {
-                 [ 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transfor', 'text-decoration' ].forEach( ( font_property ) => {
-                     if ( ! gkIsEmpty( cssJson?.[preVar+''+font_property] ) ) {
-                         css += ' '+font_property+':'+cssJson[preVar+''+font_property] +' !important;';
-                     }
-                 });
-             } 
+            // Border
+            if ( ! gkIsEmpty( cssJson?.[preVar+'border-normal'] ) ) {
+                css += ' border:'+cssJson[preVar+'border-normal'] +' !important;';
+            } else {
+                [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
+                    if ( ! gkIsEmpty( cssJson?.[preVar+'border-normal-'+position] ) ) {
+                        css += ' border-'+position+':'+cssJson[preVar+'border-normal-'+position] +' !important;';
+                    }
+                });
+            }
+    
+            // Border radius
+            if ( ! gkIsEmpty( cssJson?.[preVar+'border-normal-radius'] ) ) {
+                css += ' border-radius:'+cssJson[preVar+'border-normal-radius'] +' !important;';
+            }
+    
+            // Box Shadow
+            if ( ! gkIsEmpty( cssJson?.[preVar+'boxshadow-normal'] ) ) {
+                css += 'box-shadow:'+cssJson[preVar+'boxshadow-normal'] +' !important;';
+            }
+    
+            // Overlay parent
+            if ( ! gkIsEmpty( cssJson?.[preVar+'overlay-normal-background'] ) || ! gkIsEmpty( cssJson?.[preVar+'overlay-hover-background'] ) ) {
+                css += ' position: relative;';
+            }
+    
+            //typography
+            if ( gkIsEmpty( global_typography ) ) {
+                [ 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transfor', 'text-decoration' ].forEach( ( font_property ) => {
+                    if ( ! gkIsEmpty( cssJson?.[preVar+''+font_property] ) ) {
+                        css += ' '+font_property+':'+cssJson[preVar+''+font_property] +' !important;';
+                    }
+                });
+            } 
         
             if ( ! gkIsEmpty( cssJson?.[preVar+'textcontentgap'] ) ) {
-                 //text content gap, usually use for inline image gap
-                 css += 'display:flex; gap:'+cssJson[preVar+'textcontentgap']+';';
+                //text content gap, usually use for inline image gap
+                css += 'display:flex; gap:'+cssJson[preVar+'textcontentgap']+';';
             }
         
-             //translate3d in desktop
-             if ( ! gkIsEmpty( cssJson?.[preVar+'translate3d-default'] ) ) {
-                 css += ' transform: '+cssJson[preVar+'translate3d-default']+';';
-             }
-             
-             css += ' }';
+            //translate3d in desktop
+            if ( ! gkIsEmpty( cssJson?.[preVar+'translate3d-default'] ) ) {
+                css += ' transform: '+cssJson[preVar+'translate3d-default']+';';
+            }
+            
+            css += ' }';
 
-             //Hide in desktop
-             if ( ! gkIsEmpty( cssJson?.[preVar+'display-default'] ) ) {
+            //Hide in desktop
+            if ( ! gkIsEmpty( cssJson?.[preVar+'display-default'] ) ) {
                 css += ' @media only screen and (min-width: '+( parseInt( media_query_tab ) + 1 + 'px'  )+') { '+id+' { display: '+cssJson[preVar+'display-default']+'; } } ';
             }
         
-             /************************
-              Block hover : START
-             **************************/
-             css += id+':hover {';
+            /************************
+             Block hover : START
+            **************************/
+            css += id+':hover {';
+    
+            // Text color
+            if ( ! gkIsEmpty( cssJson?.[preVar+'color-hover-text'] ) ) {
+                css += ' color:'+cssJson[preVar+'color-hover-text'] +' !important;';
+            }
+    
+            // Background color
+            if ( ! gkIsEmpty( cssJson?.[preVar+'color-hover-background'] ) ) {
+                css += ' background:'+cssJson[preVar+'color-hover-background'] +' !important;';
+            }
+    
+            // Border
+            if ( ! gkIsEmpty( cssJson?.[preVar+'border-hover'] ) ) {
+                css += ' border:'+cssJson[preVar+'border-hover'] +' !important;';
+            } else {
+                [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
+                    if ( ! gkIsEmpty( cssJson?.[preVar+'border-hover-'+position] ) ) {
+                        css += ' border-'+position+':'+cssJson[preVar+'border-hover-'+position] +' !important;';
+                    }
+                });
+            }
+    
+            // Border radius
+            if ( ! gkIsEmpty( cssJson?.[preVar+'border-hover-radius'] ) ) {
+                css += ' border-radius:'+cssJson[preVar+'border-hover-radius'] +' !important;';
+            }
+    
+            // Box Shadow
+            if ( ! gkIsEmpty( cssJson?.[preVar+'boxshadow-hover'] ) ) {
+                css += 'box-shadow:'+cssJson[preVar+'boxshadow-hover'] +' !important;';
+            }
+    
+            css += ' }';
+            /************************
+             Block hover : END
+            **************************/
+    
+            //link text decoration
+            if ( ! gkIsEmpty( cssJson?.[preVar+'linkdecorationline'] ) ) {
+                css += id+' a { text-decoration-line:'+cssJson[preVar+'linkdecorationline']+'; }';
+            }
+    
+            // Link color
+            if ( ! gkIsEmpty( cssJson?.[preVar+'color-normal-link'] ) ) {
+                css += id+' a { color:'+cssJson[preVar+'color-normal-link'] +' !important; }';
+            }
+    
+            // Link hover color
+            if ( ! gkIsEmpty( cssJson?.[preVar+'color-hover-link'] ) ) {
+                css += id+' a:hover { color:'+cssJson[preVar+'color-hover-link'] +' !important; }';
+            }
+    
+            // overlay color
+            if ( ! gkIsEmpty( cssJson?.[preVar+'overlay-normal-background'] ) && ! gkIsEmpty( cssJson?.[preVar+'overlay-normal-opacity'] ) ) {
+                css += id+`:before {
+                    content:"";
+                    background:${ cssJson[preVar+'overlay-normal-background']}; 
+                    opacity: ${cssJson[preVar+'overlay-normal-opacity']};
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                }`;
+            }
+    
+            // overlay color
+            if ( ! gkIsEmpty( cssJson?.[preVar+'overlay-hover-background'] ) && ! gkIsEmpty( cssJson?.[preVar+'overlay-hover-opacity'] ) ) {
+                css += id+`:hover:before {
+                    content:"";
+                    background:${cssJson[preVar+'overlay-hover-background']}; 
+                    opacity: ${cssJson[preVar+'overlay-hover-opacity']};
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                }`;
+            }
         
-             // Text color
-             if ( ! gkIsEmpty( cssJson?.[preVar+'color-hover-text'] ) ) {
-                 css += ' color:'+cssJson[preVar+'color-hover-text'] +' !important;';
-             }
+            /************************
+             Block Tablet : START
+            **************************/
+            css += '@media only screen and (min-width: 768px) and (max-width: '+media_query_tab+') { '+id+' {';
+
+            //Hide in Tablet
+            if ( ! gkIsEmpty( cssJson?.[preVar+'display-tablet'] ) ) {
+                css += ' display: '+cssJson[preVar+'display-tablet']+';';
+            } else {
+                //spacing
+                [ 'padding', 'margin' ].forEach( spaceName => {
+                    [ 'top', 'right', 'bottom', 'left' ].forEach( position => {
+                        if ( ! gkIsEmpty( cssJson?.[preVar+'tablet-'+spaceName+'-'+position] ) ) {
+                            css += spaceName+'-'+position+':'+cssJson[preVar+'tablet-'+spaceName+'-'+position]+' !important;';
+                        }
+                    } );
+                } );
+                
+                if ( gkIsEmpty( global_typography ) ) {
+                    //typography
+                    [ 'font-size', 'line-height' ].forEach( ( font_property ) => {
+                        if ( ! gkIsEmpty( cssJson?.[preVar+'t-'+font_property] ) ) {
+                            css += ' '+font_property+':'+cssJson[preVar+'t-'+font_property] +' !important;';
+                        }
+                    } );
+                }
+
+                //translate3d in tablet
+                if ( ! gkIsEmpty( cssJson?.[preVar+'translate3d-tablet'] ) ) {
+                    css += ' transform: '+cssJson[preVar+'translate3d-tablet']+';';
+                }
+            }
+
+            //gutena kit settings end
+            css += '} }';
+            /************************
+             Block Tablet : END
+            **************************/
         
-             // Background color
-             if ( ! gkIsEmpty( cssJson?.[preVar+'color-hover-background'] ) ) {
-                 css += ' background:'+cssJson[preVar+'color-hover-background'] +' !important;';
-             }
+            /************************
+             Block Mobile : START
+            **************************/
+            css += '@media only screen and (max-width: '+media_query_mobile +') { '+id+' {';
         
-             // Border
-             if ( ! gkIsEmpty( cssJson?.[preVar+'border-hover'] ) ) {
-                 css += ' border:'+cssJson[preVar+'border-hover'] +' !important;';
-             } else {
-                 [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
-                     if ( ! gkIsEmpty( cssJson?.[preVar+'border-hover-'+position] ) ) {
-                         css += ' border-'+position+':'+cssJson[preVar+'border-hover-'+position] +' !important;';
-                     }
-                 });
-             }
-        
-             // Border radius
-             if ( ! gkIsEmpty( cssJson?.[preVar+'border-hover-radius'] ) ) {
-                 css += ' border-radius:'+cssJson[preVar+'border-hover-radius'] +' !important;';
-             }
-        
-             // Box Shadow
-             if ( ! gkIsEmpty( cssJson?.[preVar+'boxshadow-hover'] ) ) {
-                 css += 'box-shadow:'+cssJson[preVar+'boxshadow-hover'] +' !important;';
-             }
-        
-             css += ' }';
-             /************************
-              Block hover : END
-             **************************/
-        
-              //link text decoration
-              if ( ! gkIsEmpty( cssJson?.[preVar+'linkdecorationline'] ) ) {
-                 css += id+' a { text-decoration-line:'+cssJson[preVar+'linkdecorationline']+'; }';
-             }
-        
-             // Link color
-             if ( ! gkIsEmpty( cssJson?.[preVar+'color-normal-link'] ) ) {
-                 css += id+' a { color:'+cssJson[preVar+'color-normal-link'] +' !important; }';
-             }
-        
-             // Link hover color
-             if ( ! gkIsEmpty( cssJson?.[preVar+'color-hover-link'] ) ) {
-                 css += id+' a:hover { color:'+cssJson[preVar+'color-hover-link'] +' !important; }';
-             }
-        
-             // overlay color
-             if ( ! gkIsEmpty( cssJson?.[preVar+'overlay-normal-background'] ) && ! gkIsEmpty( cssJson?.[preVar+'overlay-normal-opacity'] ) ) {
-                 css += id+`:before {
-                     content:"";
-                     background:${ cssJson[preVar+'overlay-normal-background']}; 
-                     opacity: ${cssJson[preVar+'overlay-normal-opacity']};
-                     position: absolute;
-                     top: 0;
-                     left: 0;
-                     right: 0;
-                     bottom: 0;
-                 }`;
-             }
-        
-             // overlay color
-             if ( ! gkIsEmpty( cssJson?.[preVar+'overlay-hover-background'] ) && ! gkIsEmpty( cssJson?.[preVar+'overlay-hover-opacity'] ) ) {
-                 css += id+`:hover:before {
-                     content:"";
-                     background:${cssJson[preVar+'overlay-hover-background']}; 
-                     opacity: ${cssJson[preVar+'overlay-hover-opacity']};
-                     position: absolute;
-                     top: 0;
-                     left: 0;
-                     right: 0;
-                     bottom: 0;
-                 }`;
-             }
-        
-             /************************
-              Block Tablet : START
-             **************************/
-                 css += '@media only screen and (min-width: 768px) and (max-width: '+media_query_tab+') { '+id+' {';
-        
-                 //Hide in Tablet
-                 if ( ! gkIsEmpty( cssJson?.[preVar+'display-tablet'] ) ) {
-                     css += ' display: '+cssJson[preVar+'display-tablet']+';';
-                 } else {
-        
+                //Hide in Mobile
+                if ( ! gkIsEmpty( cssJson?.[preVar+'display-mobile'] ) ) {
+                    css += ' display: '+cssJson[preVar+'display-mobile']+';';
+                } else {
                      //spacing
-                     [ 'padding', 'margin' ].forEach( ( spaceName ) => {
-                         [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
-                             if ( ! gkIsEmpty( cssJson?.[preVar+'tablet-'+spaceName+'-'+position] ) ) {
-                                 css += spaceName+'-'+position+':'+cssJson[preVar+'tablet-'+spaceName+'-'+position]+' !important;';
-                             }
-                         });
+                    [ 'padding', 'margin' ].forEach( ( spaceName ) => {
+                        [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
+                            if ( ! gkIsEmpty( cssJson?.[preVar+'mobile-'+spaceName+'-'+position] ) ) {
+                                css += spaceName+'-'+position+':'+cssJson[preVar+'mobile-'+spaceName+'-'+position]+' !important;';
+                            }
+                        });
                     });
                      
-                     if ( gkIsEmpty( global_typography ) ) {
-                         //typography
-                         [ 'font-size', 'line-height' ].forEach( ( font_property ) => {
-                             if ( ! gkIsEmpty( cssJson?.[preVar+'t-'+font_property] ) ) {
-                                 css += ' '+font_property+':'+cssJson[preVar+'t-'+font_property] +' !important;';
-                             }
-                         });
-                     }
+                    if ( gkIsEmpty( global_typography ) ) {
+                        //typography
+                        [ 'font-size', 'line-height' ].forEach( ( font_property ) => {
+                            if ( ! gkIsEmpty( cssJson?.[preVar+'m-'+font_property] ) ) {
+                                css += ' '+font_property+':'+cssJson[preVar+'m-'+font_property] +' !important;';
+                            }
+                        });
+                    }
+    
+                    //translate3d in tablet
+                    if ( ! gkIsEmpty( cssJson?.[preVar+'translate3d-mobile'] ) ) {
+                        css += ' transform: '+cssJson[preVar+'translate3d-mobile']+';';
+                    }
+                }
         
-                     //translate3d in tablet
-                     if ( ! gkIsEmpty( cssJson?.[preVar+'translate3d-tablet'] ) ) {
-                         css += ' transform: '+cssJson[preVar+'translate3d-tablet']+';';
-                     }
+            //gutena kit settings end
+            css += '} }';
+            /************************
+             Block Mobile : END
+            **************************/
         
-                 }
-        
-                 //gutena kit settings end
-                 css += '} }';
-             /************************
-              Block Tablet : END
-             **************************/
-        
-             /************************
-              Block Mobile : START
-             **************************/
-             css += '@media only screen and (max-width: '+media_query_mobile +') { '+id+' {';
-        
-                 //Hide in Mobile
-                 if ( ! gkIsEmpty( cssJson?.[preVar+'display-mobile'] ) ) {
-                     css += ' display: '+cssJson[preVar+'display-mobile']+';';
-                 } else {
-        
-                     //spacing
-                     [ 'padding', 'margin' ].forEach( ( spaceName ) => {
-                         [ 'top', 'right', 'bottom', 'left' ].forEach( ( position ) => {
-                             if ( ! gkIsEmpty( cssJson?.[preVar+'mobile-'+spaceName+'-'+position] ) ) {
-                                 css += spaceName+'-'+position+':'+cssJson[preVar+'mobile-'+spaceName+'-'+position]+' !important;';
-                             }
-                         });
-                    });
-                     
-                     if ( gkIsEmpty( global_typography ) ) {
-                         //typography
-                         [ 'font-size', 'line-height' ].forEach( ( font_property ) => {
-                             if ( ! gkIsEmpty( cssJson?.[preVar+'m-'+font_property] ) ) {
-                                 css += ' '+font_property+':'+cssJson[preVar+'m-'+font_property] +' !important;';
-                             }
-                         });
-                     }
-        
-                     //translate3d in tablet
-                     if ( ! gkIsEmpty( cssJson?.[preVar+'translate3d-mobile'] ) ) {
-                         css += ' transform: '+cssJson[preVar+'translate3d-mobile']+';';
-                     }
-        
-                 }
-        
-                 //gutena kit settings end
-                 css += '} }';
-             /************************
-              Block Mobile : END
-             **************************/
-        
-             return css;
-        
-         }
+            return css;
+        }
 
         //generate Css var
         const generateCssVar = ( styleVar = gutenaKitStyle, id = '#block-'+clientId, requireJson = false ) => {
-            
             let cssVar = '';
         
             if ( gkIsEmpty( styleVar ) ) {
@@ -589,7 +581,6 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                 } );
             }
         
-           
             [ 'color', 'overlay', 'border', 'boxShadow' ].forEach( ( cssProperty ) => {
                 [ 'normal', 'hover' ].forEach( ( eventName ) => {
                     if ( ! gkIsEmpty( styleVar?.[ cssProperty ]?.[ eventName ] ) ) {
@@ -668,12 +659,10 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             }
             
             return requireJson ? gkCssJson( cssVar ) : ' '+id+'{'+cssVar+'} ' ;
-        
         }
 
         //minimal classes
         const generateClassesMinimal = ( styleVar = gutenaKitStyle ) => {
-
             if ( gkIsEmpty( styleVar ) ) {
                 return false;
             }
@@ -694,7 +683,6 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
 
         //detailed classes
         const generateClasses = ( styleVar = gutenaKitStyle ) => {
-
             if ( gkIsEmpty( styleVar ) ) {
                 return false;
             }
@@ -769,7 +757,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                     
                     //mobile
                     typographyClass += ( ! gkIsEmpty( styleVar.typography?.MlineHeight ) )? '-m': '';
-                }else{
+                } else { 
                     //tablet
                     typographyClass += ( ! gkIsEmpty( styleVar.typography?.TfontSize ) || ! gkIsEmpty( styleVar.typography?.TlineHeight ) )? '-t': '';
                     //mobile
@@ -781,9 +769,6 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                     cssClass.push( classPre+'-typography'+typographyClass );
                 }
                 
-                
-                
-               
             } else if ( ! gkIsEmpty( styleVar?.globalTypography ) ) {
                 //Global typography
                 cssClass.push( classPre+'-g-typography' )
@@ -794,19 +779,42 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
         }
 
         //Check if all keys are empty are not
-        const checkGutenaStyleEmpty = ( newstyle ) => {
+        const checkGutenaStyleEmpty = newstyle => {
             let isGutenaKitStyleEmpty = true;
-            Object.keys( newstyle ).forEach( styleKey =>{
-                if ( ! gkIsEmpty( newstyle[styleKey] ) ) {
-                    isGutenaKitStyleEmpty = false;
-                    return;
-                }
-            } );
+            if (
+                typeof newstyle === 'object' &&
+                newstyle !== null
+            ) {
+                Object.keys( newstyle ).forEach( styleKey => {
+                    if ( ! gkIsEmpty( newstyle[ styleKey ] ) ) {
+                        isGutenaKitStyleEmpty = false;
+                        return;
+                    }
+                } );
+            }
             return isGutenaKitStyleEmpty;
         }
 
+        const isDeepEmpty = input => {
+            if ( isEmpty( input ) ) {
+                return true
+            }
+
+            if ( typeof input === 'object' ) {
+                for ( const item of Object.values( input ) ) {
+                    // if item is not undefined and is a primitive, return false
+                    // otherwise dig deeper
+                    if ( ( item !== undefined && item !== false && item !== '' && typeof item !== 'object' ) || ! isDeepEmpty( item ) ) {
+                        return false
+                    }
+                }
+                return true
+            }
+            return isEmpty( input )
+        }
+
         //Set gutena kit settings attributes
-        const setAttr = ( value, styleAttr = null, attrName = null, deviceStyle=null ) => {
+        const setAttr = ( value, styleAttr = null, attrName = null, deviceStyle = null ) => {
             /**
              * 
              * styleAttr like spacing, border, color etc
@@ -849,24 +857,23 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                 //Reset typography when global typography applied
                 newstyle.typography = undefined;
             } else if ( 'typography' === styleAttr && ! gkIsEmpty( newstyle?.globalTypography ) ) {
-                 //Reset global typography when custom typography applied
+                //Reset global typography when custom typography applied
                 newstyle.globalTypography = undefined;
             }
 
-           
-           
             //CSS json
             newstyle.cssJson = gkIsEmpty( newstyle ) ? undefined : generateCssVar( newstyle, " .gutenakitid-"+clientId, true );
+            
+            let isGutenaKitStyleEmpty = isDeepEmpty( newstyle );
+            let gutenaKitClassVar = {
+                ...gutenaKitClass,
+                blockClasses: isGutenaKitStyleEmpty ? undefined : generateClassesMinimal( newstyle )
+            };
 
-            let isGutenaKitStyleEmpty = checkGutenaStyleEmpty( newstyle );
-
-            setAttributes( { 
+            setAttributes( {
                 gutenaKitStyle: isGutenaKitStyleEmpty ? undefined : { ...newstyle }, 
-                gutenaKitID:clientId,
-                gutenaKitClass:{
-                    ...gutenaKitClass,
-                    blockClasses: isGutenaKitStyleEmpty ? undefined : generateClassesMinimal( newstyle )
-                },
+                gutenaKitID: clientId,
+                gutenaKitClass: isDeepEmpty( gutenaKitClassVar ) ? undefined : gutenaKitClassVar
             } );
             
         };
@@ -909,175 +916,156 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             Mobile: __( 'Hide on Mobile', 'gutena-kit' ),
         };
 
-
         const Style = generateCssFromVar()+''+renderBlockCSSForResponsive( gutena_kit_block_editor , deviceType );
       
-        
         return (
             <Fragment>
                 <BlockEdit { ...props } />
-                <style>
-                    { Style }
-                </style>
+                <style>{ Style }</style>
                 { isSelected && 
-                <InspectorControls>
-                    <PanelBody 
-                        icon={ gutenaKitIcon }
-                        iconPosition='left'
-                        title={__("Gutena Kit Settings", "gutena-kit")}
-                        className="gutena-kit-settings"
-                        initialOpen={ true }
-                    >
-                    <HStack>
-                        <FlexItem>
-                        </FlexItem>
-                        <FlexItem>
-                            <Button 
-                                variant="secondary"
-                                isSmall
-                                disabled={ checkGutenaStyleEmpty( gutenaKitStyle ) }
-                                onClick={ () => setAttributes( { 
-                                    gutenaKitStyle:{
-                                        spacing:undefined,
-                                        typography:undefined,
-                                        globalTypography:undefined,
-                                        color:undefined,
-                                        overlay:undefined,
-                                        border:undefined,
-                                        boxShadow:undefined,
-                                        hideDisplay:undefined,
-                                        translate3d:undefined,
-                                        textContentGap:undefined,
-                                        linkDecorationLineNone:undefined,
-                                        cssJson:undefined
-                                    }
-                                } ) }
-                            >
-                                { __('Reset') }
-                            </Button>
-                        </FlexItem>
-                    </HStack>
-                    { gkSupports.typography &&
-                    <TypographySettings 
-                        blockName={ name }
-                        attrValue={  gutenaKitStyle?.typography }
-                        onChangeFunc = { ( typography ) => setAttr( typography, 'typography' ) }
-                        globalTypographySlug = { gutenaKitStyle?.globalTypography }
-                        setGlobalTypography = { ( gt ) => setAttr( gt, 'globalTypography' ) }
-                    />
-                    }
-                    { gkSupports.color && 
-                    <EventsControl 
-                        componentName='ColorControl'
-                        label={ __("Color", "gutena-kit") }
-                        attrValue ={ gutenaKitStyle?.color }
-                        onChangeFunc ={ ( value ) => setAttr( value, 'color' ) }
-                        panelId={ clientId }
-                    />
-                    }
-                    { gkSupports.overlay && 
-                    <EventsControl 
-                        componentName='OverlayControl'
-                        label={ __("Overlay", "gutena-kit") }
-                        attrValue ={ gutenaKitStyle?.overlay }
-                        onChangeFunc ={ ( value ) => setAttr( value, 'overlay' ) }
-                    />
-                    }
-                    { gkSupports.spacing && 
-                    <PanelBody 
-                        title={__("Spacing", "gutena-kit")}
-                        initialOpen={ false }
-                    >   
-                        <SelectDeviceDropdown />
-                        <BoxControl
-                            label={ __( "Padding", "gutena-kit" ) }
-                            values={ gutenaKitStyle?.spacing?.padding?.[styleName] }
-                            onChange={ ( value ) =>  setAttr( value, 'spacing', 'padding', styleName  ) }
-                            allowReset={true}
-                            sides={ paddingSides }
-                        />
-
-                        <SelectDeviceDropdown />
-                        <BoxControl
-                            label={ __( "Margin", "gutena-kit" ) }
-                            values={ gutenaKitStyle?.spacing?.margin?.[styleName] }
-                            onChange={ ( value ) =>  setAttr( value, 'spacing', 'margin', styleName ) }
-                            allowReset={true}
-                            sides={ marginSides }
-                            inputProps={ { min: -Infinity } }
-                        />
-                    </PanelBody>
-                    }
-                    { gkSupports.border &&
-                    <BorderGroup 
-                        attrValue={ gutenaKitStyle?.border }
-                        onChangeFunc = { ( value ) => setAttr( value, 'border' ) }
-                    />
-                    }
-                    { gkSupports.border &&
-                    <EventsControl 
-                        componentName='BoxShadowControl'
-                        label={ __("Box Shadow", "gutena-kit") }
-                        attrValue={ gutenaKitStyle?.boxShadow }
-                        onChangeFunc = { ( value ) => setAttr( value, 'boxShadow' ) }
-                        onBoxShadow = { true }
-                    />
-                    }
-                    { gkSupports.display &&
-                    <PanelBody 
-                        title={__("Display", "gutena-kit")}
-                        initialOpen={ false }
-                    >
-                        { 
-                            [ 'Desktop', 'Tablet', 'Mobile' ].map( ( deviceName ) => {
-                                let deviceStyle = ( 'Desktop' === deviceName ) ? 'default' : ( ( 'Tablet' === deviceName ) ? 'tablet' : 'mobile' );
-                                return(<ToggleControl
-                                    key={ deviceName }
-                                    label={ deviceAvailable[ deviceName ] }
-                                    checked={ gkIsEmpty( gutenaKitStyle?.hideDisplay?.[deviceStyle] ) ? false : gutenaKitStyle?.hideDisplay?.[deviceStyle]  }
-                                    onChange={ ( value ) =>  setAttr( value, 'hideDisplay', null, deviceStyle  ) }
-                                /> )} 
-                            )
-                        }
-                    </PanelBody>
-                    }
-                    { gkSupports.translate3d &&
-                        <Translate3dControl 
-                        attrValue={ gutenaKitStyle?.translate3d?.[styleName] }
-                        onChangeFunc={ ( value ) =>  setAttr( value, 'translate3d', null, styleName  ) }
-                        />
-                    }
-                    { ( gkSupports.textContentGap || gkSupports.linkSettings ) && 
+                    <InspectorControls>
                         <PanelBody 
-                            title={__("Content Settings", "gutena-kit")}
-                            initialOpen={ false }
+                            icon={ gutenaKitIcon }
+                            iconPosition='left'
+                            title={__("Gutena Kit Settings", "gutena-kit")}
+                            className="gutena-kit-settings"
+                            initialOpen={ true }
                         >
-                            { gkSupports.textContentGap && 
-                                <RangeControlUnit
-                                    rangeLabel={ __("Content Gap", "gutena-kit")  }
-                                    attrValue={ gutenaKitStyle?.textContentGap }
-                                    onChangeFunc={ ( value ) => setAttr( value, 'textContentGap' ) }
-                                    rangeMin={ 0 }
-                                    rangeMax={ {
-                                        px: 100,
-                                        em: 10,
-                                        rem: 10,
-                                    } }
-                                    rangeStep={ 1 }
-                                    attrUnits= { [ 'px', 'em', 'rem' ] }
+                            { gkSupports.typography &&
+                                <TypographySettings 
+                                    blockName={ name }
+                                    attrValue={  gutenaKitStyle?.typography }
+                                    onChangeFunc = { ( typography ) => setAttr( typography, 'typography' ) }
+                                    globalTypographySlug = { gutenaKitStyle?.globalTypography }
+                                    setGlobalTypography = { ( gt ) => setAttr( gt, 'globalTypography' ) }
+                                    openPanel={ ! isDeepEmpty( gutenaKitStyle?.typography ) }
                                 />
                             }
-                            { gkSupports.linkSettings &&
-                                <ToggleControl
-                                    label={ __("Unset link text decoration line", "gutena-kit") }
-                                    checked={ gkIsEmpty( gutenaKitStyle?.linkDecorationLineNone ) ? false : gutenaKitStyle.linkDecorationLineNone  }
-                                    onChange={ ( value ) =>  setAttr( value, 'linkDecorationLineNone' ) }
+                            { gkSupports.color && 
+                                <EventsControl 
+                                    componentName='ColorControl'
+                                    label={ __("Color", "gutena-kit") }
+                                    attrValue ={ gutenaKitStyle?.color }
+                                    onChangeFunc ={ ( value ) => setAttr( value, 'color' ) }
+                                    panelId={ clientId }
+                                    openPanel={ ! isDeepEmpty( gutenaKitStyle?.color ) }
                                 />
                             }
-                        </PanelBody>
-                    }
-                    </PanelBody>    
-                </InspectorControls>
+                            { gkSupports.overlay && 
+                                <EventsControl 
+                                    componentName='OverlayControl'
+                                    label={ __("Overlay", "gutena-kit") }
+                                    attrValue ={ gutenaKitStyle?.overlay }
+                                    onChangeFunc ={ ( value ) => setAttr( value, 'overlay' ) }
+                                    openPanel={ ! isDeepEmpty( gutenaKitStyle?.overlay ) }
+                                />
+                            }
+                            { gkSupports.spacing && 
+                                <PanelBody title={ __( 'Spacing', 'gutena-kit' ) } initialOpen={ ! isDeepEmpty( gutenaKitStyle?.spacing ) }>
+                                    <BoxControl
+                                        label={ <SelectDeviceDropdown sideLabel={ __( 'Padding', 'gutena-tabs' ) } labelAtLeft={ true } /> }
+                                        values={ gutenaKitStyle?.spacing?.padding?.[styleName] }
+                                        onChange={ ( value ) =>  setAttr( value, 'spacing', 'padding', styleName  ) }
+                                        allowReset={true}
+                                        sides={ paddingSides }
+                                    />
+                                    <BoxControl
+                                        label={ <SelectDeviceDropdown sideLabel={ __( 'Margin', 'gutena-tabs' ) } labelAtLeft={ true } /> }
+                                        values={ gutenaKitStyle?.spacing?.margin?.[styleName] }
+                                        onChange={ ( value ) =>  setAttr( value, 'spacing', 'margin', styleName ) }
+                                        allowReset={true}
+                                        sides={ marginSides }
+                                        inputProps={ { min: -Infinity } }
+                                    />
+                                </PanelBody>
+                            }
+                            { gkSupports.border &&
+                                <BorderGroup 
+                                    attrValue={ gutenaKitStyle?.border }
+                                    onChangeFunc = { ( value ) => setAttr( value, 'border' ) }
+                                    openPanel={ ! isDeepEmpty( gutenaKitStyle?.border ) }
+                                />
+                            }
+                            { gkSupports.border &&
+                                <EventsControl 
+                                    componentName='BoxShadowControl'
+                                    label={ __("Box Shadow", "gutena-kit") }
+                                    attrValue={ gutenaKitStyle?.boxShadow }
+                                    onChangeFunc={ ( value ) => setAttr( value, 'boxShadow' ) }
+                                    onBoxShadow={ true }
+                                    openPanel={ ! isDeepEmpty( gutenaKitStyle?.boxShadow ) }
+                                />
+                            }
+                            { gkSupports.display &&
+                                <PanelBody 
+                                    title={__("Display", "gutena-kit")}
+                                    initialOpen={ ! isDeepEmpty( gutenaKitStyle?.hideDisplay ) }
+                                >
+                                    { 
+                                        [ 'Desktop', 'Tablet', 'Mobile' ].map( ( deviceName ) => {
+                                            let deviceStyle = ( 'Desktop' === deviceName ) ? 'default' : ( ( 'Tablet' === deviceName ) ? 'tablet' : 'mobile' );
+                                            return(<ToggleControl
+                                                key={ deviceName }
+                                                label={ deviceAvailable[ deviceName ] }
+                                                checked={ gkIsEmpty( gutenaKitStyle?.hideDisplay?.[deviceStyle] ) ? false : gutenaKitStyle?.hideDisplay?.[deviceStyle]  }
+                                                onChange={ ( value ) =>  setAttr( value, 'hideDisplay', null, deviceStyle  ) }
+                                            /> )} 
+                                        )
+                                    }
+                                </PanelBody>
+                            }
+                            { gkSupports.translate3d &&
+                                <Translate3dControl 
+                                    attrValue={ gutenaKitStyle?.translate3d?.[styleName] }
+                                    onChangeFunc={ ( value ) =>  setAttr( value, 'translate3d', null, styleName  ) }
+                                />
+                            }
+                            { ( gkSupports.textContentGap || gkSupports.linkSettings ) && 
+                                <PanelBody 
+                                    title={__("Content Settings", "gutena-kit")}
+                                    initialOpen={ false }
+                                >
+                                    { gkSupports.textContentGap && 
+                                        <RangeControlUnit
+                                            rangeLabel={ __("Content Gap", "gutena-kit")  }
+                                            attrValue={ gutenaKitStyle?.textContentGap }
+                                            onChangeFunc={ ( value ) => setAttr( value, 'textContentGap' ) }
+                                            rangeMin={ 0 }
+                                            rangeMax={ {
+                                                px: 100,
+                                                em: 10,
+                                                rem: 10,
+                                            } }
+                                            rangeStep={ 1 }
+                                            attrUnits= { [ 'px', 'em', 'rem' ] }
+                                        />
+                                    }
+                                    { gkSupports.linkSettings &&
+                                        <ToggleControl
+                                            label={ __("Unset link text decoration line", "gutena-kit") }
+                                            checked={ gkIsEmpty( gutenaKitStyle?.linkDecorationLineNone ) ? false : gutenaKitStyle.linkDecorationLineNone  }
+                                            onChange={ ( value ) =>  setAttr( value, 'linkDecorationLineNone' ) }
+                                        />
+                                    }
+                                </PanelBody>
+                            }
+                            <HStack style={ { 'margin-top': '10px' } }>
+                                <FlexItem></FlexItem>
+                                <FlexItem>
+                                    <Button 
+                                        variant="secondary"
+                                        isSmall
+                                        disabled={ isDeepEmpty( gutenaKitStyle ) }
+                                        onClick={ () => setAttributes( { 
+                                            gutenaKitStyle: undefined
+                                        } ) }
+                                    >
+                                        { __('Reset') }
+                                    </Button>
+                                </FlexItem>
+                            </HStack>
+                        </PanelBody>    
+                    </InspectorControls>
                 }
             </Fragment>
         );

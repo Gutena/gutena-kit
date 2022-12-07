@@ -23,6 +23,7 @@ import {
     FlexItem,
     Button,
     Dropdown,
+    BaseControl,
 } from '@wordpress/components';
 import { useSelect } from "@wordpress/data";
 import { useState, useEffect } from '@wordpress/element';
@@ -96,7 +97,8 @@ const TypographyControl = ( props ) => {
 
     const deviceChangeFunc = devicePreview ? {} : { 
         deviceTypeLocal: deviceTypeLocal,
-        onChangefunc: ( device ) => setDeviceTypeNoPreview( device ) };
+        onChangefunc: ( device ) => setDeviceTypeNoPreview( device ) 
+    };
 
     //Save font size and line height according to selected device, if font size is a theme preset then then responsive not require
     const fontSizeName = ( 'Desktop' === deviceTypeLocal || gkIsEmpty( attrValue?.fontSize ) || 10 < attrValue.fontSize.length ) ? 'fontSize' : ( ( 'Tablet' === deviceTypeLocal ) ? 'TfontSize' : 'MfontSize'  );
@@ -105,7 +107,7 @@ const TypographyControl = ( props ) => {
 
     const controls = (
         <>
-        <Grid columns={ 2 }>
+        <Grid columns={ 2 } className="gutena-kit-typography-control">
             { ! gkIsEmpty( globalTypography ) && 0 < globalTypography.length && 
                 <div className="edit-site-typography-panel__full-width-control">
                     <SelectControl
@@ -149,8 +151,8 @@ const TypographyControl = ( props ) => {
                 { ! editGlobalTypography && 
                     <div className="edit-site-typography-panel__full-width-control">
                         <GutenaFontSizePicker
-                            fontSize={   attrValue?.[ fontSizeName ]}
-                            onChangeFunc={ ( value ) =>  setAttr( value, fontSizeName ) }
+                            fontSize={ attrValue?.[ fontSizeName ] }
+                            onChangeFunc={ ( value ) => setAttr( value, fontSizeName ) }
                             reponsive={ true }
                             setCustom={ ( ! gkIsEmpty( attrValue?.fontSize ) && 10 > attrValue.fontSize.length ) }
                         />
@@ -158,12 +160,15 @@ const TypographyControl = ( props ) => {
                 }
                 { ( editGlobalTypography && 
                     <div>
-                        <SelectDeviceDropdown 
-                            sideLabel={__( 'Font size', 'gutena-kit' )} 
-                            { ...deviceChangeFunc }
-                        />
                         <UnitControl
-                            value={   attrValue?.[ fontSizeName ]}
+                            label={
+                                <SelectDeviceDropdown 
+                                    sideLabel={ __( 'Font size', 'gutena-kit' ) } 
+                                    labelAtLeft={ true }
+                                    { ...deviceChangeFunc }
+                                />
+                            }
+                            value={ attrValue?.[ fontSizeName ] }
                             onChange={ ( value ) =>  setAttr( value, fontSizeName ) }
                         />
                     </div>
@@ -172,14 +177,14 @@ const TypographyControl = ( props ) => {
             ) }
             { hasLineHeightEnabled && (
                 <div>
-                    { ( editGlobalTypography && 
-                        <SelectDeviceDropdown 
-                            sideLabel={__( 'Line height', 'gutena-kit' )} 
-                            { ...deviceChangeFunc }
-                        />
-                    ) }
                     <InputControl
-                        label={ editGlobalTypography ? '' : __( 'Line height', 'gutena-kit' ) }
+                        label={ editGlobalTypography 
+                            ? <SelectDeviceDropdown 
+                                sideLabel={ __( 'Line height', 'gutena-kit' ) } 
+                                labelAtLeft={ true }
+                                { ...deviceChangeFunc }
+                                /> 
+                            : __( 'Line height', 'gutena-kit' ) }
                         type="number"
                         value={  attrValue?.[ lineHeightName ] || '' }
                         onChange={ ( value ) => setAttr( value, lineHeightName ) }
@@ -201,7 +206,7 @@ const TypographyControl = ( props ) => {
 				/>
             )}
             { hasAppearanceControl && (
-                <div className={ editGlobalTypography ?"edit-site-typography-panel__full-width-control":"" }>
+                <div className={ editGlobalTypography ? 'edit-site-typography-panel__full-width-control' : '' }>
                     <FontAppearanceControl
                         value={ {
                             fontStyle:attrValue?.fontStyle,
@@ -220,7 +225,6 @@ const TypographyControl = ( props ) => {
                         } }
                         hasFontStyles={ true }
                         hasFontWeights={ true }
-                        size="__unstable-large"
                         __nextHasNoMarginBottom
                     />
                 </div>
@@ -231,29 +235,29 @@ const TypographyControl = ( props ) => {
                     <HStack className="gutena-kit-fluid-typography-toggle-hstack">
                         <FlexItem>
                             <ToggleControl
-                                label={ __( 'Make it Fluid typography', 'gutena-kit' ) }
+                                label={ __( 'Make it Fluid Typography', 'gutena-kit' ) }
                                 checked={ gkIsEmpty( attrValue?.fluidTypography ) ? false : attrValue?.fluidTypography }
                                 onChange={ ( value ) =>  setAttr( value, 'fluidTypography' ) }
                             />
                             <Dropdown
-                            className="gutena-kit-popover-help-text"
-                            contentClassName="gutena-kit-popover-help-content"
-                            position="bottom right"
-                            renderToggle={ ( { isOpen, onToggle } ) => (
-                                <Button
-                                    variant="link"
-                                    onClick={ onToggle }
-                                    aria-expanded={ isOpen }
-                                    icon={ questionIcon }
-                                />
-                            ) }
-                            renderContent={ () => <div>{  __( 'Create fluid typography using provided minimum and maximum font-size value', 'gutena-kit' ) }</div> }
-                        />
+                                className="gutena-kit-popover-help-text"
+                                contentClassName="gutena-kit-popover-help-content"
+                                position="bottom right"
+                                renderToggle={ ( { isOpen, onToggle } ) => (
+                                    <Button
+                                        variant="link"
+                                        onClick={ onToggle }
+                                        aria-expanded={ isOpen }
+                                        icon={ questionIcon }
+                                        iconSize={ 20 }
+                                    />
+                                ) }
+                                renderContent={ () => <div>{  __( 'Create fluid typography using provided minimum and maximum font-size value', 'gutena-kit' ) }</div> }
+                            />
                         </FlexItem>
                     </HStack>
                 </div>
             }
-            
         </Grid>
         { resetButton && 
             <HStack>
@@ -281,6 +285,7 @@ const TypographyControl = ( props ) => {
                             textTransform: undefined,
                             textDecoration: undefined,
                         } ) }
+                        style={ { 'margin-top': '10px' } }
                     >
                         { __( 'Reset', 'gutena-kit' ) }
                     </Button>
