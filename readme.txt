@@ -71,6 +71,7 @@ Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtab
 * Added Advanced Button Block
 * Added Navigation Child Block
 * Fixed demo import slashing issue
+* Fixed demo import custom template failed to override issue
 * Added architecture, creatives and consulting demos
 * Updated agency and business demos
 * Added required block plugin installation during demo import
