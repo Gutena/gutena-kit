@@ -31,6 +31,7 @@ class GutenakitDemoSetup extends Merlin{
 	function __construct( $config = array(), $strings = array() ) {
 
         parent::__construct( $config, $strings );
+		$this->set_required_plugins();
         $this->remove_actions();
         $this->add_actions();
         $this->add_filters();
@@ -111,6 +112,22 @@ class GutenakitDemoSetup extends Merlin{
 		);
 
 		$this->steps = apply_filters( $this->theme->template . '_merlin_steps', $this->steps );
+	}
+
+	private function set_required_plugins() {
+		if ( ! isset( $_GET['demo_index'] ) || ! is_numeric( $_GET['demo_index'] ) ) {
+			return;
+		}
+
+		$selected_import_index =  (int) sanitize_text_field( wp_unslash( $_GET['demo_index'] ) );
+
+		//set_transient for required plugins for tgmpa plugin registeration 
+		$demo = gutendkit_demo_deatils_list( $selected_import_index );
+		
+		if ( ! empty( $demo ) && ! empty( $demo['required_plugins'] ) && is_array( $demo['required_plugins'] ) ) {
+			//set_transient for 30 minutes
+			set_transient( 'gutenakit_demo_required_plugins', $demo['required_plugins'], 1800 );
+		}
 	}
 
     /**
@@ -237,6 +254,9 @@ class GutenakitDemoSetup extends Merlin{
     
 	/*After Demo Import Set Home Page*/
     public function after_import_setup( $index ) {
+	   //delete required plugin transient
+	   delete_transient( 'gutenakit_demo_required_plugins' );
+	   //get demo details
 	   $demo = gutendkit_demo_deatils_list( $index );
 	   $main_menu = empty( $demo['main_menu'] ) ? 'Main Menu' : sanitize_text_field( $demo['main_menu'] );
 	   $home_page = empty( $demo['home_page'] ) ? 'Home' : sanitize_text_field( $demo['home_page'] );
@@ -303,6 +323,17 @@ class GutenakitDemoSetup extends Merlin{
 		$demo['style_variation'] = is_array( $demo['style_variation'] ) ? wp_json_encode( $demo['style_variation'] ) : $demo['style_variation'];
 		$this->reset_set_global_styles( $demo['style_variation'] );
 	   }
+
+	    //Set global typography
+		if ( ! empty( $demo['gutena_kit_global_typography'] ) && is_array( $demo['gutena_kit_global_typography'] ) ) {
+			//check for multisite
+			if ( defined( 'MULTISITE' ) && true === MULTISITE && function_exists( 'get_sites' ) && class_exists( 'WP_Site_Query' ) && function_exists( 'get_blog_option' ) && function_exists( 'get_current_blog_id' ) ) {
+				//update current site option
+				update_blog_option( get_current_blog_id(), 'gutena_kit_global_typography' , gutenakit_sanitize_array( $demo['gutena_kit_global_typography'] ) ) ;
+			} else {
+				update_option( 'gutena_kit_global_typography', gutenakit_sanitize_array( $demo['gutena_kit_global_typography'] ) );
+			}
+		}
 	   
     }
 

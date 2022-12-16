@@ -749,7 +749,7 @@ class WXRImporter extends \WP_Importer {
 		 * @param array $comments Comments on the post.
 		 * @param array $terms Terms on the post.
 		 */
-		$data = apply_filters( 'wxr_importer.pre_process.post', $data, $meta, $comments, $terms );
+		$data = apply_filters( 'wxr_importer.pre_process.post', wp_slash( $data ), $meta, $comments, $terms );
 		if ( empty( $data ) ) {
 			return false;
 		}

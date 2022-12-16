@@ -70,6 +70,10 @@ Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtab
 * Added display settings for hide a block in specific device like desktop, tablet or mobile
 * Added Advanced Button Block
 * Added Navigation Child Block
+* Fixed demo import slashing issue
+* Added architecture, creatives and consulting demos
+* Updated agency and business demos
+
 
 = 1.0.6 | 2nd September 2022 =
 * Updated banners and icons
