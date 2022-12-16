@@ -240,15 +240,9 @@ class GutenakitDemoSetup extends Merlin{
 	public function before_import_reset(){
 		if ( $this->is_gutena_theme_activated ) {
 			//Reset Templates: post_type:wp_template
-			$this->reset_templates(array(
-				'post_type' => 'wp_template', 
-				"source"    => "custom",
-			), 'wp_template' );
+			$this->reset_templates( array(), 'wp_template' );
 			//Reset post_type:wp_template_part
-			$this->reset_templates(array(
-				'post_type' => 'wp_template_part', 
-				"source"    => "custom",
-			), 'wp_template_part' );
+			$this->reset_templates( array(), 'wp_template_part' );
 		}
 	}
     
@@ -366,13 +360,14 @@ class GutenakitDemoSetup extends Merlin{
 	}
 
 	
-	//reset templates
+	//reset custom templates for gutena theme only
 	private function reset_templates( $query_array, $template_type ) {
 		if ( ! function_exists( 'get_block_templates' ) ) {
 			return;
 		}
+		//get templates array
 		$templates = get_block_templates( $query_array, $template_type );
-		//print_r( $templates);
+		
 		if ( ! empty( $templates) ) {
 			foreach ( $templates as $template ) {
 				if ( ! empty( $template->wp_id ) && is_numeric( $template->wp_id ) && $template->wp_id > 0 && ! empty( $template->id ) && 'custom' === $template->source && $template->type === $template_type ) {
