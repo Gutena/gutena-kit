@@ -292,26 +292,6 @@ class GutenakitDemoSetup extends Merlin{
        		update_option( 'page_for_posts', (int) $blog_page->ID );
 	   }
 
-		//correct excerpt block if required
-		if ( ! empty( $demo['demo_slug'] ) && 'saas_company' === $demo['demo_slug'] ) {
-			
-			// get blog page object
-			$blog_page  = get_page_by_title( 'Saas Blog' );
-
-			//check if blog page is exist and require to update
-			if ( ! empty( $blog_page ) && ! empty( $blog_page->ID ) && is_numeric($blog_page->ID) && 1 < $blog_page->ID  && ! empty( $blog_page->post_content ) && stripos( $blog_page->post_content, '<!-- wp:post-excerpt {"moreText":"u003cstrongu003eRead Article') > 0 ) {
-
-				//replace incorrect block content with correct block content
-				$blog_page->post_content = str_ireplace(
-					'<!-- wp:post-excerpt {"moreText":"u003cstrongu003eRead Article u003cimg class=u0022wp-image-1595u0022 style=u0022width: 14px;u0022 src=u0022https://demo.gutena.io/saas-company/wp-content/themes/gutena/assets/img/icons/arrow-right-black.svgu0022 alt=u0022arrow-rightu0022u003eu003c/strongu003e","style":{"typography":{"lineHeight":"1.9","fontStyle":"normal","fontWeight":"500","letterSpacing":"-0.01em"}},"textColor":"tertiary","fontSize":"normal"} /-->',
-					'<!-- wp:post-excerpt {"moreText":"\u003cstrong\u003eRead Article \u003cimg class=\u0022wp-image-1595\u0022 style=\u0022width: 14px;\u0022 src=\u0022https://demo.gutena.io/saas-company/wp-content/themes/gutena/assets/img/icons/arrow-right-black.svg\u0022 alt=\u0022arrow-right\u0022\u003e\u003c/strong\u003e","style":{"typography":{"lineHeight":"1.9","fontStyle":"normal","fontWeight":"500","letterSpacing":"-0.01em"}},"textColor":"tertiary","fontSize":"normal"} /-->', 
-					$blog_page->post_content 
-				);
-				//update static blog page
-				wp_update_post( $blog_page );
-			}
-		}
-
 	   //Set global styles
 	   if ( ! empty( $demo['style_variation'] ) ) {
 		$demo['style_variation'] = is_array( $demo['style_variation'] ) ? wp_json_encode( $demo['style_variation'] ) : $demo['style_variation'];

@@ -174,9 +174,10 @@ class Gutena_Kit {
 		$plugin_admin = new Gutena_Kit_Admin( $this->get_gutena_kit(), $this->get_version() );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'admin_menu', $plugin_admin , 'add_admin_menu' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin , 'add_admin_menu', 99 );
 		$this->loader->add_action( 'enqueue_block_editor_assets',$plugin_admin,'add_blocks_and_settings' );
 		$this->loader->add_action( 'wp_ajax_save_global_typography', $plugin_admin, 'save_global_typography' );
+		$this->loader->add_action( 'wp_ajax_manage_gutena_blocks', $plugin_admin, 'manage_gutena_block_plugins' );
 	}
 
 	/**
