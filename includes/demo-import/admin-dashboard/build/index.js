@@ -291,10 +291,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _data_DashboardContextProvider__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../data/DashboardContextProvider */ "./src/data/DashboardContextProvider.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
 
 /* Block activate and deactivate settings */
+
+
 
 
 const noop = () => {};
@@ -332,23 +335,27 @@ const ToggleTickCross = props => {
 };
 const BlockSettings = props => {
   const gutenaBlockData = gutenakit_dahboard_info.onboarding_info.step_two;
-
-  //console.log("gutenaBlockData",gutenaBlockData);
+  const {
+    blocks,
+    onBoarding,
+    makeTemplateTabActive,
+    dispatch
+  } = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useContext)(_data_DashboardContextProvider__WEBPACK_IMPORTED_MODULE_1__.DashboardContext);
 
   //Get status for all block action toogle btn
   const getAllBlockActionToggleStatus = blocks => {
     let status = 0; //0:all disabled, 1: few enabled, 2: All enabled
-    let message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('All Blocks Disabled', 'gutena-kit');
+    let message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('All Blocks Disabled', 'gutena-kit');
     for (let i = 0; i < blocks.length; i++) {
       //set status = 2 intially if a block is enabled
       if (blocks[i].is_enabled) {
         status = 2;
-        message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('All Blocks Enabled', 'gutena-kit');
+        message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('All Blocks Enabled', 'gutena-kit');
       }
       //set status = 1, if a block is disabled and initially it was 2
       if (2 === status && !blocks[i].is_enabled) {
         status = 1;
-        message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Few Blocks Enabled', 'gutena-kit');
+        message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Few Blocks Enabled', 'gutena-kit');
         break;
       }
     }
@@ -360,12 +367,12 @@ const BlockSettings = props => {
 
   //Block data : blocks:[{slug, name, is_enabled}], allBlocksActionToggle:{ is_enabled, msg: message }
   const [blockData, setBlockData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)({
-    blocks: gutenaBlockData.blocks.map(block => ({
-      ...block,
-      status: block.is_enabled
-    })),
-    allBlocksActionToggle: getAllBlockActionToggleStatus(gutenaBlockData.blocks),
-    saveStatus: 0 //0:not initiated, 1 : in progress, 2: Completed, 3:Error
+    blocks: blocks,
+    allBlocksActionToggle: getAllBlockActionToggleStatus(blocks),
+    saveStatus: 0,
+    //0:not initiated, 1 : in progress, 2: Completed, 3:Error
+    onBoard: onBoarding,
+    step: 1
   });
 
   //Set Blocks status
@@ -399,7 +406,72 @@ const BlockSettings = props => {
   };
 
   //Save Block Settings : install and activate block plugins 
-  const SaveBlockSettings = () => {
+  const SaveBlockSettings = function () {
+    let skipSettings = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    var current_plugin = false;
+    var plugin_processed = [];
+    var countBlocks = 0;
+    var resStore = [];
+    var resError = false;
+
+    //process completed
+    const process_done = () => {
+      //Set status in progress 
+      console.log("process completed", resStore);
+      if (resError) {
+        //On error
+        setBlockData({
+          ...blockData,
+          saveStatus: 3 //error status
+        });
+      } else {
+        //On success: Set status to all blocks
+        let blocks = blockData.blocks.map(block => ({
+          ...block,
+          status: block.is_enabled
+        }));
+        setBlockData({
+          ...blockData,
+          blocks: blocks,
+          allBlocksActionToggle: getAllBlockActionToggleStatus(blocks),
+          saveStatus: 2
+        });
+        if (onBoarding) {
+          //wait for 2s if settings has been saved to show success message
+          setTimeout(() => {
+            dispatch({
+              type: "ACTIVE_TEMPLATE_TAB",
+              blocks: skipSettings ? blockData.blocks : blocks
+            });
+          }, skipSettings ? 10 : 2000);
+        }
+      }
+    };
+
+    //skip settings and go to templates tab
+    if (skipSettings) {
+      fetch(gutenakit_dahboard_info.ajax_url, {
+        method: 'POST',
+        credentials: 'same-origin',
+        // <-- make sure to include credentials
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/json',
+          'X-WP-Nonce': gutenakit_dahboard_info.nonce
+        },
+        body: new URLSearchParams({
+          action: "manage_gutena_blocks",
+          gutena_kit_security: gutenakit_dahboard_info.nonce,
+          skip_settings: 'skip'
+        })
+      }).then(response => response.json()).then(data => {
+        setTimeout(() => {
+          process_done();
+        }, 200);
+      });
+      return false;
+    }
+
     //if already in progress
     if (1 === blockData.saveStatus) {
       return false;
@@ -409,11 +481,6 @@ const BlockSettings = props => {
       ...blockData,
       saveStatus: 1
     });
-    var current_plugin = false;
-    var plugin_processed = [];
-    var countBlocks = 0;
-    var resStore = [];
-    var resError = false;
     const process_current_plugin = () => {
       if (current_plugin.slug && -1 === plugin_processed.indexOf(current_plugin.slug)) {
         //Add in activated block list
@@ -432,7 +499,8 @@ const BlockSettings = props => {
             action: "manage_gutena_blocks",
             gutena_kit_security: gutenakit_dahboard_info.nonce,
             slug: current_plugin.slug,
-            activate_action: current_plugin.activate ? 'activate' : 'deactivate'
+            activate_action: current_plugin.activate ? 'activate' : 'deactivate',
+            skip_settings: onBoarding ? 'skip' : ''
           })
         }).then(response => response.json()).then(data => {
           //Store response for log
@@ -470,31 +538,6 @@ const BlockSettings = props => {
         return false;
       }
     };
-
-    //process completed
-    const process_done = () => {
-      //Set status in progress 
-      console.log("process completed", resStore);
-      if (resError) {
-        //On error
-        setBlockData({
-          ...blockData,
-          saveStatus: 3 //error status
-        });
-      } else {
-        //On success: Set status to all blocks
-        let blocks = blockData.blocks.map(block => ({
-          ...block,
-          status: block.is_enabled
-        }));
-        setBlockData({
-          ...blockData,
-          blocks: blocks,
-          allBlocksActionToggle: getAllBlockActionToggleStatus(blocks),
-          saveStatus: 2
-        });
-      }
-    };
     next_plugin();
   };
 
@@ -504,29 +547,55 @@ const BlockSettings = props => {
     switch (blockData.saveStatus) {
       case 0:
         //initial
-        btnName = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Save', 'gutena-kit');
+        btnName = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Save', 'gutena-kit');
         break;
       case 1:
         //In progress
-        btnName = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Saving...', 'gutena-kit');
+        btnName = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Saving...', 'gutena-kit');
         break;
       case 2:
         //Success
-        btnName = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Saved', 'gutena-kit');
+        btnName = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Saved', 'gutena-kit');
         break;
       case 3:
         //failed
-        btnName = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Save', 'gutena-kit');
+        btnName = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Save', 'gutena-kit');
         break;
       default:
-        btnName = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Save', 'gutena-kit');
+        btnName = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Save', 'gutena-kit');
         break;
     }
     return btnName;
   };
 
   //HTML VIEW
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, onBoarding ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "gk-onboarding-steps"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: 'gk-step ' + (blockData.step === 2 ? 'done' : 'active')
+  }, " 1 "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: 'gk-step-link ' + (blockData.step === 2 ? 'active' : '')
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: 'gk-step ' + (blockData.step === 2 ? 'active' : '')
+  }, " 2 ")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "gk-steps-name"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: 'gk-step-name ' + (blockData.step === 2 ? 'done' : 'active')
+  }, gutenakit_dahboard_info.onboarding_info.step_one.step_name), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: 'gk-step-name ' + (blockData.step === 2 ? 'active' : '')
+  }, gutenakit_dahboard_info.onboarding_info.step_two.step_name)), 1 === blockData.step ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "gutena-details"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+    className: "gutena-title"
+  }, gutenakit_dahboard_info.onboarding_info.step_one.title), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "gutena-description"
+  }, gutenakit_dahboard_info.onboarding_info.step_one.description), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "gutena-button",
+    onClick: () => setBlockData({
+      ...blockData,
+      step: 2
+    })
+  }, gutenakit_dahboard_info.onboarding_info.step_one.button_text))) : '') : '', !onBoarding || 2 === blockData.step ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "gk-block-settings-card"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "gk-header"
@@ -562,7 +631,7 @@ const BlockSettings = props => {
   }, 3 === blockData.saveStatus ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     id: "unknown_error",
     className: "notice notice-error is-dismissible"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Failed: Please check user or file permission to save block settings.', 'gutena-kit')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Failed: Please check user or file permission to save block settings.', 'gutena-kit')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     type: "button",
     className: "notice-dismiss",
     onClick: () => setBlockData({
@@ -571,10 +640,10 @@ const BlockSettings = props => {
     })
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "screen-reader-text"
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dismiss this notice.', 'gutena-kit')))) : '', 2 === blockData.saveStatus ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Dismiss this notice.', 'gutena-kit')))) : '', 2 === blockData.saveStatus ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     id: "unknown_error",
     className: "notice notice-success is-dismissible"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Success: Block settings saved successfully.', 'gutena-kit'), " "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Success: Block settings saved successfully.', 'gutena-kit'), " "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     type: "button",
     className: "notice-dismiss",
     onClick: () => setBlockData({
@@ -583,15 +652,60 @@ const BlockSettings = props => {
     })
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "screen-reader-text"
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dismiss this notice.', 'gutena-kit')))) : '')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Dismiss this notice.', 'gutena-kit')))) : '')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "gk-save-block-settings"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "gutena-button " + (1 === blockData.saveStatus ? "start-installing" : ""),
     onClick: () => SaveBlockSettings(),
     disabled: 1 === blockData.saveStatus
-  }, getSaveBtnName())));
+  }, getSaveBtnName()), onBoarding ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "gk-skip-settings",
+    onClick: () => SaveBlockSettings(true)
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Skip', 'gutena-kit')) : '')) : '');
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BlockSettings);
+
+/***/ }),
+
+/***/ "./src/components/onBoarding/GutenaKitAdminOnBoarding.js":
+/*!***************************************************************!*\
+  !*** ./src/components/onBoarding/GutenaKitAdminOnBoarding.js ***!
+  \***************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _BlockSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BlockSettings */ "./src/components/onBoarding/BlockSettings.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+const GutenaKitAdminOnBoarding = props => {
+  //check for info
+  if (typeof gutenakit_demo_info === 'undefined' || typeof gutenakit_dahboard_info === 'undefined') {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Sorry! Gutena kit dashboard not available.', 'gutena-kit'));
+  }
+  const onboardingInfo = gutenakit_dahboard_info.onboarding_info;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "gutenakit-admin-dashboard gk-onboarding"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "gutena-header"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "gutena-admin-logo"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
+    src: gutenakit_dahboard_info.logo
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, onboardingInfo.heading)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "gutena-tab-panel"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "components-tab-panel__tab-content"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BlockSettings__WEBPACK_IMPORTED_MODULE_1__["default"], null)))));
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (GutenaKitAdminOnBoarding);
 
 /***/ }),
 
@@ -683,6 +797,91 @@ const DocTab = props => {
   }, props.details.support.link_text))));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DocTab);
+
+/***/ }),
+
+/***/ "./src/components/tabs/GutenaKitAdminTabs.js":
+/*!***************************************************!*\
+  !*** ./src/components/tabs/GutenaKitAdminTabs.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _WelcomeTab_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./WelcomeTab.js */ "./src/components/tabs/WelcomeTab.js");
+/* harmony import */ var _TemplatesTab_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TemplatesTab.js */ "./src/components/tabs/TemplatesTab.js");
+/* harmony import */ var _BlockSettingsTab_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./BlockSettingsTab.js */ "./src/components/tabs/BlockSettingsTab.js");
+/* harmony import */ var _DocTab_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./DocTab.js */ "./src/components/tabs/DocTab.js");
+/* harmony import */ var _data_DashboardContextProvider__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../data/DashboardContextProvider */ "./src/data/DashboardContextProvider.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__);
+
+
+
+
+
+
+
+
+
+const GutenaKitAdminTabs = props => {
+  const {
+    onBoarding,
+    makeTemplateTabActive
+  } = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useContext)(_data_DashboardContextProvider__WEBPACK_IMPORTED_MODULE_5__.DashboardContext);
+  console.log("makeTemplateTabActive", makeTemplateTabActive);
+  //check for info
+  if (typeof gutenakit_demo_info === 'undefined' || typeof gutenakit_dahboard_info === 'undefined') {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Sorry! Gutena kit dashboard not available.', 'gutena-kit'));
+  }
+
+  //Tab body
+  const tabsComponent = {
+    welcome: _WelcomeTab_js__WEBPACK_IMPORTED_MODULE_1__["default"],
+    templates: _TemplatesTab_js__WEBPACK_IMPORTED_MODULE_2__["default"],
+    blockSettings: _BlockSettingsTab_js__WEBPACK_IMPORTED_MODULE_3__["default"],
+    doc: _DocTab_js__WEBPACK_IMPORTED_MODULE_4__["default"]
+  };
+  //tabs
+  const tabs = [];
+  for (let tabName in gutenakit_dahboard_info.tabs) {
+    let tab = gutenakit_dahboard_info.tabs[tabName];
+    tabs.push({
+      name: tabName,
+      title: tab.tab_title,
+      className: 'gutena-dashboard-' + tabName,
+      details: tab
+    });
+  }
+  const onSelect = tabName => {};
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "gutenakit-admin-dashboard"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "gutena-header"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "gutena-admin-logo"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
+    src: gutenakit_dahboard_info.logo
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.TabPanel, {
+    className: "gutena-tab-panel",
+    activeClass: "active-tab",
+    onSelect: onSelect,
+    tabs: tabs,
+    initialTabName: makeTemplateTabActive ? 'templates' : 'welcome'
+  }, tab => {
+    const TabSelected = tabsComponent[tab.name] || _WelcomeTab_js__WEBPACK_IMPORTED_MODULE_1__["default"];
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TabSelected, {
+      details: tab.details
+    });
+  })));
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (GutenaKitAdminTabs);
 
 /***/ }),
 
@@ -856,6 +1055,96 @@ const WelcomeTab = props => {
 
 /***/ }),
 
+/***/ "./src/data/DashboardContextProvider.js":
+/*!**********************************************!*\
+  !*** ./src/data/DashboardContextProvider.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "DashboardContext": () => (/* binding */ DashboardContext),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _DashboardReducer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DashboardReducer */ "./src/data/DashboardReducer.js");
+
+/**
+ * Tab global data
+ */
+const {
+  createContext,
+  useReducer
+} = wp.element;
+
+const DashboardContext = createContext();
+const DashboardContextProvider = props => {
+  let dashboardInfo = {
+    blocks: gutenakit_dahboard_info.onboarding_info.step_two.blocks.map(block => ({
+      ...block,
+      status: block.is_enabled
+    })),
+    onBoarding: gutenakit_dahboard_info.onboarding,
+    makeTemplateTabActive: false
+  };
+  const [dashboardProgress, dispatch] = useReducer(_DashboardReducer__WEBPACK_IMPORTED_MODULE_1__.DashboardReducer, dashboardInfo);
+  //dispatch = DashboardReducer : it's a reducer function defined in DashboardReducer.js
+  // DashboardReducer function can access { installationInProgress, dashboardRes, message } as a state
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(DashboardContext.Provider, {
+    value: {
+      ...dashboardProgress,
+      dispatch
+    }
+  }, props.children);
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DashboardContextProvider);
+
+
+/***/ }),
+
+/***/ "./src/data/DashboardReducer.js":
+/*!**************************************!*\
+  !*** ./src/data/DashboardReducer.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "DashboardReducer": () => (/* binding */ DashboardReducer)
+/* harmony export */ });
+/**
+ * Tab reducer : perform exactly one action on each dispatch
+ */
+const DashboardReducer = (state, action) => {
+  /**
+   * "action" variable contain details object on click "install gutena kit" button 
+   * 
+   * "state" variable contain initialize array or object defined in TabContext.js
+   * **/
+  const {
+    blocks,
+    onBoarding,
+    makeTemplateTabActive
+  } = state; //Destructuring 
+  let update = {};
+  switch (action.type) {
+    case 'ACTIVE_TEMPLATE_TAB':
+      update = {
+        blocks: action.blocks,
+        onBoarding: false,
+        makeTemplateTabActive: true
+      };
+      console.log("update", update);
+      return update;
+      break;
+    default:
+      return state;
+  }
+};
+
+/***/ }),
+
 /***/ "./src/data/DemoContextProvider.js":
 /*!*****************************************!*\
   !*** ./src/data/DemoContextProvider.js ***!
@@ -987,90 +1276,39 @@ const DemoReducer = (state, action) => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _components_tabs_WelcomeTab_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/tabs/WelcomeTab.js */ "./src/components/tabs/WelcomeTab.js");
-/* harmony import */ var _components_tabs_TemplatesTab_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/tabs/TemplatesTab.js */ "./src/components/tabs/TemplatesTab.js");
-/* harmony import */ var _components_tabs_BlockSettingsTab_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/tabs/BlockSettingsTab.js */ "./src/components/tabs/BlockSettingsTab.js");
-/* harmony import */ var _components_tabs_DocTab_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/tabs/DocTab.js */ "./src/components/tabs/DocTab.js");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./style.scss */ "./src/style.scss");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style.scss */ "./src/style.scss");
+/* harmony import */ var _components_onBoarding_GutenaKitAdminOnBoarding__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/onBoarding/GutenaKitAdminOnBoarding */ "./src/components/onBoarding/GutenaKitAdminOnBoarding.js");
+/* harmony import */ var _components_tabs_GutenaKitAdminTabs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/tabs/GutenaKitAdminTabs */ "./src/components/tabs/GutenaKitAdminTabs.js");
+/* harmony import */ var _data_DashboardContextProvider__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./data/DashboardContextProvider */ "./src/data/DashboardContextProvider.js");
 
 
 
 
+//On boarding dashboard
+
+//Admin dashboard Tabs
+
+//Data provider
 
 
+//Admin Dashboard
+const GutenaKitAdminDashboard = () => {
+  const {
+    onBoarding,
+    makeTemplateTabActive
+  } = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useContext)(_data_DashboardContextProvider__WEBPACK_IMPORTED_MODULE_5__.DashboardContext);
+  return onBoarding ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_onBoarding_GutenaKitAdminOnBoarding__WEBPACK_IMPORTED_MODULE_3__["default"], null) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_tabs_GutenaKitAdminTabs__WEBPACK_IMPORTED_MODULE_4__["default"], null);
+};
 
-
-
-class GutenaKitAdminDashboard extends _wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Component {
-  render() {
-    //check for info
-    if (typeof gutenakit_demo_info === 'undefined' || typeof gutenakit_dahboard_info === 'undefined') {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Sorry! Gutena kit dashboard not available.', 'gutena-kit'));
-    }
-
-    //Tab body
-    const tabsComponent = {
-      welcome: _components_tabs_WelcomeTab_js__WEBPACK_IMPORTED_MODULE_1__["default"],
-      templates: _components_tabs_TemplatesTab_js__WEBPACK_IMPORTED_MODULE_2__["default"],
-      blockSettings: _components_tabs_BlockSettingsTab_js__WEBPACK_IMPORTED_MODULE_3__["default"],
-      doc: _components_tabs_DocTab_js__WEBPACK_IMPORTED_MODULE_4__["default"]
-    };
-    //tabs
-    const tabs = [];
-    for (let tabName in gutenakit_dahboard_info.tabs) {
-      let tab = gutenakit_dahboard_info.tabs[tabName];
-      tabs.push({
-        name: tabName,
-        title: tab.tab_title,
-        className: 'gutena-dashboard-' + tabName,
-        details: tab
-      });
-    }
-    const onSelect = tabName => {};
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "gutenakit-admin-dashboard"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "gutena-header"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "gutena-admin-logo"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
-      src: gutenakit_dahboard_info.logo
-    }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.TabPanel, {
-      className: "gutena-tab-panel",
-      activeClass: "active-tab",
-      onSelect: onSelect,
-      tabs: tabs
-    }, tab => {
-      const TabSelected = tabsComponent[tab.name] || _components_tabs_WelcomeTab_js__WEBPACK_IMPORTED_MODULE_1__["default"];
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TabSelected, {
-        details: tab.details
-      });
-    })));
-  }
-}
-class GutenaKitAdminOnBoarding extends _wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Component {
-  render() {
-    //check for info
-    if (typeof gutenakit_demo_info === 'undefined' || typeof gutenakit_dahboard_info === 'undefined') {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Sorry! Gutena kit dashboard not available.', 'gutena-kit'));
-    }
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "gutenakit-admin-dashboard"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "gutena-header"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "gutena-admin-logo"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
-      src: gutenakit_dahboard_info.logo
-    })))));
-  }
-}
+//Set dashboard at HTML id echo by Gutena_Kit_Admin class
 wp.domReady(() => {
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.render)((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(GutenaKitAdminDashboard, null), document.querySelector('#gutenakit-admin-dashboard-page'));
+  //check for info
+  if (typeof gutenakit_demo_info === 'undefined' || typeof gutenakit_dahboard_info === 'undefined') {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Sorry! Gutena kit dashboard not available.', 'gutena-kit'));
+  }
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.render)((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_data_DashboardContextProvider__WEBPACK_IMPORTED_MODULE_5__["default"], null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(GutenaKitAdminDashboard, null)), document.querySelector('#gutenakit-admin-dashboard-page'));
 });
 
 /***/ }),

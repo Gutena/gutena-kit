@@ -347,7 +347,7 @@ class Gutena_Kit_Admin {
 						),
 					 ),
 					'logo' => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/logo.png' ),
-					'onboarding' => get_option( 'gutenakit_onboarding', true ),
+					'onboarding' => ! empty( get_option( 'gutenakit_onboarding', 1 ) ),
 					'onboarding_info' => array( 
 						'heading' => esc_html__( 'Gutena Kit Onboarding Wizard', 'gutena-kit' ),
 						'step_one' => array(
@@ -401,14 +401,12 @@ class Gutena_Kit_Admin {
 		}
 	}
 
+	private function disable_gutenaKit_on_boarding() {
+		return update_option( 'gutenakit_onboarding', '0' );
+	}
+
 	//Manage gutena block plugins
 	public function manage_gutena_block_plugins() {
-		wp_send_json_error(
-			array(
-				'error'   => 1,
-				'message' => esc_html__( 'Sorry, you are not allowed to access this page', 'gutena-kit' ),
-			)
-		);
 		if( 1 !== check_ajax_referer( 'gutena-kit-nonce', 'gutena_kit_security' ) && function_exists( 'is_gutenakit_admin' ) &&  true !== is_gutenakit_admin( 'install_plugins' ) ){
 			wp_send_json_error(
 				array(
@@ -418,7 +416,20 @@ class Gutena_Kit_Admin {
 			);
 		}
 
-		if ( empty( $_POST['slug'] ) || empty( $_POST['activate_action'] ) ) {
+		//Skip on-boarding 
+		if ( ! empty( $_POST['skip_settings'] ) && empty( $_POST['slug'] ) && 'skip' === sanitize_key( wp_unslash( $_POST['skip_settings'] ) ) ) {
+
+			//Disable on boarding
+			$this->disable_gutenaKit_on_boarding();
+
+			wp_send_json_success(
+				array(
+					'error'   => 0,
+					'message' => esc_html__( 'On boarding choice updated successfully!', 'gutena' ),
+				)
+			);
+
+		} elseif ( empty( $_POST['slug'] ) || empty( $_POST['activate_action'] ) ) {
 			wp_send_json_error(
 				array(
 					'error'   => 1,
@@ -549,8 +560,13 @@ class Gutena_Kit_Admin {
 					'message' => $msg.' '.$slug.' block plugin.',
 				)
 			);
+		} else if ( ! empty( $_POST['skip_settings'] ) && 'skip' === sanitize_key( wp_unslash( $_POST['skip_settings'] ) ) ) {
+			//Disable on boarding
+			$this->disable_gutenaKit_on_boarding();
+
 		}
 
+		//Send success message
 		wp_send_json_success(
 			array(
 				'error'   => 0,

@@ -75,6 +75,7 @@ Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtab
 * Added architecture, creatives and consulting demos
 * Updated agency and business demos
 * Added required block plugin installation during demo import
+* Added on boarding dashbaord
 
 
 = 1.0.6 | 2nd September 2022 =

@@ -1,6 +1,8 @@
 /* Block activate and deactivate settings */
+import { DashboardContext } from '../../data/DashboardContextProvider';
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element'
+import { useState } from '@wordpress/element';
+import { useContext } from '@wordpress/element';
 
 const noop = () => {};
 
@@ -35,8 +37,7 @@ const ToggleTickCross = ( props ) => {
 
 const BlockSettings = ( props ) => {
     const gutenaBlockData = gutenakit_dahboard_info.onboarding_info.step_two;
-   
-    //console.log("gutenaBlockData",gutenaBlockData);
+    const { blocks, onBoarding, makeTemplateTabActive, dispatch } = useContext(DashboardContext);
     
     //Get status for all block action toogle btn
     const getAllBlockActionToggleStatus = ( blocks ) => {
@@ -61,9 +62,11 @@ const BlockSettings = ( props ) => {
 
     //Block data : blocks:[{slug, name, is_enabled}], allBlocksActionToggle:{ is_enabled, msg: message }
     const [ blockData, setBlockData ] = useState( { 
-        blocks: gutenaBlockData.blocks.map( block => ( { ...block, status: block.is_enabled } ) ), 
-        allBlocksActionToggle : getAllBlockActionToggleStatus( gutenaBlockData.blocks ),
+        blocks: blocks, 
+        allBlocksActionToggle : getAllBlockActionToggleStatus( blocks ),
         saveStatus: 0, //0:not initiated, 1 : in progress, 2: Completed, 3:Error
+        onBoard: onBoarding,
+        step:1
     } );
 
     //Set Blocks status
@@ -96,7 +99,72 @@ const BlockSettings = ( props ) => {
 
 
     //Save Block Settings : install and activate block plugins 
-    const SaveBlockSettings = () => {
+    const SaveBlockSettings = ( skipSettings = false ) => {
+
+        var current_plugin = false;
+        var plugin_processed = [];
+        var countBlocks = 0;
+        var resStore = [];
+        var resError = false;
+
+        //process completed
+        const process_done = () => {
+            //Set status in progress 
+            console.log("process completed",resStore);
+
+            if ( resError ) {
+                //On error
+                setBlockData( {
+                    ...blockData,
+                    saveStatus: 3 //error status
+                } );
+            } else {
+                //On success: Set status to all blocks
+                let blocks = blockData.blocks.map( block =>( {...block, status: block.is_enabled } ) );
+                setBlockData( {
+                    ...blockData,
+                    blocks: blocks,
+                    allBlocksActionToggle: getAllBlockActionToggleStatus( blocks ),
+                    saveStatus: 2
+                } );
+
+                if ( onBoarding ) {
+                    //wait for 2s if settings has been saved to show success message
+                    setTimeout( () => {
+                        dispatch({
+                            type:"ACTIVE_TEMPLATE_TAB", 
+                            blocks: skipSettings ? blockData.blocks : blocks
+                        });
+                    }, skipSettings ? 10: 2000 );
+                }
+            }
+            
+        }
+
+        //skip settings and go to templates tab
+        if ( skipSettings ) {
+            fetch(gutenakit_dahboard_info.ajax_url, {
+                method: 'POST',
+                credentials: 'same-origin', // <-- make sure to include credentials
+                headers:{
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json',
+                    'X-WP-Nonce' : gutenakit_dahboard_info.nonce
+                },
+                body: new URLSearchParams({
+                    action: "manage_gutena_blocks",
+                    gutena_kit_security: gutenakit_dahboard_info.nonce,
+                    skip_settings: 'skip',
+                })
+            }).then((response) => response.json()).then((data) => { 
+                setTimeout(() => {
+                    process_done();
+                }, 200);
+            } );
+
+            return false;
+        }
+
         //if already in progress
         if ( 1 === blockData.saveStatus ) {
             return false;
@@ -107,11 +175,7 @@ const BlockSettings = ( props ) => {
             saveStatus: 1
         } );
 
-        var current_plugin = false;
-        var plugin_processed = [];
-        var countBlocks = 0;
-        var resStore = [];
-        var resError = false;
+        
         const process_current_plugin = ( ) => {
             if ( current_plugin.slug &&  -1 === plugin_processed.indexOf( current_plugin.slug ) ) {
                 //Add in activated block list
@@ -129,7 +193,8 @@ const BlockSettings = ( props ) => {
                         action: "manage_gutena_blocks",
                         gutena_kit_security: gutenakit_dahboard_info.nonce,
                         slug: current_plugin.slug,
-                        activate_action: current_plugin.activate ? 'activate': 'deactivate'
+                        activate_action: current_plugin.activate ? 'activate': 'deactivate',
+                        skip_settings: onBoarding ? 'skip' : '',
                     })
                 }).then((response) => response.json()).then((data) => { 
                     //Store response for log
@@ -169,30 +234,6 @@ const BlockSettings = ( props ) => {
             }
         }
 
-        //process completed
-        const process_done = () => {
-            //Set status in progress 
-            console.log("process completed",resStore);
-
-            if ( resError ) {
-                //On error
-                setBlockData( {
-                    ...blockData,
-                    saveStatus: 3 //error status
-                } );
-            } else {
-                //On success: Set status to all blocks
-                let blocks = blockData.blocks.map( block =>( {...block, status: block.is_enabled } ) );
-                setBlockData( {
-                    ...blockData,
-                    blocks: blocks,
-                    allBlocksActionToggle: getAllBlockActionToggleStatus( blocks ),
-                    saveStatus: 2
-                } );
-            }
-            
-        }
-
         next_plugin();
         
     }
@@ -222,6 +263,45 @@ const BlockSettings = ( props ) => {
 
     //HTML VIEW
     return(
+        <>
+        {
+            onBoarding ? 
+            <>
+            <div className='gk-onboarding-steps'>
+                <div className={ 'gk-step '+( blockData.step === 2 ? 'done': 'active' ) } > 1 </div>
+                <div className={ 'gk-step-link '+( blockData.step === 2 ? 'active': '' ) }></div>
+                <div className={ 'gk-step '+( blockData.step === 2 ? 'active': '' ) }> 2 </div>
+            </div> 
+            <div className='gk-steps-name'>
+                <div className={ 'gk-step-name '+( blockData.step === 2 ? 'done': 'active' ) } > 
+                { gutenakit_dahboard_info.onboarding_info.step_one.step_name } 
+                </div>
+                <div className={ 'gk-step-name '+( blockData.step === 2 ? 'active': '' ) } > 
+                { gutenakit_dahboard_info.onboarding_info.step_two.step_name } 
+                </div>
+            </div>
+            {
+                1 === blockData.step ? 
+                <>
+                <div className="gutena-details">
+                    <h2 className="gutena-title" >{ gutenakit_dahboard_info.onboarding_info.step_one.title }</h2>
+                    <p className="gutena-description" >{ gutenakit_dahboard_info.onboarding_info.step_one.description }</p>
+                    
+                    <span 
+                    className="gutena-button"  
+                    onClick={ () => setBlockData( { ...blockData, step : 2 } ) }
+                    >{ gutenakit_dahboard_info.onboarding_info.step_one.button_text }
+                    </span> 
+                </div>
+                </>
+                :
+                ''
+            }
+            </>
+            :''
+        }
+        {
+        ( ! onBoarding ||  2 === blockData.step ) ?
         <>
         <div className='gk-block-settings-card'> 
             <div className='gk-header'> 
@@ -304,7 +384,20 @@ const BlockSettings = ( props ) => {
             >
                 { getSaveBtnName() }
             </div> 
+            {
+                onBoarding ? 
+                <div 
+                className='gk-skip-settings'
+                onClick={ () => SaveBlockSettings( true ) }
+                >
+                    { __( 'Skip', 'gutena-kit' ) }
+                </div>
+                : ''
+            }
+            
         </div>
+        </>:''
+        }
         </>
     );
 }
