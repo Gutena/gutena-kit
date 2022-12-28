@@ -175,9 +175,13 @@ class Gutena_Kit {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin , 'add_admin_menu', 99 );
+		$this->loader->add_action( 'activated_plugin', $plugin_admin , 'gutenakit_onboarding_redirect', 999, 2 );
 		$this->loader->add_action( 'enqueue_block_editor_assets',$plugin_admin,'add_blocks_and_settings' );
 		$this->loader->add_action( 'wp_ajax_save_global_typography', $plugin_admin, 'save_global_typography' );
-		$this->loader->add_action( 'wp_ajax_manage_gutena_blocks', $plugin_admin, 'manage_gutena_block_plugins' );
+		//Manage Block plugins: install or activate
+		$this->loader->add_action( 'wp_ajax_manage_gutena_blocks', $plugin_admin, 'manage_gutena_block_plugins_ajax' );
+		//Gutena theme install or activate
+		$this->loader->add_action( 'wp_ajax_activate_gutena_theme', $plugin_admin, 'activate_gutena_theme_ajax' );
 	}
 
 	/**

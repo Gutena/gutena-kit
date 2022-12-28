@@ -8,7 +8,7 @@
 
 const DemoCard = ( props ) => {
     const { import_preview_image_url, import_file_name, preview_url, demo_type } = props.demoWithVariation.default;
-    const { isPreviewDemo, previewDemoData, styleSelected, baseDemoIndex, demoIndex, dispatch } = useContext( DemoContext );
+    const { gutenaThemeAvailable, previewDemoDispatchData, isPreviewDemo, previewDemoData, styleSelected, baseDemoIndex, demoIndex, dispatch } = useContext( DemoContext );
 
     //Get actual demo index including all styles variation
     const getDemoindex = () => {
@@ -27,16 +27,31 @@ const DemoCard = ( props ) => {
             window.open( preview_url, '_blank' );
         }else{
             let selectedDemoIndex = getDemoindex();
-            dispatch({ 
+            let previewData = { 
                 type: 'PREVIEW_DEMO', 
                 selectedDemoData: props.demoWithVariation, 
                 selectedDemoIndex:selectedDemoIndex 
-            });
+            };
+            dispatch(
+                gutenaThemeAvailable ? previewData : { type: 'SHOW_GUTENA_THEME_REQUIRE_MODAL', previewData: previewData}
+            );
+           
         } 
     }
     
     return(
         <div className="gk-demo-card"  >
+            {
+                'freepro' === demo_type ? 
+                <div className='gk-demo-pro-icon'>
+                    <img src={gutenakit_demo_info.pro_icon} />
+                </div> : ''
+            }
+            <div className='gk-demo-link'>
+                <a href={ preview_url } target="_blank" >
+                    <img src={gutenakit_demo_info.link_icon} />
+                </a>
+            </div>
             <div className="gk-demo-card-img">
                 <img src={  import_preview_image_url } alt={  import_file_name } loading="lazy"/>
             </div>

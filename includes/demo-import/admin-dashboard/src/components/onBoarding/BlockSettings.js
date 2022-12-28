@@ -344,7 +344,7 @@ const BlockSettings = ( props ) => {
              <div className='gk-message' >
                 {
                     ( 3 === blockData.saveStatus ) ? 
-                    <div id='unknown_error' className='notice notice-error is-dismissible'><p>{ __( 'Failed: Please check user or file permission to save block settings.', 'gutena-kit' ) }</p>
+                    <div id='unknown_error' className='notice gk-notice notice-error is-dismissible'><p>{ __( 'Failed: Please check user or file permission to save block settings.', 'gutena-kit' ) }</p>
                     <button 
                     type='button' 
                     className='notice-dismiss'
@@ -360,7 +360,7 @@ const BlockSettings = ( props ) => {
                 }
                 {
                     ( 2 === blockData.saveStatus ) ? 
-                    <div id='unknown_error' className='notice notice-success is-dismissible'><p>{ __( 'Success: Block settings saved successfully.', 'gutena-kit' ) } </p>
+                    <div id='block_success' className='notice gk-notice notice-success is-dismissible'><p>{ __( 'Success: Block settings saved successfully.', 'gutena-kit' ) } </p>
                     <button 
                     type='button' 
                     className='notice-dismiss'

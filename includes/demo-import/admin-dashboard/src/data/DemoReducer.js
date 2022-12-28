@@ -7,11 +7,35 @@ export const DemoReducer = (state,action) =>{
      * 
      * "state" variable contain initialize array or object defined in DemoContext.js
      * **/
-    const { isPreviewDemo, previewDemoData, styleSelected, baseDemoIndex, demoIndex } = state;//Destructuring 
+    const { showGutenaThemeRequireModal, gutenaThemeAvailable, previewDemoDispatchData, isPreviewDemo, previewDemoData, styleSelected, baseDemoIndex, demoIndex } = state;//Destructuring 
     let update = {};
     switch (action.type) {
+        case 'GUTENA_THEME_INSTALLED':
+            update = {
+                ...state,
+                showGutenaThemeRequireModal: false,
+                gutenaThemeAvailable: true
+            };
+            return update;
+            break;
+        case 'SHOW_GUTENA_THEME_REQUIRE_MODAL':
+            update = {
+                ...state,
+                showGutenaThemeRequireModal: true,
+                previewDemoDispatchData: action.previewData
+            };
+            return update;
+            break;
+        case 'CLOSE_GUTENA_THEME_REQUIRE_MODAL':
+            update = {
+                ...state,
+                showGutenaThemeRequireModal: false
+            };
+            return update;
+            break;
         case 'PREVIEW_DEMO':
             update = {
+                ...state,
                 isPreviewDemo: true, 
                 previewDemoData: action.selectedDemoData, 
                 styleSelected: 'default', 
@@ -22,6 +46,7 @@ export const DemoReducer = (state,action) =>{
             break;
         case 'SET_PREVIEW_DEMO':
             update = {
+                ...state,
                 isPreviewDemo: true, 
                 previewDemoData: previewDemoData, 
                 styleSelected: action.styleSelected, 
@@ -32,6 +57,7 @@ export const DemoReducer = (state,action) =>{
             break;
         case 'RESET_PREVIEW_DEMO':
             update = {
+                ...state,
                 isPreviewDemo: true, 
                 previewDemoData: previewDemoData, 
                 styleSelected: 'default', 
@@ -42,6 +68,7 @@ export const DemoReducer = (state,action) =>{
             break;
         case 'CLOSE_PREVIEW_DEMO':
             update = {
+                ...state,
                 isPreviewDemo: false, 
                 previewDemoData: previewDemoData, 
                 styleSelected: 'default', 

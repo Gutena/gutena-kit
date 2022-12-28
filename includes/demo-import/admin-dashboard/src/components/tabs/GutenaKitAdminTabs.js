@@ -3,6 +3,7 @@ import TemplatesTab from './TemplatesTab.js';
 import BlockSettingsTab from './BlockSettingsTab.js';
 import DocTab from './DocTab.js';
 import { DashboardContext } from '../../data/DashboardContextProvider';
+import DemoContextProvider from '../../data/DemoContextProvider';
 import { __ } from '@wordpress/i18n';
 import { TabPanel } from '@wordpress/components';
 import { Component, Fragment, render, useContext } from '@wordpress/element';
@@ -40,7 +41,8 @@ const GutenaKitAdminTabs = (props) => {
     };
 
     return(
-        <Fragment>     
+        <Fragment>   
+            <DemoContextProvider>    
             <div className="gutenakit-admin-dashboard" >
                 <div className="gutena-header" >
                     <div className="gutena-admin-logo">
@@ -62,6 +64,7 @@ const GutenaKitAdminTabs = (props) => {
                     } }
                 </TabPanel>
             </div>
+            </DemoContextProvider>
         </Fragment>
     );
 }
