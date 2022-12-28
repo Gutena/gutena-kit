@@ -75,8 +75,11 @@ Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtab
 * Added architecture, creatives and consulting demos
 * Updated agency and business demos
 * Added required block plugin installation during demo import
-* Added on boarding admin dashbaord
-* Added admin dashbaord
+* Added on boarding admin dashboard
+* Added admin dashboard
+* Added block settings for enable and disable gutena blocks in admin dashboard
+* Added gutena theme install and activate option in admin dashboard
+* Added knowledge base and changelog in admin dashboard
 
 
 = 1.0.6 | 2nd September 2022 =
