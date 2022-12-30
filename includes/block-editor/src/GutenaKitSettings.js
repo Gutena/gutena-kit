@@ -962,7 +962,8 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                                         disabled={ gkIsEmpty( attributes?.gutenaKitStyle ) }
                                         onClick={ () => {
                                             setAttributes( {
-                                                gutenaKitStyle: undefined
+                                                gutenaKitStyle: undefined,
+                                                gutenaKitClass: undefined
                                             } )
                                         } }
                                     >
