@@ -10,7 +10,7 @@ import { Component, Fragment, render, useContext } from '@wordpress/element';
 
 const GutenaKitAdminTabs = (props) => {
     const { onBoarding, makeTemplateTabActive } = useContext(DashboardContext);
-    console.log("makeTemplateTabActive",makeTemplateTabActive);
+    
     //check for info
     if ( typeof gutenakit_demo_info === 'undefined' || typeof gutenakit_dahboard_info === 'undefined' ){
         return(<div>{ __( 'Sorry! Gutena kit dashboard not available.', 'gutena-kit' ) }</div>);

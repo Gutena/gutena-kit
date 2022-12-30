@@ -16,7 +16,7 @@ const ToggleTickCross = ( props ) => {
     } = props;
 
     const newToggleID = "gk-switch-target-"+toggleID;
-    //console.log( "toggle ", props);
+    
     return(
         <div className={ "gk-toggle-tick-cross "+size } > 
             <div className="gk-toggle">
@@ -110,7 +110,6 @@ const BlockSettings = ( props ) => {
         //process completed
         const process_done = () => {
             //Set status in progress 
-            console.log("process completed",resStore);
 
             if ( resError ) {
                 //On error
@@ -180,7 +179,7 @@ const BlockSettings = ( props ) => {
             if ( current_plugin.slug &&  -1 === plugin_processed.indexOf( current_plugin.slug ) ) {
                 //Add in activated block list
                 plugin_processed.push( current_plugin.slug );
-                //console.log(" current_plugin", current_plugin);
+                
                 fetch(gutenakit_dahboard_info.ajax_url, {
                     method: 'POST',
                     credentials: 'same-origin', // <-- make sure to include credentials
@@ -216,7 +215,7 @@ const BlockSettings = ( props ) => {
             for ( index = countBlocks ; index < blockData.blocks.length; index++ ) {
                
                 let item = blockData.blocks[ index ];
-                //console.log("item",item);
+               
                 countBlocks++;
                 //Continue loop if block already enabled or disabled by admin
                 if ( item.status !== item.is_enabled && -1 === plugin_processed.indexOf( item.slug ) ) {

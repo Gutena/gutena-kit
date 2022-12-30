@@ -455,6 +455,7 @@ class Gutena_Kit_Admin {
 
 	//Manage gutena block plugins
 	public function manage_gutena_block_plugins_ajax() {
+		
 		if ( 1 !== check_ajax_referer( 'gutena-kit-nonce', 'gutena_kit_security' ) && function_exists( 'is_gutenakit_admin' ) && true !== is_gutenakit_admin( 'install_plugins' ) ) {
 			wp_send_json_error(
 				array(
@@ -600,6 +601,7 @@ class Gutena_Kit_Admin {
 		}
 
 		$slug = ucfirst( str_replace( "-", " ", $slug ) );
+
 		//If error found
 		if ( $error ) {
 			wp_send_json_error(
@@ -608,10 +610,11 @@ class Gutena_Kit_Admin {
 					'message' => $msg.' '.$slug.' block plugin.',
 				)
 			);
-		} elseif ( ! empty( $_POST['skip_settings'] ) && 'skip' === sanitize_key( wp_unslash( $_POST['skip_settings'] ) ) ) {
+		} 
+		
+		if ( ! empty( $_POST['skip_settings'] ) && 'skip' === sanitize_key( wp_unslash( $_POST['skip_settings'] ) ) ) {
 			//Disable on boarding
 			$this->disable_gutenaKit_on_boarding();
-
 		}
 
 		//Send success message
@@ -839,7 +842,9 @@ class Gutena_Kit_Admin {
 		$response = '';
 		if ( function_exists( 'wp_remote_get' ) ) {
 			//get readme file
-			$response = wp_remote_get( GUTENA_KIT_PLUGIN_URL . 'readme.txt' );
+			$response = wp_remote_get( GUTENA_KIT_PLUGIN_URL . 'readme.txt', array(
+				'sslverify' => false
+			) );
 
 			if ( ! is_wp_error( $response ) ) {
 				//get content 
@@ -852,6 +857,8 @@ class Gutena_Kit_Admin {
 						$response = str_ireplace( " =", "</span><br>", $response );
 					}
 				}
+			} else {
+				$response = '';
 			}
 		}
 		return $response;

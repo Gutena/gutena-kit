@@ -11,7 +11,7 @@
  * Plugin URI:        https://Gutena.io
  * Description:       Add typography, spacing supports to editor blocks and demo import.
  * Version:           1.0.6
- * Requires at least: 5.8
+ * Requires at least: 6.1
  * Requires PHP:      5.6
  * Author:            ExpressTech
  * Author URI:        https://expresstech.io

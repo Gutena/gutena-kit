@@ -16,7 +16,6 @@ export const DashboardReducer = (state,action) =>{
                 onBoarding: false,
                 makeTemplateTabActive: true
             };
-            console.log("update",update);
             return update;
             break;
         default: return state;
