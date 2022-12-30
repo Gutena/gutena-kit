@@ -1,9 +1,9 @@
 import { __ } from '@wordpress/i18n';
 import { settings } from '@wordpress/icons';
-import { useEffect } from '@wordpress/element';
 import { addFilter } from '@wordpress/hooks';
 import { registerBlockVariation } from '@wordpress/blocks';
 import { InspectorControls } from '@wordpress/block-editor';
+import { useEffect, renderToString } from '@wordpress/element';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import {
     __experimentalUseCustomUnits as useCustomUnits,
@@ -16,23 +16,17 @@ import {
     FlexItem,
     Button,
     PanelBody,
-    BaseControl,
     SelectControl,
 } from '@wordpress/components';
 
 import BorderGroup from '../../components/BorderGroup';
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import EventsControl from '../../components/EventsControl';
 import RangeControlUnit from '../../components/RangeControlUnit';
+import IconControl from '../../components/IconControl';
 
 import DynamicStyles from './styles'
-import { RemixIcons } from './icons';
-import ReactHtmlParser from 'react-html-parser'
-
 import '../../helpers/helpers'
 
-import '@fonticonpicker/react-fonticonpicker/dist/fonticonpicker.base-theme.react.css';
-import '@fonticonpicker/react-fonticonpicker/dist/fonticonpicker.material-theme.react.css';
 import './editor.scss'
 
 /*************************************
@@ -178,8 +172,6 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
                     } );
                 }
             }, [ btnIcon ] )
-
-            const isStyleOutline = className?.includes( 'is-style-outline' );
     
             const dynamicStyles = DynamicStyles( attributes )
             const renderCSS = (
@@ -223,17 +215,8 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
                 </style>
             );
 
-            const icons = Object.keys( RemixIcons ).map( ( value ) => {
-                return `ri-${ value }`
-            } )
             const eventAttr = Object.keys( DEFAULT_SIZES );
             const currentSize = DEFAULT_SIZES[ btnSize?.size ]?.name
-
-            const renderSVG = ( svg ) => (
-                <div style={ { display: 'inline-flex', justifyContent: 'center', alignItems: 'center' } } className="gutena-render-svg">
-                    { ReactHtmlParser( RemixIcons?.[ svg.replace( 'ri-', '' ) ] ) }
-                </div>
-            )
 
             return (  
                 <>
@@ -309,20 +292,16 @@ const withInspectorControls = createHigherOrderComponent( ( BlockEdit ) => {
                             }
                         </PanelBody>
                         <PanelBody title={ __( 'Icon', 'gutena-kit-pro' ) } initialOpen={ false }>
-                            <BaseControl label={ __( 'Select Icon', 'gutena-btns' ) } __nextHasNoMarginBottom={ true } className="gutena-font-icon-picker">
-                                <FontIconPicker
-                                    icons={ icons }
-                                    value={ btnIcon }
-                                    onChange={ ( icon ) => {
-                                        setAttributes( { btnIcon: icon } )
-                                        setAttributes( { btnIconSVG: RemixIcons?.[ icon.replace( 'ri-', '' ) ] } )
-                                    } }
-                                    renderFunc={ renderSVG }
-                                    appendTo="body"
-                                    theme="default"
-                                    isMulti={ false }
-                                />
-                            </BaseControl>
+                            <IconControl 
+                                label="select icon" 
+                                activeIcon={ btnIcon } 
+                                value={ btnIcon } 
+                                onChange={ ( value ) => {
+                                    setAttributes( { btnIcon: value?.iconName } )
+                                    setAttributes( { btnIconSVG: renderToString( value?.icon ) } )
+                                } }
+                                onClear={ () => setAttributes( { btnIcon: '', btnIconSVG: '' } ) }
+                            />
                             { btnIcon && (
                                 <Spacer marginTop={ 5 } marginBottom={ 0 }>
                                     <SelectControl

@@ -49,7 +49,7 @@ if ( ! function_exists( 'gutendkit_demo_category_list' ) ) {
 		return array(
 			'agency',
 			'business',
-			'blog'
+			'blog',
 		);
 	}
 }
@@ -60,87 +60,87 @@ if ( ! function_exists( 'gutendkit_categorize_demo_list' ) ) {
 		if ( function_exists( 'wp_json_file_decode' ) ) { 
 			
 			$demo_main = array(
-				'creatives'   => array(
-					'fontFamily'				=> array(
+				'creatives'    => array(
+					'fontFamily' => array(
 						'Outfit',
-						'Inter'
+						'Inter',
 					),
-					'colors'					=> array(
+					'colors'     => array(
 						'#0DA88C',
 						'#21222F',
 						'#484952',
 						'#E2F2EF',
 						'#F6B642',
-						'#015D61'
+						'#015D61',
 					),
 				),
-				'agency'   => array(
-					'fontFamily'				=> array(
+				'agency'       => array(
+					'fontFamily' => array(
 						'Manrope',
-						'Inter'
+						'Inter',
 					),
-					'colors'					=> array(
+					'colors'     => array(
 						'#E7694E',
 						'#202020',
 						'#555555',
 						'#FFF3F0',
-						'#FFFFFF'
+						'#FFFFFF',
 					),
 				),
-				'business'   => array(
-					'fontFamily'				=> array(
+				'business'     => array(
+					'fontFamily' => array(
 						'Manrope',
-						'Inter'
+						'Inter',
 					),
-					'colors'					=> array(
+					'colors'     => array(
 						'#3F6DE4',
 						'#252740',
 						'#575B7A',
 						'#E7F0FF',
-						'#FFFFFF'
+						'#FFFFFF',
 					),
 				),
-				'saas_company'   => array(
-					'fontFamily'				=> array(
-						'Inter'
+				'saas_company' => array(
+					'fontFamily' => array(
+						'Inter',
 					),
-					'colors'					=> array(
+					'colors'     => array(
 						'#3F6DE4',
 						'#252740',
 						'#575B7A',
 						'#E7F0FF',
-						'#FFFFFF'
+						'#FFFFFF',
 					),
 				),
-				'architecture'   => array(
-					'fontFamily'				=> array(
-						'Urbanist'
+				'architecture' => array(
+					'fontFamily' => array(
+						'Urbanist',
 					),
-					'colors'					=> array(
+					'colors'     => array(
 						'#FAB702',
 						'#252740',
 						'#575B7A',
 						'#E7F0FF',
-						'#FFFFFF'
+						'#FFFFFF',
 					),
 				),
 				'consulting'   => array(
-					'fontFamily'				=> array(
+					'fontFamily' => array(
 						'Outfit',
-						'Inter'
+						'Inter',
 					),
-					'colors'					=> array(
+					'colors'     => array(
 						'#FF7D3E',
 						'#165153',
 						'#293340',
 						'#4C4C65',
-						'#FFF2EC'
+						'#FFF2EC',
 					),
 				),
 			);
 
 			//Create demos details array 
-			foreach ($demo_main as $demo_slug => $demo_custom_details) {
+			foreach ( $demo_main as $demo_slug => $demo_custom_details ) {
 				if ( file_exists( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/'.$demo_slug.'/settings.json' ) && is_array( $demo_custom_details ) ) {
 					$demos[ $demo_slug ] = array(
 						'default' => array_merge(
@@ -149,9 +149,8 @@ if ( ! function_exists( 'gutendkit_categorize_demo_list' ) ) {
 						),
 					);
 				}
-			}
-			
-		}
+			}       
+}
 
 		return $demos;
 	}
@@ -197,8 +196,7 @@ if ( ! function_exists( 'gutenakit_file_get_contents' ) ) {
 if ( ! function_exists( 'gutenakit_file_put_contents' ) ) {
 	function gutenakit_file_put_contents( $file_path, $contents ) {
 
-		if ( 'direct' === get_filesystem_method() )
-		{
+		if ( 'direct' === get_filesystem_method() ) {
 			/* you can safely run request_filesystem_credentials() without any issues and don't need to worry about passing in a URL */
 			$creds = request_filesystem_credentials( wp_nonce_url( admin_url() ), '', false, false, array() );
 		

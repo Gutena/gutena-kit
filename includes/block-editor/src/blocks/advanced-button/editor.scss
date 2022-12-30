@@ -1,18 +1,4 @@
-.gutena-font-icon-picker {
-	.rfip {
-		margin: 0;
-		width: 100% !important;
-		.rfipbtn {
-			width: 100%;
-		}
-	}
-}
-.gutena-render-svg {
-	svg {
-		height: 24px;
-		width: 24px;
-	}
-}
+
 
 .gutena-advanced-button {
 	.wp-block-button__link {
@@ -66,6 +52,7 @@
 			height: var(--gutena--advanced-button-icon-size);
 			background-color: var(--gutena--advanced-button-icon-color);
 			margin-right: var(--gutena--advanced-button-icon-gap);
+			margin-left: -3px;
 		}
 		&:after {
 			vertical-align: middle;
@@ -74,6 +61,7 @@
 			height: var(--gutena--advanced-button-icon-size);
 			background-color: var(--gutena--advanced-button-icon-color);
 			margin-left: var(--gutena--advanced-button-icon-gap);
+			margin-right: -3px;
 		}
 	}
 	&:hover {

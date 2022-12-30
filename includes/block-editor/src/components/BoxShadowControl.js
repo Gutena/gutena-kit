@@ -28,7 +28,7 @@ const noop = () => {};
 const BoxShadowControl = ( {
 	label = __( 'Enable Box Shadow', 'gutena-kit' ),
 	toggleLabel = __( 'On', 'gutena-kit' ),
-	attrValue = DEFAULT_BOX_SHADOW,
+	attrValue = {},
 	onChangeFunc = noop,
 	onBoxShadow = false,
 	withPanel = true

@@ -7,8 +7,12 @@
 	<!-- Exclude paths -->
 	<exclude-pattern>.js</exclude-pattern>
 	<exclude-pattern>.css</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/build/*</exclude-pattern>
+	<exclude-pattern>*/languages/*</exclude-pattern>
 	<exclude-pattern>*/lang/*</exclude-pattern>
 	<exclude-pattern>*/tests/*</exclude-pattern>
+	<exclude-pattern>*/block-editor/*</exclude-pattern>
 	
 	<!-- Show progress, show the error codes for each message (source). -->
 	<arg value="ps" />
@@ -20,10 +24,10 @@
     <!--<arg name="parallel" value="4" />-->
 
 	<!-- Configs -->
-	<config name="minimum_supported_wp_version" value="5.0" /> <!-- Minimum WP Version -->
+	<config name="minimum_supported_wp_version" value="5.8" /> <!-- Minimum WP Version -->
 	<config name="testVersion" value="5.6" /> <!-- Minimum PHP Version -->
 	<config name="text_domain" value="gutena-kit"/>
-	<config name="installed_paths" value="/opt/lampp8/htdocs/wpcs" />
+	<config name="installed_paths" value="D:\Laragon\wpcs" />
 
 	<!-- Rules -->
 	<rule ref="Squiz">

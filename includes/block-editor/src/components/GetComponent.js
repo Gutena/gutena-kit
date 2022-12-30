@@ -11,9 +11,9 @@ const GetComponent = ( props ) => {
     } = props;
 
     if ( 'OverlayControl' === componentName ) {
-            return(
-                <OverlayControl { ...props } />
-            );
+        return(
+            <OverlayControl { ...props } />
+        );
     }
 
     if ( 'ColorControl' === componentName ) {

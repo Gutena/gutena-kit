@@ -15,7 +15,6 @@ import {
     SelectControl,
     Button,
 } from '@wordpress/components';
-import { useSelect } from "@wordpress/data";
 import { settings } from '@wordpress/icons';
 import { useState, useEffect } from '@wordpress/element';
 import SelectDeviceDropdown from './SelectDeviceDropdown';
@@ -28,16 +27,9 @@ const GutenaFontSizePicker = ( props ) => {
         label = __( 'Size', 'gutena-kit' ),
         fontSize = undefined,
         onChangeFunc = noop,
-        reponsive=false,
-        setCustom=false
+        reponsive = false,
+        setCustom = false
     } = props;
-    
-    //setFontAttr : if theme font selected
-
-    //Get Device preview type
-    const deviceType = useSelect( select => {
-        return select( "core/edit-post" ).__experimentalGetPreviewDeviceType();
-    }, [] );
 
     //Variable to check if typography use custom font size or not
     const [ customSize, setCustomSize ] = useState( setCustom || ( ! gkIsEmpty( fontSize ) && 10 > fontSize.length ) );
@@ -46,8 +38,8 @@ const GutenaFontSizePicker = ( props ) => {
     const fontSizes = useSetting( 'typography.fontSizes' );
 
     //Font size array for select
-    const fonSizesArray = gkIsEmpty( fontSizes ) ? [] : fontSizes.map( ( item ) => ( { label: item.name, value: 'has-'+item.slug+'-font-size', fontSize:item.size } ));
-    
+    const fonSizesArray = gkIsEmpty( fontSizes ) ? [] : fontSizes.map( ( item ) => ( { label: item?.name ?? item.slug.replace( 'xx-', __( 'Extra Extra ', 'gutena-kit' ) ), value: 'has-' + item.slug + '-font-size', fontSize: item.size } ) );
+
     //when switch theme font size to custom
     const setCustomFontSize = () => {
         if ( gkIsEmpty( fontSize ) ) {
@@ -93,7 +85,7 @@ const GutenaFontSizePicker = ( props ) => {
                 <FlexItem>
                     <Button
                         label={ customSize ? __( 'Use size preset', 'gutena-kit' ) : __( 'Set custom size', 'gutena-kit' ) }
-                        icon={  settings }
+                        icon={ settings }
                         onClick={ () => setCustomFontSize() }
                         isPressed={ customSize }
                         isSmall

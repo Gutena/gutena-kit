@@ -3,24 +3,21 @@
  */
 import { __ } from '@wordpress/i18n';
 import {
-    PanelBody,
-    PanelRow,
-    SelectControl,
+    __experimentalText as Text,
     __experimentalHStack as HStack,
+    PanelBody,
+    SelectControl,
     FlexItem,
     TextControl,
     Button,
     Icon,
-    __experimentalText as Text,
     Modal,
     __experimentalToggleGroupControl as ToggleGroupControl,
     __experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
-import { settings } from '@wordpress/icons';
 import { useSelect } from "@wordpress/data";
 import { useState, useEffect } from '@wordpress/element';
 import TypographyControl from '../../components/TypographyControl';
-import SelectDeviceDropdown from '../../components/SelectDeviceDropdown';
 import { deleteIcon } from '../../components/gutenaIcons';
 import { gkIsEmpty, getMatchArrObjKeyValue, typographyVar, generateSlug, gkCssJson, renderBlockCSSForResponsive } from '../../helpers/helpers';
 
@@ -32,25 +29,26 @@ const TypographySettings = ( {
 	onChangeFunc = noop,
     setGlobalTypography = noop,
     globalTypographySlug = undefined,
-    openPanel = false
+    openPanel = false, 
+    canReset = false
 } ) => {
-    
+
     /*
-    Active tab : set_global_typography| add_typography | edit_typography 
-    Status : '' | progress | error | success 
-    Message : Global typography save message
-    globalTypography: Array of global Typography data
-    deleteTypography: true on delete button click
-    deleteTypographyConfirm: true on delete button click of popup modal
+        Active tab : set_global_typography| add_typography | edit_typography 
+        Status : '' | progress | error | success 
+        Message : Global typography save message
+        globalTypography: Array of global Typography data
+        deleteTypography: true on delete button click
+        deleteTypographyConfirm: true on delete button click of popup modal
     */
-    const [ typographyTab , setTypographyTab ] = useState( {
+    const [ typographyTab, setTypographyTab ] = useState( {
         label: __( 'Saved Typography', 'gutena-kit' ),
-        activeTab:'set_global_typography',
-        action:'',
-        status:'',
-        message:'',
-        deleteTypography:false,
-        deleteTypographyConfirm:false,
+        activeTab: 'set_global_typography',
+        action: '',
+        status: '',
+        message: '',
+        deleteTypography: false,
+        deleteTypographyConfirm: false,
         globalTypography: ( 'core/button' === blockName ) ? gutena_kit_block_editor?.globalTypography?.button : gutena_kit_block_editor?.globalTypography?.default
     } );
 
@@ -72,13 +70,13 @@ const TypographySettings = ( {
         letterSpacing: undefined,
         textTransform: undefined,
         textDecoration: undefined,
-        cssJson:undefined,
+        cssJson: undefined,
     } );
     
-     //Get Device preview type
-     const deviceType = useSelect((select) => {
-        return select("core/edit-post").__experimentalGetPreviewDeviceType();
-        }, []);
+    //Get Device preview type
+    const deviceType = useSelect( select => {
+        return select( 'core/edit-post' ).__experimentalGetPreviewDeviceType();
+    }, [] );
 
     //Save Global Typography
 	useEffect( () => {
@@ -99,7 +97,7 @@ const TypographySettings = ( {
                 //set nonce
                 data.append( 'nonce', gutena_kit_block_editor.nonce );
                 //set typography group
-                data.append( 'typography_group', ( 'core/button' === blockName ) ? 'button' : 'default'  );
+                data.append( 'typography_group', ( 'core/button' === blockName ) ? 'button' : 'default' );
                 //If typography deleted
                 if ( isDeleteTypographyInitiated() && typographyTab.deleteTypography && typographyTab.deleteTypographyConfirm ) {
                     data.append( 'delete_typography', addEditTypography?.slug ); 
@@ -119,17 +117,17 @@ const TypographySettings = ( {
                         //update global variable
                         gutena_kit_block_editor.globalTypography = response.globalTypography;
                         //update global variable css
-                        renderBlockCSSForResponsive( gutena_kit_block_editor, deviceType);
+                        renderBlockCSSForResponsive( gutena_kit_block_editor, deviceType );
                         //update local global variable as per block
                         response.globalTypography = ( 'core/button' === blockName ) ? response.globalTypography?.button : response.globalTypography?.default;
                     }
-                    let activeTab = ( gkIsEmpty( gutena_kit_block_editor.globalTypography ) || 0 === gutena_kit_block_editor.globalTypography.length ) ? { activeTab:'set_global_typography', label: __( 'Saved Typography', 'gutena-kit' ),  } : {};
+                    let activeTab = ( gkIsEmpty( response.globalTypography ) || 0 === response.globalTypography.length ) ? { activeTab: 'set_global_typography', label: __( 'Saved Typography', 'gutena-kit' ) } : {};
                     setTypographyTab( {
                         ...typographyTab,
                         ...response,
                         ...activeTab,
-                        deleteTypography:false,
-                        deleteTypographyConfirm:false,
+                        deleteTypography: false,
+                        deleteTypographyConfirm: false,
                     } );
                 } );
             }
@@ -138,25 +136,23 @@ const TypographySettings = ( {
 
     //Prepare global typography array for select options
     const globalTypographyOptions = () => {
-
-        if( gkIsEmpty( typographyTab.globalTypography ) ) {
+        if ( gkIsEmpty( typographyTab.globalTypography ) ) {
             return [];
         }
 
-        let typographyOptions = [{
+        let typographyOptions = [ {
             label: __( 'Select typography', 'gutena-kit' ), 
             value: ''
-        }];
+        } ];
 
-        Object.keys( typographyTab.globalTypography ).forEach( function( slug ) {
-            
-            if( ! gkIsEmpty( slug ) ) {
-                typographyOptions.push({
+        Object.keys( typographyTab.globalTypography ).forEach( slug => {
+            if ( ! gkIsEmpty( slug ) ) {
+                typographyOptions.push( {
                     label: typographyTab.globalTypography[slug].name, 
                     value: slug 
-                });
+                } );
             }
-        });
+        } );
 
         return typographyOptions;
     }
@@ -201,7 +197,7 @@ const TypographySettings = ( {
 
     const eventAttr = Object.keys( DEFAULT_EVENTS_TABS );
     const [ activeTab, setActiveTab ] = useState( gkIsEmpty( globalTypographySlug ) ? 'default' : 'global' );
- 
+
     return(
         <PanelBody title={ __( 'Typography', 'gutena-kit' ) } initialOpen={ openPanel }>
             { eventAttr.length > 1 && /* show only if there is multiple items present. */
@@ -224,6 +220,7 @@ const TypographySettings = ( {
                     attrValue = { attrValue }
                     onChangeFunc = { ( value ) => onChangeFunc( value ) }
                     withPanel = { false }
+                    canReset = { canReset }
                 />
             :
             <>
@@ -237,17 +234,17 @@ const TypographySettings = ( {
                         {
                             tabs.map( ( tab ) => ( 'edit_typography' === tab.tabName && isGlobalTypographyEmpty ) ? '' : <Button
                             key={ tab.tabName }
-                            label={  ( typographyTab.activeTab === tab.tabName ) ? __( 'Saved Typography', 'gutena-kit' ) : tab.label }
-                            icon={  tab.icon }
+                            label={ ( typographyTab.activeTab === tab.tabName ) ? __( 'Saved Typography', 'gutena-kit' ) : tab.label }
+                            icon={ tab.icon }
                             onClick={ () => {
                                 setAddEditTypography( undefined );
                             
                                 setTypographyTab( {
                                     ...typographyTab,
-                                    label:( typographyTab.activeTab === tab.tabName ) ? __( 'Saved Typography', 'gutena-kit' ) : tab.label,
+                                    label: ( typographyTab.activeTab === tab.tabName ) ? __( 'Saved Typography', 'gutena-kit' ) : tab.label,
                                     activeTab: ( typographyTab.activeTab === tab.tabName ) ? 'set_global_typography': tab.tabName,
-                                    status:'',
-                                    message:'',
+                                    status: '',
+                                    message: '',
                                 } );
                             } }
                             isPressed={ typographyTab.activeTab === tab.tabName }
@@ -279,9 +276,9 @@ const TypographySettings = ( {
                     <SelectControl
                         value={ gkIsEmpty( addEditTypography?.slug ) ? '' : addEditTypography.slug }
                         options={ globalTypographyOptions() }
-                        onChange={ ( value ) =>  setAddEditTypography( { 
+                        onChange={ ( value ) => setAddEditTypography( { 
                             ...typographyTab?.globalTypography?.[value],
-                        })}
+                        } ) }
                         __nextHasNoMarginBottom
                     />  
                 }
@@ -302,7 +299,7 @@ const TypographySettings = ( {
                             onChangeFunc = { ( value ) => setAddEditTypography( {
                                 ...value, 
                                 cssJson: getCssJson()
-                                } ) }
+                            } ) }
                             editGlobalTypography = { true }
                             makeFluidTypography = { true }
                             withPanel = { false }

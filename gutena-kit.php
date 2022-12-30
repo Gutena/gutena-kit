@@ -81,9 +81,7 @@ require GUTENA_KIT_DIR_PATH . 'includes/class-gutena-kit.php';
  * Begins execution of the plugin.
  */
 function run_gutena_kit() {
-
 	$plugin = new Gutena_Kit();
 	$plugin->run();
-
 }
 run_gutena_kit();

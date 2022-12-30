@@ -214,9 +214,9 @@ class Gutena_Kit_Admin {
 	}
 
 	public function add_admin_menu(){
-		$page_hook_suffix =	add_submenu_page( 'themes.php', 'Gutena Kit', 'Gutena Kit', 'manage_options', 'gutenakit_demo_import', array( $this, 'demo_import_page' ));
+		$page_hook_suffix = add_submenu_page( 'themes.php', 'Gutena Kit', 'Gutena Kit', 'manage_options', 'gutenakit_demo_import', array( $this, 'demo_import_page' ));
 
-		if ( ! empty( $page_hook_suffix ) ){
+		if ( ! empty( $page_hook_suffix ) ) {
 			add_action( 'admin_print_styles-' . $page_hook_suffix, array( $this, 'demo_import_dashboard_styles' ) );
 			add_action( 'admin_print_scripts-' . $page_hook_suffix, array( $this, 'demo_import_dashboard_scripts' ) );
 	   }
@@ -253,11 +253,11 @@ class Gutena_Kit_Admin {
 				array(
 					'show_demo_type_filter' => '0',
 					'show_category_filter'  => '0',
-					'category' => gutendkit_demo_category_list(),
-					'demo_list' => gutendkit_categorize_demo_list(),
-					'logo' => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/logo.png' ),
-					'demo_import_url' => esc_url( admin_url( 'options.php?page=merlin&demo_index=' ) ),
-					'styles' => wp_json_file_decode( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/styles/all_styles.json', array( 'associative' => true ) )
+					'category'              => gutendkit_demo_category_list(),
+					'demo_list'             => gutendkit_categorize_demo_list(),
+					'logo'                  => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/logo.png' ),
+					'demo_import_url'       => esc_url( admin_url( 'options.php?page=merlin&demo_index=' ) ),
+					'styles'                => wp_json_file_decode( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/styles/all_styles.json', array( 'associative' => true ) ),
 				)
 			);
 		}
@@ -287,11 +287,11 @@ class Gutena_Kit_Admin {
 			'gutena_kit_block_editor',
 			array(
 				'save_typography_action' => 'save_global_typography',
-				'nonce' => wp_create_nonce( 'gutena-kit-save' ),
-				'ajax_url' => esc_url( admin_url('admin-ajax.php') ),
-				'globalTypography'=> $gutena_kit_global_typography,
-				'media_query_tab' => apply_filters('gutena-kit-media-query-tab', '1080px' ),
-				'media_query_mobile' => apply_filters('gutena-kit-media-query-mobile', '767px' )
+				'nonce'                  => wp_create_nonce( 'gutena-kit-save' ),
+				'ajax_url'               => esc_url( admin_url('admin-ajax.php') ),
+				'globalTypography'       => $gutena_kit_global_typography,
+				'media_query_tab'        => apply_filters('gutena-kit-media-query-tab', '1080px' ),
+				'media_query_mobile'     => apply_filters('gutena-kit-media-query-mobile', '767px' ),
 			)
 		);
 	}
@@ -302,7 +302,7 @@ class Gutena_Kit_Admin {
 	public function save_global_typography(){
 		check_ajax_referer( 'gutena-kit-save', 'nonce' );
 		
-		if( ! function_exists( 'is_gutenakit_admin' ) ||  true !== is_gutenakit_admin() ){
+		if ( ! function_exists( 'is_gutenakit_admin' ) || true !== is_gutenakit_admin() ) {
 			wp_send_json(
 				array(
 					'status'  => 'error',
@@ -320,25 +320,29 @@ class Gutena_Kit_Admin {
 			);
 		}
 
-		$typography =  gutenakit_sanitize_array( json_decode( stripslashes(  $_POST['typography'] ), true ) ) ;
-
+		$typography = gutenakit_sanitize_array( json_decode( stripslashes( $_POST['typography'] ), true ) ) ;
 		if ( empty( $typography['slug'] ) ) {
 			wp_send_json(
 				array(
 					'status'  => 'error',
 					'message' => __( 'Missing typography name', 'gutena-kit' ),
-					'details'=> __( 'Missing typography name slug', 'gutena-kit' )
+					'details' => __( 'Missing typography name slug', 'gutena-kit' ),
 				)
 			);
 		}
-
-		$typography_group = empty( $_POST['typography_group'] ) ? 'default' : sanitize_key( $_POST['typography_group'] );
+		
+		$typography['slug'] = sanitize_key( $typography['slug'] );
+		$typography_group = empty( $_POST['typography_group'] ) ? 'default' : sanitize_key( wp_unslash( $_POST['typography_group'] ) );
+		
 		// Get global typography
 		$global_typography = get_option( 'gutena_kit_global_typography', array() );
 
 		$message = '';
 		if ( isset( $_POST['delete_typography'] ) ) {
-			if ( $typography['slug'] === sanitize_key( $_POST['delete_typography'] ) && ! empty( $global_typography[ $typography_group ] )  && ! empty( $global_typography[ $typography_group ][ $typography['slug'] ] ) ) {
+			$typography_to_delete = sanitize_key( wp_unslash( $_POST['delete_typography'] ) );
+			if ( $typography['slug'] === $typography_to_delete && 
+				! empty( $global_typography[ $typography_group ] ) && 
+				! empty( $global_typography[ $typography_group ][ $typography['slug'] ] ) ) {
 				// destroy a single element of an array
 				unset( $global_typography[ $typography_group ][ $typography['slug'] ] );
 			}
@@ -355,9 +359,9 @@ class Gutena_Kit_Admin {
 		//Success
 		wp_send_json(
 			array(
-				'status'  => 'success',
-				'message' => $message,
-				'globalTypography'=> $global_typography
+				'status'           => 'success',
+				'message'          => $message,
+				'globalTypography' => $global_typography,
 			)
 		);
 	}

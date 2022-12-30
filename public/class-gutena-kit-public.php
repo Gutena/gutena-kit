@@ -165,32 +165,32 @@ class Gutena_Kit_Public {
 
 		if ( 'core/buttons' === $metadata['name'] ) {
 			$metadata['attributes']['gutenaAdvancedButtons'] = [
-				'type' => 'boolean',
+				'type'    => 'boolean',
 				'default' => false,
 			];
 		}
 
 		if ( 'core/button' === $metadata['name'] ) {
 			$metadata['attributes']['gutenaAdvancedButton'] = [
-				'type' => 'boolean',
+				'type'    => 'boolean',
 				'default' => false,
 			];
 
 			$attributes = [
-				'uniqueId' => 'string',
-				'btnSize' => 'object',
-				'btnFontSize' => 'string',
-				'btnBorder' => 'object',
-				'btnColors' => 'object',
-				'btnIcon' => 'string',
-				'btnIconSVG' => 'string',
+				'uniqueId'        => 'string',
+				'btnSize'         => 'object',
+				'btnFontSize'     => 'string',
+				'btnBorder'       => 'object',
+				'btnColors'       => 'object',
+				'btnIcon'         => 'string',
+				'btnIconSVG'      => 'string',
 				'btnIconPosition' => 'string',
-				'btnIconSize' => 'string',
-				'btnIconGap' => 'string',
-				'blockStyles' => 'object',
+				'btnIconSize'     => 'string',
+				'btnIconGap'      => 'string',
+				'blockStyles'     => 'object',
 			];
 
-			foreach( $attributes as $key => $value ) {
+			foreach ( $attributes as $key => $value ) {
 				$metadata['attributes'][ $key ]['type'] = $value;
 			}
 		}
@@ -209,7 +209,7 @@ class Gutena_Kit_Public {
 	}
 
 	// Get gutena Kit settings
-	private function get_gutena_kit_settings_css( $attrs ){
+	private function get_gutena_kit_settings_css( $attrs ) {
 		static $css_slug_array = array();
 		
 		if ( empty( $attrs['gutenaKitID'] ) || empty( $attrs['gutenaKitStyle'] ) ) {
@@ -219,7 +219,7 @@ class Gutena_Kit_Public {
 		//Check css properties in array format
 		if ( empty( $attrs['gutenaKitStyle']['cssJson'] ) ) {
 			$attrs['gutenaKitStyle']['cssJson'] = array();
-		} else if ( ! is_array( $attrs['gutenaKitStyle']['cssJson'] ) ) {
+		} elseif ( ! is_array( $attrs['gutenaKitStyle']['cssJson'] ) ) {
 			return $attrs;
 		}
 	
@@ -241,7 +241,7 @@ class Gutena_Kit_Public {
 	
 			//Prepare global typography array by ungrouping 
 			if ( ! empty( $gutena_kit_global_typography ) && is_array( $gutena_kit_global_typography ) ) {
-				foreach ($gutena_kit_global_typography as $gt ) {
+				foreach ( $gutena_kit_global_typography as $gt ) {
 					$global_typography_array = array_merge( $global_typography_array, $gt );
 				}
 			} else {
@@ -252,7 +252,7 @@ class Gutena_Kit_Public {
 				//print_r($global_typography_array);exit;
 				//$attrs['gutenaKitStyle']['cssJson'] = array_merge( $attrs['gutenaKitStyle']['cssJson'],$global_typography_array[ $global_typography ]['cssJson'] );
 				array_push( $css_slug_array, $global_typography );
-			}else{
+			}else {
 				$global_typography = false;
 			}
 		}
@@ -277,40 +277,40 @@ class Gutena_Kit_Public {
 		foreach ( array( 'margin', 'padding' ) as $spacing ) {
 			foreach ( array( 'top', 'right', 'bottom', 'left' ) as $position ) {
 				if ( true === array_key_exists( $preVar.'default-'.$spacing.'-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-					$css .= ' '.$spacing.'-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'default-'.$spacing.'-'.$position] .' !important;';
+					$css .= ' '.$spacing.'-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'default-'.$spacing.'-'.$position ] .' !important;';
 				}
 			}
 		}
 
 		// Text color
 		if ( true === array_key_exists( $preVar.'color-normal-text', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$css .= ' color:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'color-normal-text'] .' !important;';
+			$css .= ' color:'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'color-normal-text' ] .' !important;';
 		}
 
 		// Background color
 		if ( true === array_key_exists( $preVar.'color-normal-background', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$css .= ' background:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'color-normal-background'] .' !important;';
+			$css .= ' background:'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'color-normal-background' ] .' !important;';
 		}
 
 		// Border
 		if ( true === array_key_exists( $preVar.'border-normal', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$css .= ' border:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-normal'] .' !important;';
+			$css .= ' border:'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'border-normal' ] .' !important;';
 		} else {
 			foreach ( array( 'top', 'right', 'bottom', 'left' ) as $position ) {
 				if ( true === array_key_exists( $preVar.'border-normal-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-					$css .= ' border-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-normal-'.$position] .' !important;';
+					$css .= ' border-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'border-normal-'.$position ] .' !important;';
 				}
 			}
 		}
 
 		// Border radius
 		if ( true === array_key_exists( $preVar.'border-normal-radius', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$css .= ' border-radius:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-normal-radius'] .' !important;';
+			$css .= ' border-radius:'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'border-normal-radius' ] .' !important;';
 		}
 
 		// Box Shadow
 		if ( true === array_key_exists( $preVar.'boxshadow-normal', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$css .= 'box-shadow:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'boxshadow-normal'] .' !important;';
+			$css .= 'box-shadow:'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'boxshadow-normal' ] .' !important;';
 		}
 
 		// Overlay parent
@@ -322,29 +322,29 @@ class Gutena_Kit_Public {
 		if ( empty( $global_typography ) ) {
 			foreach ( array( 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transform', 'text-decoration' ) as $font_property ) {
 				if ( true === array_key_exists( $preVar.''.$font_property, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-					$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.''.$font_property] .' !important;';
+					$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.''.$font_property ] .' !important;';
 				}
 			}
 		}
 
 		
-		if (true === array_key_exists( $preVar.'textcontentgap', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+		if ( true === array_key_exists( $preVar.'textcontentgap', $attrs['gutenaKitStyle']['cssJson'] ) ) {
 				//text content gap, usually use for inline image gap
-			$css .= ' display:flex; gap:'.$attrs['gutenaKitStyle']['cssJson'][$preVar.'textcontentgap'].';';
+			$css .= ' display:flex; gap:'.$attrs['gutenaKitStyle']['cssJson'][ $preVar.'textcontentgap' ].';';
 		}
 
 		//translate3d in desktop
 		if ( true === array_key_exists( $preVar.'translate3d-default', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'translate3d-default'].';';
+			$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson'][ $preVar.'translate3d-default' ].';';
 		}
 
 		if ( ! empty( $css ) ) {
-			$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .'{ ' . $css . '}';
+			$attrs['gutenaKitCSS']['generatedCss'] .= $gk_id .'{ ' . $css . '}';
 		}
 
 		//Hide in desktop
 		if ( true === array_key_exists( $preVar.'display-default', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$attrs['gutenaKitCSS']['generatedCss'] .= '@media only screen and (min-width: '.$media_query_desktop .') { '  . $gk_id .'{ display: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'display-default'].'; } } ';
+			$attrs['gutenaKitCSS']['generatedCss'] .= '@media only screen and (min-width: '.$media_query_desktop .') { '  . $gk_id .'{ display: '.$attrs['gutenaKitStyle']['cssJson'][ $preVar.'display-default' ].'; } } ';
 		}
 	
 		//Add global typography
@@ -353,7 +353,7 @@ class Gutena_Kit_Public {
 			//typography
 			foreach ( array( 'font-size', 'line-height', 'font-family', 'font-style', 'font-weight', 'letter-spacing', 'text-transform', 'text-decoration' ) as $font_property ) {
 				if ( true === array_key_exists( $preVar.'gt-'.$font_property, $global_typography_array[ $global_typography ]['cssJson'] ) ) {
-					$css .= ' '.$font_property.':'. $global_typography_array[ $global_typography ]['cssJson'][$preVar.'gt-'.$font_property] .' !important;';
+					$css .= ' '.$font_property.':'. $global_typography_array[ $global_typography ]['cssJson'][ $preVar.'gt-'.$font_property ] .' !important;';
 				}
 			}
 			
@@ -371,37 +371,37 @@ class Gutena_Kit_Public {
 		$css = '';
 		// Text color
 		if ( true === array_key_exists( $preVar.'color-hover-text', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$css .= ' color:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'color-hover-text'] .' !important;';
+			$css .= ' color:'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'color-hover-text' ] .' !important;';
 		}
 	
 		// Background color
 		if ( true === array_key_exists( $preVar.'color-hover-background', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$css .= ' background:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'color-hover-background'] .' !important;';
+			$css .= ' background:'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'color-hover-background' ] .' !important;';
 		}
 	
 		// Border
 		if ( true === array_key_exists( $preVar.'border-hover', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$css .= ' border:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-hover'] .' !important;';
+			$css .= ' border:'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'border-hover' ] .' !important;';
 		} else {
 			foreach ( array( 'top', 'right', 'bottom', 'left' ) as $position ) {
 				if ( true === array_key_exists( $preVar.'border-hover-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-					$css .= ' border-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-hover-'.$position] .' !important;';
+					$css .= ' border-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'border-hover-'.$position ] .' !important;';
 				}
 			}
 		}
 	
 		// Border radius
 		if ( true === array_key_exists( $preVar.'border-hover-radius', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$css .= ' border-radius:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'border-hover-radius'] .' !important;';
+			$css .= ' border-radius:'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'border-hover-radius' ] .' !important;';
 		}
 	
 		// Box Shadow
 		if ( true === array_key_exists( $preVar.'boxshadow-hover', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$css .= 'box-shadow:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'boxshadow-hover'] .' !important;';
+			$css .= 'box-shadow:'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'boxshadow-hover' ] .' !important;';
 		}
 	
 		if ( ! empty( $css ) ) {
-			$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .':hover {' . $css . '}';
+			$attrs['gutenaKitCSS']['generatedCss'] .= $gk_id .':hover {' . $css . '}';
 		}
 		/************************
 		 Block hover : END
@@ -409,31 +409,31 @@ class Gutena_Kit_Public {
 	
 		// Link color
 		if ( true === array_key_exists( $preVar.'linkdecorationline', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .' a {
-				text-decoration-line:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'linkdecorationline'] .' !important;
+			$attrs['gutenaKitCSS']['generatedCss'] .= $gk_id .' a {
+				text-decoration-line:'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'linkdecorationline' ] .' !important;
 			}';
 		}
 	
 		// Link color
 		if ( true === array_key_exists( $preVar.'color-normal-link', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .' a {
-				color:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'color-normal-link'] .' !important;
+			$attrs['gutenaKitCSS']['generatedCss'] .= $gk_id .' a {
+				color:'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'color-normal-link' ] .' !important;
 			}';
 		}
 	
 		// Link hover color
 		if ( true === array_key_exists( $preVar.'color-hover-link', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .' a:hover {
-				color:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'color-hover-link'] .' !important;
+			$attrs['gutenaKitCSS']['generatedCss'] .= $gk_id .' a:hover {
+				color:'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'color-hover-link' ] .' !important;
 			}';
 		}
 	
 		// overlay color
 		if ( true === array_key_exists( $preVar.'overlay-normal-background', $attrs['gutenaKitStyle']['cssJson'] ) && true === array_key_exists( $preVar.'overlay-normal-opacity', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .':before {
+			$attrs['gutenaKitCSS']['generatedCss'] .= $gk_id .':before {
 				content:"";
-				background:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'overlay-normal-background'] .'; 
-				opacity: '. $attrs['gutenaKitStyle']['cssJson'][$preVar.'overlay-normal-opacity'] .';
+				background:'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'overlay-normal-background' ] .'; 
+				opacity: '. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'overlay-normal-opacity' ] .';
 				position: absolute;
 				top: 0;
 				left: 0;
@@ -444,10 +444,10 @@ class Gutena_Kit_Public {
 	
 		// overlay color
 		if ( true === array_key_exists( $preVar.'overlay-hover-background', $attrs['gutenaKitStyle']['cssJson'] ) && true === array_key_exists( $preVar.'overlay-hover-opacity', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-			$attrs['gutenaKitCSS']['generatedCss'] .=  $gk_id .':hover:before {
+			$attrs['gutenaKitCSS']['generatedCss'] .= $gk_id .':hover:before {
 				content:"";
-				background:'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'overlay-hover-background'] .'; 
-				opacity: '. $attrs['gutenaKitStyle']['cssJson'][$preVar.'overlay-hover-opacity'] .';
+				background:'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'overlay-hover-background' ] .'; 
+				opacity: '. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'overlay-hover-opacity' ] .';
 				position: absolute;
 				top: 0;
 				left: 0;
@@ -463,14 +463,14 @@ class Gutena_Kit_Public {
 			$css = '';
 			//Hide in Tablet
 			if ( true === array_key_exists( $preVar.'display-tablet', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-				$css .= ' display: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'display-tablet'].';';
+				$css .= ' display: '.$attrs['gutenaKitStyle']['cssJson'][ $preVar.'display-tablet' ].';';
 			} else {
 	
 				//spacing
 				foreach ( array( 'margin', 'padding' ) as $spacing ) {
 					foreach ( array( 'top', 'right', 'bottom', 'left' ) as $position ) {
 						if ( true === array_key_exists( $preVar.'tablet-'.$spacing.'-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-							$css .= ' '.$spacing.'-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'tablet-'.$spacing.'-'.$position] .' !important;';
+							$css .= ' '.$spacing.'-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'tablet-'.$spacing.'-'.$position ] .' !important;';
 						}
 					}
 				}
@@ -479,20 +479,19 @@ class Gutena_Kit_Public {
 					//typography
 					foreach ( array( 'font-size', 'line-height' ) as $font_property ) {
 						if ( true === array_key_exists( $preVar.'t-'.$font_property, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-							$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'t-'.$font_property] .' !important;';
+							$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'t-'.$font_property ] .' !important;';
 						}
 					}
 				}
 	
 				//translate3d in tablet
 				if ( true === array_key_exists( $preVar.'translate3d-tablet', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-					$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'translate3d-tablet'].';';
-				}
-	
-			}
+					$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson'][ $preVar.'translate3d-tablet' ].';';
+				}           
+}
 	
 			if ( ! empty( $css ) ) {
-				$css =  $gk_id .' {' . $css . '} ';
+				$css = $gk_id .' {' . $css . '} ';
 			}
 			//$attrs['gutenaKitCSS']['generatedCss'] .= '@media only screen and (min-width: 768px) and (max-width: '.$media_query_tab.') { .' . $gk_id .' {';
 	
@@ -502,10 +501,10 @@ class Gutena_Kit_Public {
 				//typography
 				foreach ( array( 'font-size', 'line-height' ) as $font_property ) {
 					if ( true === array_key_exists( $preVar.'gt-t-'.$font_property, $global_typography_array[ $global_typography ]['cssJson'] ) ) {
-						$css .= ' '.$font_property.':'. $global_typography_array[ $global_typography ]['cssJson'][$preVar.'gt-t-'.$font_property] .' !important;';
+						$css .= ' '.$font_property.':'. $global_typography_array[ $global_typography ]['cssJson'][ $preVar.'gt-t-'.$font_property ] .' !important;';
 					}
 				}
-				$css .='}'; 
+				$css .= '}'; 
 			}
 	
 			if ( ! empty( $css ) ) {
@@ -521,13 +520,13 @@ class Gutena_Kit_Public {
 			$css = '';
 			//Hide in Mobile
 			if ( true === array_key_exists( $preVar.'display-mobile', $attrs['gutenaKitStyle']['cssJson'] ) ) { 
-				$css .= ' display: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'display-mobile'].';';
+				$css .= ' display: '.$attrs['gutenaKitStyle']['cssJson'][ $preVar.'display-mobile' ].';';
 			} else {
 				//spacing
 				foreach ( array( 'margin', 'padding' ) as $spacing ) {
 					foreach ( array( 'top', 'right', 'bottom', 'left' ) as $position ) {
 						if ( true === array_key_exists( $preVar.'mobile-'.$spacing.'-'.$position, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-							$css .= ' '.$spacing.'-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'mobile-'.$spacing.'-'.$position] .' !important;';
+							$css .= ' '.$spacing.'-'.$position.':'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'mobile-'.$spacing.'-'.$position ] .' !important;';
 						}
 					}
 				}
@@ -536,19 +535,19 @@ class Gutena_Kit_Public {
 					//typography
 					foreach ( array( 'font-size', 'line-height' ) as $font_property ) {
 						if ( true === array_key_exists( $preVar.'m-'.$font_property, $attrs['gutenaKitStyle']['cssJson'] ) ) {
-							$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson'][$preVar.'m-'.$font_property] .' !important;';
+							$css .= ' '.$font_property.':'. $attrs['gutenaKitStyle']['cssJson'][ $preVar.'m-'.$font_property ] .' !important;';
 						}
 					}
 				}
 	
 				//translate3d in mobile
 				if ( true === array_key_exists( $preVar.'translate3d-mobile', $attrs['gutenaKitStyle']['cssJson'] ) ) {
-					$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson'][$preVar.'translate3d-mobile'].';';
+					$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson'][ $preVar.'translate3d-mobile' ].';';
 				}
 			}
 	
 			if ( ! empty( $css ) ) {
-				$css =  $gk_id .' {' . $css . '} ';
+				$css = $gk_id .' {' . $css . '} ';
 			}
 	
 			// global typography for mobile
@@ -557,10 +556,10 @@ class Gutena_Kit_Public {
 				//typography
 				foreach ( array( 'font-size', 'line-height' ) as $font_property ) {
 					if ( true === array_key_exists( $preVar.'gt-m-'.$font_property, $global_typography_array[ $global_typography ]['cssJson'] ) ) {
-						$css .= ' '.$font_property.':'. $global_typography_array[ $global_typography ]['cssJson'][$preVar.'gt-m-'.$font_property] .' !important;';
+						$css .= ' '.$font_property.':'. $global_typography_array[ $global_typography ]['cssJson'][ $preVar.'gt-m-'.$font_property ] .' !important;';
 					}
 				}
-				$css .='}'; 
+				$css .= '}'; 
 			}
 	
 			if ( ! empty( $css ) ) {
@@ -578,7 +577,7 @@ class Gutena_Kit_Public {
 	private function enqueue_block_control_css( $attrs ) {
 		$attrs = $this->get_gutena_kit_settings_css( $attrs );
 
-		if ( ! empty( $attrs['gutenaKitID'] ) &&  ! empty( $attrs['gutenaKitCSS'] )  ) {
+		if ( ! empty( $attrs['gutenaKitID'] ) && ! empty( $attrs['gutenaKitCSS'] ) ) {
 			//echo "<pre>";print_r($attrs['gutenaKitCSS']);exit;
 			$this->enqueue_block_gutenakit_styles( $attrs['gutenaKitCSS'] , 11 );
 		}
@@ -591,12 +590,12 @@ class Gutena_Kit_Public {
 		
 		if ( ! empty( $block['attrs']['gutenaKitID'] ) && ( ! empty( $block['attrs']['gutenaKitCSS'] ) || ! empty( $block['attrs']['gutenaKitStyle'] ) ) ) {
 
-			if ( 'core/heading' === $block['blockName']  ) {
+			if ( 'core/heading' === $block['blockName'] ) {
 				//echo "<pre>";print_r($block['attrs']);exit;
 			}
 			
 			//get block class
-			$block_classes = ( ! empty( $block['attrs']['gutenaKitClass'] ) && ! empty( $block['attrs']['gutenaKitClass']['blockClasses'] ) ) ?  $block['attrs']['gutenaKitClass']['blockClasses'] : '';
+			$block_classes = ( ! empty( $block['attrs']['gutenaKitClass'] ) && ! empty( $block['attrs']['gutenaKitClass']['blockClasses'] ) ) ? $block['attrs']['gutenaKitClass']['blockClasses'] : '';
 
 			$block_classes = gutenakit_block_id_classname_prefix() . $block['attrs']['gutenaKitID'] . ' '.$block_classes;
 

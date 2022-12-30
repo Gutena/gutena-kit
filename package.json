@@ -16,7 +16,7 @@
   "author": "expresstech",
   "license": "ISC",
   "devDependencies": {
-    "@wordpress/scripts": "^23.7.2",
+    "@wordpress/scripts": "^25.0.0",
     "autoprefixer": "^10.4.2",
     "cssnano": "^5.0.16",
     "del": "^6.0.0",
@@ -33,13 +33,8 @@
     "gulp-zip": "^5.1.0"
   },
   "dependencies": {
-    "@fonticonpicker/react-fonticonpicker": "^1.2.0",
-    "@wordpress/icons": "^9.13.0",
+    "@wordpress/icons": "^9.14.0",
     "classnames": "^2.3.2",
-    "prop-types": "^15.8.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-html-parser": "^2.0.2",
-    "react-transition-group": "^4.4.5"
+    "html-react-parser": "^3.0.4"
   }
 }

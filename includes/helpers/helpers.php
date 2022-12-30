@@ -18,7 +18,7 @@ if ( ! function_exists( 'gutendkit_str_replace_first' ) ) {
 }
 
 if ( ! function_exists( 'gutendkit_uniqid_base36' ) ) {
-	function gutendkit_uniqid_base36( $more_entropy=false ) {
+	function gutendkit_uniqid_base36( $more_entropy = false ) {
 		static $id_counter = 0;
 		$s = uniqid( '', $more_entropy );
 		if ( ! $more_entropy)
@@ -81,20 +81,20 @@ if ( ! function_exists( 'gutenakit_block_list' ) ) {
 		$inactive_blocks = get_option( 'gutena_inactive_blocks', array() );
 		//'gutena/newsletter' = block name taken from block.json
 		return array(
-			'gutena/newsletter' => array(
-				'dirname'	=>	'newsletter-block-gutena',
-				'filepath' 	=>	'newsletter-block-gutena/newsletter-block-gutena.php',
-				'active'	=>	empty( $inactive_blocks['gutena/newsletter'] )	 	
+			'gutena/newsletter'        => array(
+				'dirname'  => 'newsletter-block-gutena',
+				'filepath' => 'newsletter-block-gutena/newsletter-block-gutena.php',
+				'active'   => empty( $inactive_blocks['gutena/newsletter'] ),      
 			), 
 			'gutena/post-featured-tag' => array(
-				'dirname'	=>	'post-featured-tag-block-gutena',
-				'filepath' 	=>	'post-featured-tag-block-gutena/post-featured-tag-block-gutena.php',
-				'active'	=>	empty( $inactive_blocks['gutena/post-featured-tag'] )	 	
+				'dirname'  => 'post-featured-tag-block-gutena',
+				'filepath' => 'post-featured-tag-block-gutena/post-featured-tag-block-gutena.php',
+				'active'   => empty( $inactive_blocks['gutena/post-featured-tag'] ),       
 			), 
 			'gutena/instagram-gallery' => array(
-				'dirname'	=>	'photofeed-block-gutena',
-				'filepath' 	=>	'photofeed-block-gutena/photofeed-block-gutena.php',
-				'active'	=>	empty( $inactive_blocks['gutena/instagram-gallery'] )	 	
+				'dirname'  => 'photofeed-block-gutena',
+				'filepath' => 'photofeed-block-gutena/photofeed-block-gutena.php',
+				'active'   => empty( $inactive_blocks['gutena/instagram-gallery'] ),       
 			), 
 		);
 	}
@@ -118,7 +118,7 @@ if ( ! function_exists( 'get_gutena_kit_global_typography' ) ) {
 
 //Get global typography css
 if ( ! function_exists( 'get_gutena_kit_global_typography_css' ) ) {
-	function get_gutena_kit_global_typography_css( $slug = false ){
+	function get_gutena_kit_global_typography_css( $slug = false ) {
 		//get global typography
 		get_gutena_kit_global_typography();
 
@@ -134,8 +134,8 @@ if ( ! function_exists( 'get_gutena_kit_global_typography_css' ) ) {
 			return ( ! empty( $gutena_kit_global_typography[ $slug ] ) && ! empty( $gutena_kit_global_typography[ $slug ]['css'] ) ) ? $gutena_kit_global_typography[ $slug ]['css'] : '';
 		} else {
 			$css = '';
-			foreach ( $gutena_kit_global_typography as $typography) {
-				$css .= empty( $typography['css'] ) ? '': $typography['css'];
+			foreach ( $gutena_kit_global_typography as $typography ) {
+				$css .= empty( $typography['css'] ) ? '' : $typography['css'];
 			}
 			return $css;
 		}
@@ -147,10 +147,10 @@ if ( ! function_exists( 'get_gutena_kit_global_typography_css' ) ) {
 
 //Block advance controls css only for refrence 
 if ( ! function_exists( 'gutenakit_block_additional_controls_css' ) ) {
-	function gutenakit_block_additional_controls_css( $editor = false ){
+	function gutenakit_block_additional_controls_css( $editor = false ) {
 		$media_query_tab = apply_filters('gutena-kit-media-query-tab', '1080px' );
 		$media_query_mobile = apply_filters('gutena-kit-media-query-mobile', '767px' );
-		$editor_class = $editor ? ' .editor-styles-wrapper ':' ';
+		$editor_class = $editor ? ' .editor-styles-wrapper ' : ' ';
 		return "
 		$editor_class.has-gutenakit-padding-default{
 			padding-top:var(--gutenakit--default-padding-top,initial);

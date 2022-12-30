@@ -4,12 +4,13 @@ import { createHigherOrderComponent } from  '@wordpress/compose';
 import { useSelect } from "@wordpress/data";
 import { useEntityRecords } from '@wordpress/core-data';
 import { store as blocksStore } from '@wordpress/blocks';
-import { Fragment, useEffect } from '@wordpress/element';
-import { InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, 
+import { Fragment, useState, useEffect } from '@wordpress/element';
+import { InspectorControls, useSetting } from '@wordpress/block-editor';
+import { 
     __experimentalHStack as HStack,
     __experimentalBoxControl as BoxControl,
     ToggleControl,
+    PanelBody, 
     FlexItem,
     Button,
     Icon,
@@ -49,7 +50,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
         if ( -1 === [ 'core/group', 'core/cover', 'core/column', 'core/paragraph', 'core/heading', 'gutena/navigation-child' ].indexOf( name ) ){
             return ( <BlockEdit { ...props } /> );
         }
-        
+
         //Show or hide controls in gutena kit settings
         const gkSupports = {
             color: ( -1 === [ 'core/cover', 'gutena/navigation-child' ].indexOf( name ) ),
@@ -83,25 +84,46 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
         const paddingSides =  ( gkIsEmpty( supports?.spacing?.padding ) || !Array.isArray( supports.spacing.padding )  ) ? ['top','right','bottom','left'] : supports.spacing.padding;
 
         /***** Check Core support for block : end ******/
+        const parseFontSize = size => {
+            const sizes = [ 'small', 'medium', 'large', 'x-large', 'xx-large' ];
+            if ( sizes.includes( size ) ) {
+                return 'has-' + size + '-font-size'
+            }
+            return size;
+        }
+
+        const fontFamilies = useSetting( 'typography.fontFamilies' );
+        const fontFamiliesList = fontFamilies.reduce( ( o, key ) => Object.assign( o, { [ key?.slug ]: key?.fontFamily } ), {} );
 
         //Default sides
         let DefaultStyle = attributes.style;
 
-        if ( ! gkIsEmpty( DefaultStyle ) ) {
+        if ( ! gkIsEmpty( DefaultStyle ) || attributes?.fontSize || attributes?.fontFamily ) {
             DefaultStyle = {
                 ...DefaultStyle,
-                border:{
-                    normal:{
-                        border:attributes.style?.border,
-                        radius:attributes.style?.border?.radius
+                typography: {
+                    ...attributes.style?.typography,
+                    fontSize: attributes?.fontSize ? parseFontSize( attributes?.fontSize ) : parseFontSize( attributes.style?.typography?.fontSize ),
+                    fontFamily: attributes?.fontFamily ? fontFamiliesList?.[ attributes?.fontFamily ] : undefined
+                },
+                color: {
+                    normal: {
+                        ...attributes.style?.color,
+                        link: attributes.style?.elements?.link?.color?.text
                     }
                 },
-                spacing:{
+                border: {
+                    normal:{
+                        border: attributes.style?.border,
+                        radius: attributes.style?.border?.radius
+                    }
+                },
+                spacing: {
                     padding:{
-                        default:attributes.style?.spacing?.padding
+                        default: attributes.style?.spacing?.padding
                     },
                     margin:{
-                        default:attributes.style?.spacing?.margin
+                        default: attributes.style?.spacing?.margin
                     }
                 }
             }
@@ -821,17 +843,17 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
              * attrName like padding, margin under spacing styleAttr
              * deviceStyle like default, tablet, mobile inside attrName like spacing.padding.default
              */
-            
+
             if ( gkIsEmpty( styleAttr ) ) {
                 return;
             }
-            
+
             //Initialize style
             let newstyle = gkIsEmpty( gutenaKitStyle ) ? DefaultStyle : gutenaKitStyle;
             
             //check if required style attribute available or not
             if ( gkIsEmpty( newstyle[ styleAttr ] ) ) {
-                newstyle[ styleAttr ] = { };
+                newstyle[ styleAttr ] = {};
             }
 
             if ( gkIsEmpty( attrName ) ) {
@@ -864,14 +886,15 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             //CSS json
             newstyle.cssJson = gkIsEmpty( newstyle ) ? undefined : generateCssVar( newstyle, " .gutenakitid-"+clientId, true );
             
-            let isGutenaKitStyleEmpty = checkGutenaStyleDeepEmpty( newstyle );
+            let finalStyle = { ...newstyle };
+            let isGutenaKitStyleEmpty = checkGutenaStyleDeepEmpty( finalStyle );
             let gutenaKitClassVar = {
                 ...gutenaKitClass,
                 blockClasses: isGutenaKitStyleEmpty ? undefined : generateClassesMinimal( newstyle )
             };
 
             setAttributes( {
-                gutenaKitStyle: isGutenaKitStyleEmpty ? undefined : { ...newstyle }, 
+                gutenaKitStyle: isGutenaKitStyleEmpty ? undefined : finalStyle, 
                 gutenaKitID: clientId,
                 gutenaKitClass: checkGutenaStyleDeepEmpty( gutenaKitClassVar ) ? undefined : gutenaKitClassVar
             } );
@@ -915,7 +938,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             Mobile: __( 'Hide on Mobile', 'gutena-kit' ),
         };
 
-        const Style = generateCssFromVar()+''+renderBlockCSSForResponsive( gutena_kit_block_editor , deviceType );
+        const Style = generateCssFromVar() + '' + renderBlockCSSForResponsive( gutena_kit_block_editor, deviceType );
 
         return (
             <Fragment>
@@ -936,12 +959,14 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                                     <Button 
                                         variant="secondary"
                                         isSmall
-                                        disabled={ checkGutenaStyleDeepEmpty( attributes?.gutenaKitStyle ) }
-                                        onClick={ () => setAttributes( { 
-                                            gutenaKitStyle: undefined
-                                        } ) }
+                                        disabled={ gkIsEmpty( attributes?.gutenaKitStyle ) }
+                                        onClick={ () => {
+                                            setAttributes( {
+                                                gutenaKitStyle: undefined
+                                            } )
+                                        } }
                                     >
-                                        { __('Reset') }
+                                        { __( 'Reset' ) }
                                     </Button>
                                 </FlexItem>
                             </HStack>
@@ -952,7 +977,8 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                                     onChangeFunc = { ( typography ) => setAttr( typography, 'typography' ) }
                                     globalTypographySlug = { gutenaKitStyle?.globalTypography }
                                     setGlobalTypography = { ( gt ) => setAttr( gt, 'globalTypography' ) }
-                                    openPanel={ ! checkGutenaStyleDeepEmpty( attributes?.gutenaKitStyle?.typography ) }
+                                    canReset = { ! checkGutenaStyleDeepEmpty( attributes?.gutenaKitStyle?.typography ) }
+                                    openPanel={ ! checkGutenaStyleDeepEmpty( attributes?.gutenaKitStyle?.typography ) || ! checkGutenaStyleDeepEmpty( attributes?.gutenaKitStyle?.globalTypography ) }
                                 />
                             }
                             { gkSupports.color && 

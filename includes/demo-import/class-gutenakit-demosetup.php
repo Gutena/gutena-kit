@@ -119,7 +119,7 @@ class GutenakitDemoSetup extends Merlin{
 			return;
 		}
 
-		$selected_import_index =  (int) sanitize_text_field( wp_unslash( $_GET['demo_index'] ) );
+		$selected_import_index = (int) sanitize_text_field( wp_unslash( $_GET['demo_index'] ) );
 
 		//set_transient for required plugins for tgmpa plugin registeration 
 		$demo = gutendkit_demo_deatils_list( $selected_import_index );
@@ -299,7 +299,7 @@ class GutenakitDemoSetup extends Merlin{
 			$blog_page  = get_page_by_title( 'Saas Blog' );
 
 			//check if blog page is exist and require to update
-			if ( ! empty( $blog_page ) && ! empty( $blog_page->ID ) && is_numeric($blog_page->ID) && 1 < $blog_page->ID  && ! empty( $blog_page->post_content ) && stripos( $blog_page->post_content, '<!-- wp:post-excerpt {"moreText":"u003cstrongu003eRead Article') > 0 ) {
+			if ( ! empty( $blog_page ) && ! empty( $blog_page->ID ) && is_numeric($blog_page->ID) && 1 < $blog_page->ID && ! empty( $blog_page->post_content ) && stripos( $blog_page->post_content, '<!-- wp:post-excerpt {"moreText":"u003cstrongu003eRead Article') > 0 ) {
 
 				//replace incorrect block content with correct block content
 				$blog_page->post_content = str_ireplace(

@@ -4,8 +4,6 @@
 import { __ } from '@wordpress/i18n';
 import {
 	__experimentalBlockVariationPicker,
-	LineHeightControl,
-	FontSizePicker,
     __experimentalFontFamilyControl as FontFamilyControl,
 	__experimentalFontAppearanceControl as FontAppearanceControl,
 	__experimentalLetterSpacingControl as LetterSpacingControl,
@@ -34,7 +32,7 @@ import { gkIsEmpty, fluidSpacing, generateSlug } from '../helpers/helpers';
 
 const DEFAULT_TYPOGRAPHY = {
     fluidTypography: false,
-    fontFamily:undefined,
+    fontFamily: undefined,
 	fontSize: undefined,
     TfontSize: undefined,
     MfontSize: undefined,
@@ -54,26 +52,25 @@ const noop = () => {};
 const TypographyControl = ( props ) => {
     const {
         label = __( 'Typography', 'gutena-kit' ),
-        attrValue = DEFAULT_TYPOGRAPHY,
+        attrValue = {},
         onChangeFunc = noop,
-        hasFontSizeEnabled=true,
-        hasAppearanceControl=true,
-        hasLetterSpacingControl=true,
-        hasLineHeightEnabled=true,
-        hasFontFamilyControl=true,
-        hasTextTransform=true,
-        editGlobalTypography=false,
-        makeFluidTypography=false,
+        hasFontSizeEnabled = true,
+        hasAppearanceControl = true,
+        hasLetterSpacingControl = true,
+        hasLineHeightEnabled = true,
+        hasFontFamilyControl = true,
+        hasTextTransform = true,
+        editGlobalTypography = false,
+        makeFluidTypography = false,
         withPanel = true,
         resetButton = true,
         devicePreview = true,
         globalTypography = undefined,
+        canReset = false
     } = props;
-    
+
     const setAttr = ( value, attrName ) => {
-        
-        let newattrValue = gkIsEmpty( attrValue ) ? DEFAULT_TYPOGRAPHY : attrValue;
-        
+        const newattrValue = gkIsEmpty( attrValue ) ? DEFAULT_TYPOGRAPHY : attrValue;
         newattrValue[ attrName ] = value;
         
         //Fluid typography
@@ -85,9 +82,9 @@ const TypographyControl = ( props ) => {
     };
 
     //Get Device preview type
-    const deviceType = useSelect((select) => {
-        return select("core/edit-post").__experimentalGetPreviewDeviceType();
-        }, []);
+    const deviceType = useSelect( select => {
+        return select( 'core/edit-post' ).__experimentalGetPreviewDeviceType();
+    }, [] );
 
     //If device preview not required
     const [ deviceTypeNoPreview, setDeviceTypeNoPreview ] = useState( 'Desktop' );
@@ -118,7 +115,7 @@ const TypographyControl = ( props ) => {
                             ...attrValue,
                             fluidTypography: false,
                             globalTypography: value,
-                            fontFamily:undefined,
+                            fontFamily: undefined,
                             fontSize: undefined,
                             TfontSize: undefined,
                             MfontSize: undefined,
@@ -267,24 +264,8 @@ const TypographyControl = ( props ) => {
                         label={  __( 'Reset typography settings', 'gutena-kit' ) }
                         variant="secondary"
                         isSmall
-                        disabled={ gkIsEmpty( props?.attrValue ) }
-                        onClick={ () => onChangeFunc( { 
-                            ...attrValue,
-                            fluidTypography: undefined,
-                            fontFamily:undefined,
-                            fontSize: undefined,
-                            TfontSize: undefined,
-                            MfontSize: undefined,
-                            fluidFontSize: undefined,
-                            lineHeight: undefined,
-                            TlineHeight: undefined,
-                            MlineHeight: undefined,
-                            fontStyle: undefined,
-                            fontWeight: undefined,
-                            letterSpacing: undefined,
-                            textTransform: undefined,
-                            textDecoration: undefined,
-                        } ) }
+                        disabled={ ! canReset }
+                        onClick={ () => onChangeFunc( undefined ) }
                         style={ { 'margin-top': '10px' } }
                     >
                         { __( 'Reset', 'gutena-kit' ) }
