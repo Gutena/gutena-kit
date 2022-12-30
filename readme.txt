@@ -1,7 +1,7 @@
 === Gutena Kit ===
 Contributors: expresstech
 Tags: gutena, gutena kit
-Requires at least: 5.8
+Requires at least: 6.1
 Tested up to: 6.1
 Requires PHP: 5.6
 Stable tag: 1.0.6
@@ -16,7 +16,7 @@ Add typography, spacing supports and settings to editor blocks and demo import.
 
 **feature**
 
-* Demo Import: Appearance > Gutena Kit
+* Demo Import: Appearance > Gutena > Starter Templates
 * Typography and spacing supports to editor blocks
 * Grid Gap settings for Media & Text Block
 

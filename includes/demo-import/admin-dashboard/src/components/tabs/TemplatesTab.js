@@ -18,7 +18,7 @@ const TemplatesTab = ( props ) => {
     }
 
     const { showGutenaThemeRequireModal, previewDemoDispatchData, dispatch } = useContext( DemoContext );
-    console.log( "showGutenaThemeRequireModal", showGutenaThemeRequireModal);
+    
     //Main Demos object with index actual number
     let mainDemos = {};
     Object.keys( gutenakit_demo_info.demo_list ).forEach((demoName,index) => {
@@ -38,7 +38,6 @@ const TemplatesTab = ( props ) => {
         status: 0
     } );
 
-    console.log('gutenaThemeStatus',gutenaThemeStatus);
 
     const getGutenaActionInfo = ( key = 'btnName' ) => {
         let info = {
