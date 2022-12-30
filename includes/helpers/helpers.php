@@ -48,14 +48,14 @@ if ( ! function_exists( 'gutenakit_is_remove_wp_emoji' ) ) {
 
 //Check admin capabilities
 if ( ! function_exists( 'is_gutenakit_admin' ) ) {
-	function is_gutenakit_admin(){
+	function is_gutenakit_admin( $check_permission = 'manage_options' ) {
 		if ( ! function_exists( 'wp_get_current_user' ) ) { 
 			require_once( ABSPATH . "wp-includes/pluggable.php" ); 
 		}
 		if ( ! function_exists( 'current_user_can' ) ) { 
 			require_once( ABSPATH . "wp-includes/capabilities.php" ); 
 		}
-		return ( function_exists( 'current_user_can' ) && current_user_can( 'manage_options' ) );
+		return ( function_exists( 'current_user_can' ) && current_user_can( $check_permission ) );
 	}
 }
 

@@ -8,6 +8,9 @@ const DemoContext = createContext();
 const DemoContextProvider = (props) => {
     
     let currentDemo = {
+        showGutenaThemeRequireModal:false,
+        gutenaThemeAvailable: '1' === gutenakit_demo_info.gutena_theme_available,
+        previewDemoDispatchData:{},//Use after theme install to send to preview demo
         isPreviewDemo: false, 
         previewDemoData: {}, 
         styleSelected: 'default', 
