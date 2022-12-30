@@ -27,7 +27,7 @@
 	<config name="minimum_supported_wp_version" value="5.8" /> <!-- Minimum WP Version -->
 	<config name="testVersion" value="5.6" /> <!-- Minimum PHP Version -->
 	<config name="text_domain" value="gutena-kit"/>
-	<config name="installed_paths" value="D:\Laragon\wpcs" />
+	<config name="installed_paths" value="/opt/lampp8/htdocs/wpcs" />
 
 	<!-- Rules -->
 	<rule ref="Squiz">
@@ -50,7 +50,7 @@
 
 	<rule ref="WordPress.WP.I18n">
 		<properties>
-			<property name="text_domain" type="array" value="quiz-master-next" />
+			<property name="text_domain" type="array" value="gutena-kit" />
 		</properties>
 	</rule>
 
