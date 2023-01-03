@@ -107,6 +107,20 @@ const BlockSettings = ( props ) => {
         var resStore = [];
         var resError = false;
 
+        //Check if settings are already saved
+        const is_settings_already_saved = () => {
+            let alreadySaved = true;
+            for ( let checkIndex = 0 ; checkIndex < blockData.blocks.length; checkIndex++ ) {
+                let check_item = blockData.blocks[ checkIndex ];
+                //Continue loop if block already enabled or disabled by admin
+                if ( check_item.status !== check_item.is_enabled  ) {
+                    alreadySaved = false;
+                    break;
+                }
+            }
+            return alreadySaved;
+        }
+
         //process completed
         const process_done = () => {
             //Set status in progress 
@@ -141,7 +155,7 @@ const BlockSettings = ( props ) => {
         }
 
         //skip settings and go to templates tab
-        if ( skipSettings ) {
+        if ( skipSettings || ( onBoarding && is_settings_already_saved() ) ) {
             fetch(gutenakit_dahboard_info.ajax_url, {
                 method: 'POST',
                 credentials: 'same-origin', // <-- make sure to include credentials
