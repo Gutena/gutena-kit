@@ -909,6 +909,7 @@ $gutenakit_heading_color : #21222F;
 				align-items: center;
 				position: absolute;
     			left: 45px;
+				font-weight: 400;
 			}
 	
 			input[type="checkbox"]:checked ~ .gk-toggle .gk-toggle-knob::before {

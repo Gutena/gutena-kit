@@ -953,7 +953,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                             className="gutena-kit-settings"
                             initialOpen={ true }
                         >
-                            <HStack style={ { 'margin-bottom': '10px' } }>
+                            <HStack style={ { 'marginBottom': '10px' } }>
                                 <FlexItem></FlexItem>
                                 <FlexItem>
                                     <Button 

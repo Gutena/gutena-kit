@@ -347,14 +347,23 @@ class Gutena_Kit_Admin {
 				'gutenakit_dahboard_info',
 				 array(
 					 'tabs'            => array(
-						 'welcome'       => array(
+						 'welcome'       => function_exists( 'gutena_setup' ) ? array(
 							 'tab_title'     => esc_html__( 'Getting Started', 'gutena-kit' ),
 							 'title'         => esc_html__( 'Welcome to Gutena!', 'gutena-kit' ),
-							 'description'   => esc_html__( 'Gutena is a block theme for WordPress built to work with the core editor. Our focus is to use core blocks to create modern designs applicable to variety of businesses. We do not add any bloat to our theme. Gutena comes with pre-built full page demos, available to be imported in 1-click using our companion plugin.', 'gutena-kit' ),
-							 'button_text'   => esc_html__( 'Learn More', 'gutena-kit' ),
-							 'button_link'   => esc_url( 'https://www.youtube.com/watch?v=qmK16jI9X1A' ),
+							 'description'   => esc_html__( 'Gutena is a free block theme for WordPress with modern block patterns in-built. It comes packed with beautiful design patterns which suits a variety of use cases. Gutena aims to be at the forefront of WordPress FSE (Full Site Editing) philosophy. ', 'gutena-kit' ),
+							 'button_text'   => esc_html__( 'Visit Website', 'gutena-kit' ),
+							 'button_link'   => $gutena_url,
+							 'video_link'   => esc_url( 'https://www.youtube.com/watch?v=qmK16jI9X1A' ),
 							 'video_img_url' => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/video.png' ),
-						 ),
+						 ) : array(
+							'tab_title'     => esc_html__( 'Getting Started', 'gutena-kit' ),
+							'title'         => esc_html__( 'Welcome to Gutena Kit!', 'gutena-kit' ),
+							'description'   => esc_html__( 'Power-up the Gutenberg editor with Gutena Kit. It gives you advanced controls, powerful blocks and beautiful pre-made templates that help you build websites in less time! These templates can be imported in just a few clicks.', 'gutena-kit' ),
+							'button_text'   => esc_html__( 'Visit Website', 'gutena-kit' ),
+							'button_link'   => $gutena_url,
+							'video_link'   => esc_url( 'https://www.youtube.com/watch?v=qmK16jI9X1A' ),
+							'video_img_url' => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/video-gutena-kit.png' ),
+						),
 						 'templates'     => array(
 							 'tab_title' => esc_html__( 'Starter Templates', 'gutena-kit' ),
 						 ),
@@ -401,7 +410,7 @@ class Gutena_Kit_Admin {
 						 'step_one' => array(
 							 'step_name'   => esc_html__( 'Get started', 'gutena-kit' ),
 							 'title'       => esc_html__( 'Welcome to Gutena Kit', 'gutena-kit' ),
-							 'description' => esc_html__( 'A wonderful serenity has taken possession of my entire soul, like these sweet mornings of spring which I enjoy with my whole heart.', 'gutena-kit' ),
+							 'description' => esc_html__( 'Power-up the Gutenberg editor with Gutena Kit. It gives you advanced controls, powerful blocks and beautiful pre-made templates that help you build websites in less time!', 'gutena-kit' ),
 							 'button_text' => esc_html__( 'Get started', 'gutena-kit' ),
 						 ),
 						 'step_two' => array(

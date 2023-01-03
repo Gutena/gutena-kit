@@ -266,7 +266,7 @@ const TypographyControl = ( props ) => {
                         isSmall
                         disabled={ ! canReset }
                         onClick={ () => onChangeFunc( undefined ) }
-                        style={ { 'margin-top': '10px' } }
+                        style={ { 'marginTop': '10px' } }
                     >
                         { __( 'Reset', 'gutena-kit' ) }
                     </Button>

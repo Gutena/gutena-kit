@@ -224,7 +224,7 @@ const TypographySettings = ( {
                 />
             :
             <>
-                <HStack style={ { 'margin-bottom': '12px' } }>
+                <HStack style={ { 'marginBottom': '12px' } }>
                     <FlexItem>
                         <Text isBlock>
                             { typographyTab.label }
@@ -340,7 +340,7 @@ const TypographySettings = ( {
                                 </FlexItem>
                             }
                         </HStack>
-                        <HStack style={ { 'margin-top': '10px' } }>
+                        <HStack style={ { 'marginTop': '10px' } }>
                             <Text isDestructive={ ( 'error' === typographyTab.status ) }  >
                                 { isProgressStatus() ? 
                                 __( 'Please wait...', 'gutena-kit' ) : 
