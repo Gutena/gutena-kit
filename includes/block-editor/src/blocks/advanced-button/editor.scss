@@ -1,8 +1,9 @@
 
 
-.gutena-advanced-button {
+.wp-block-button.gutena-advanced-button {
 	.wp-block-button__link {
 		display: flex;
+		gap: 0;
 		justify-content: center;
     	align-items: center;
 		font-family: inherit !important;
