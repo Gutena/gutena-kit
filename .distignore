@@ -6,6 +6,10 @@
 /includes/block-editor/package-lock.json
 /includes/block-editor/node_modules
 /includes/block-editor/src
+/includes/demo-import/admin-dashboard/package.json
+/includes/demo-import/admin-dashboard/package-lock.json
+/includes/demo-import/admin-dashboard/node_modules
+/includes/demo-import/admin-dashboard/src
 /build/gutena-kit.zip
 
 .distignore

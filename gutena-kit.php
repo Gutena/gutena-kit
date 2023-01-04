@@ -7,9 +7,9 @@
  * @copyright         2022 ExpressTech
  * @license           GPL-3.0
  * 
- * Plugin Name:       Gutena Kit
+ * Plugin Name:       Gutena Kit - Gutenberg Blocks, Templates and Advanced Controls
  * Plugin URI:        https://Gutena.io
- * Description:       Add typography, spacing supports to editor blocks and demo import.
+ * Description:       Gutena Kit gives you advanced controls, powerful blocks and beautiful pre-made templates that help you build websites in less time! These templates can be imported in just a few clicks.
  * Version:           1.0.6
  * Requires at least: 6.1
  * Requires PHP:      5.6
