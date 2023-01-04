@@ -1,6 +1,6 @@
-=== Gutena Kit ===
+=== Gutena Kit - Gutenberg Blocks, Templates and Advanced Controls ===
 Contributors: expresstech
-Tags: gutena, gutena kit
+Tags: blocks, gutenberg, page builder, wordpress blocks, Full site editing
 Requires at least: 6.1
 Tested up to: 6.1
 Requires PHP: 5.6
@@ -8,34 +8,25 @@ Stable tag: 1.0.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Add typography, spacing supports and settings to editor blocks and demo import.
+Provide advanced controls, powerful blocks and beautiful pre-made templates that help you build websites in less time!
 
 == Description ==
 
-Add typography, spacing supports and settings to editor blocks and demo import.
+Gutena Kit gives you advanced controls, powerful blocks and beautiful pre-made templates that help you build websites in less time! These templates can be imported in just a few clicks.
 
-**feature**
 
-* Demo Import: Appearance > Gutena > Starter Templates
-* Typography and spacing supports to editor blocks
-* Grid Gap settings for Media & Text Block
+== features ==
 
+* 6 FREE Starter Templates
+* Powerful Gutena Kit Blocks
+* Precise control over Responsive Padding / Margin
+* Set Global Typography for your website
+* Total control over Responsive Typography
+* Color, Shadow and Border settings for Group & Column
+* Set Display Conditions for Blocks
+* No jQuery, so it won’t slow down your website
 
 == Frequently Asked Questions ==
-
-= What typography and spacing supports are added to editor blocks? =
-
-There are following typography and spacing supports added:
-
-* Button Block: Line height, Letter spacing, Text transform, Font style and Font weight
-* Heading Block: Font family
-* Paragraph Block: Font family
-
-= What settings are added to editor blocks? =
-
-There are following settings added:
-
-* Media & Text Block: Spacing > Grid Gap
 
 = Demo page navigation link not working? =
 
@@ -47,10 +38,48 @@ OR
 Change navigation links under Appearance > Editor > Header > Navigation
 
 
+== Other Blocks From Gutena ==
+
+If you like this plugin, consider exploring our other block plugins: 
+
+[Gutena Newsletter](https://wordpress.org/plugins/newsletter-block-by-gutena/) - Easily and instantly add Newsletter Block to your Gutenberg Editor.
+
+[Gutena Accordion](https://wordpress.org/plugins/gutena-accordion/) - Easily and instantly add Accordion Block to your Gutenberg Editor.
+
+[Gutena PhotoFeed](https://wordpress.org/plugins/photofeed-block-by-gutena/) - Display Instagram Photos from your Instagram accounts, either in the same single feed or in multiple different ones.
+
+[Gutena Recent Post Tag](https://wordpress.org/plugins/post-featured-tag-block-by-gutena/) - Post Featured Tag Block use to add custom featured or new tag on post based on post date.
+
+== Our Products ==
+
+If you like this plugin, consider exploring our other themes and plugins:
+
+[Gutena](https://wordpress.org/themes/gutena/) - A full site editing (block) theme for WordPress with ready made full page templates. Elegant and functional - follows all the best practices by WP, and yeah, no jQuery!
+
+[Quiz and Survey Master](https://wordpress.org/plugins/quiz-master-next/) - Best WordPress Quiz Plugin to create engaging quizzes, surveys, & exams using WordPress and convert your website into a lead generation machine.
+
+[Responsive Menu](https://wordpress.org/plugins/responsive-menu/) - Best WordPress Menu Builder Plugin to create awesome and interactive mobile & desktop menus for WordPress websites.
+
+[Projectopia](https://wordpress.org/plugins/projectopia-core/) - Project Management & Invoicing plugin for WordPress. Generate invoices, send quotes, generate leads, manage clients, provide support - all inside your WordPress website.
+
+[Booking Ultra](https://wordpress.org/plugins/booking-ultra-pro/) - Appointment Booking plugin for WordPress - Show a quick form to accept bookings for your services with pre-set booking slots. Ideal for salons, medical professionals, lawyers, consultants, etc.
+
+[InstaWP](https://instawp.com/) - Launch a quick WordPress site with this sandbox service. Create New WordPress instance within a second.
+
+
 == Screenshots ==
 
-1. Demo Import
-2. Grid Gap settings for Media & Text Block
+1. Ready to Import Starter Templates
+2. Powerful Gutena Kit Blocks
+3. Gutena Kit Advance Controls Settings
+4. Total control over Responsive Typography
+5. Set Global Typography for your website
+6. Precise control over Responsive Padding / Margin
+7. Color Settings for Group & Column
+8. Shadow Settings for Group & Column
+9. Border Settings for Group & Column
+10. Set Display Conditions for Blocks
+
 
 == Demo Import ==
 
