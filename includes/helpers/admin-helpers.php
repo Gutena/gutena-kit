@@ -74,6 +74,31 @@ if ( ! function_exists( 'gutendkit_categorize_demo_list' ) ) {
 						'#015D61',
 					),
 				),
+				'architecture' => array(
+					'fontFamily' => array(
+						'Urbanist',
+					),
+					'colors'     => array(
+						'#FAB702',
+						'#252740',
+						'#575B7A',
+						'#E7F0FF',
+						'#FFFFFF',
+					),
+				),
+				'consulting'   => array(
+					'fontFamily' => array(
+						'Outfit',
+						'Inter',
+					),
+					'colors'     => array(
+						'#FF7D3E',
+						'#165153',
+						'#293340',
+						'#4C4C65',
+						'#FFF2EC',
+					),
+				),
 				'agency'       => array(
 					'fontFamily' => array(
 						'Manrope',
@@ -110,31 +135,6 @@ if ( ! function_exists( 'gutendkit_categorize_demo_list' ) ) {
 						'#575B7A',
 						'#E7F0FF',
 						'#FFFFFF',
-					),
-				),
-				'architecture' => array(
-					'fontFamily' => array(
-						'Urbanist',
-					),
-					'colors'     => array(
-						'#FAB702',
-						'#252740',
-						'#575B7A',
-						'#E7F0FF',
-						'#FFFFFF',
-					),
-				),
-				'consulting'   => array(
-					'fontFamily' => array(
-						'Outfit',
-						'Inter',
-					),
-					'colors'     => array(
-						'#FF7D3E',
-						'#165153',
-						'#293340',
-						'#4C4C65',
-						'#FFF2EC',
 					),
 				),
 			);
