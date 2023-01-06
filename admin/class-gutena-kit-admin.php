@@ -232,6 +232,16 @@ class Gutena_Kit_Admin {
 			max-width: 150px;
 			margin: auto;
 		}
+		.merlin__button--next {
+			color: #0EA489;
+			right: 12px;
+		}
+		.dots li.done, .merlin__button--blue {
+			background: #0EA489;
+		}
+		.merlin__content .dots li a {
+			color: #0EA489;
+		}
 		' );
 	}
 

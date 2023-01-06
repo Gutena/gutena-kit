@@ -269,12 +269,21 @@ class GutenakitDemoSetup extends Merlin{
 			);
 		}
 
-	   if ( ! empty( $demo['site_logo'] ) ) {
+		//set site logo
+		if ( ! empty( $demo['site_logo'] ) ) {
 			$site_logo = get_page_by_title( $demo['site_logo'], OBJECT, 'attachment' );
 			if ( ! empty( $site_logo ) && ! empty( $site_logo->ID ) ) {
 				set_theme_mod( 'custom_logo', $site_logo->ID );
 			}
-	   }
+		}
+
+		//set site icon
+		if ( ! empty( $demo['site_icon'] ) ) {
+			$site_icon = get_page_by_title( $demo['site_icon'], OBJECT, 'attachment' );
+			if ( ! empty( $site_icon ) && ! empty( $site_icon->ID ) ) {
+				update_option( 'site_icon', $site_icon->ID );
+			}
+		}
 	   
        // Assign front page and posts page (blog page).
        $home_page = get_page_by_title( $home_page );

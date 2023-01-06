@@ -99,8 +99,9 @@ Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtab
 * Added display settings for hide a block in specific device like desktop, tablet or mobile
 * Added Advanced Button Block
 * Added Navigation Child Block
-* Fixed demo import slashing issue
-* Fixed demo import custom template failed to override issue
+* Fixed demo import set favicon icon
+* Fixed demo import slashing
+* Fixed demo import custom template failed to override
 * Added architecture, creatives and consulting demos
 * Updated agency and business demos
 * Added required block plugin installation during demo import
