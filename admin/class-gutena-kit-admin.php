@@ -62,6 +62,7 @@ class Gutena_Kit_Admin {
 			'newsletter-block-by-gutena',
 			'photofeed-block-by-gutena',
 			'gutena-lightbox',
+			'gutena-tabs',
 			'post-featured-tag-block-by-gutena',
 		);
 		$this->gutena_theme = 'gutena';
@@ -232,16 +233,6 @@ class Gutena_Kit_Admin {
 			max-width: 150px;
 			margin: auto;
 		}
-		.merlin__button--next {
-			color: #0EA489;
-			right: 12px;
-		}
-		.dots li.done, .merlin__button--blue {
-			background: #0EA489;
-		}
-		.merlin__content .dots li a {
-			color: #0EA489;
-		}
 		' );
 	}
 
@@ -268,10 +259,8 @@ class Gutena_Kit_Admin {
 
 	//Adds a Gutena submenu page to the Appearance main menu 
 	public function add_admin_menu(){
-		//exit if gutena theme dashboard exists and failed to remove theme gutena menu
-		if ( class_exists( 'Gutena_Theme_Dashboard' ) && empty( remove_submenu_page( 'themes.php', 'gutena-theme-dashboard' ) ) ) {
-			return;
-		}
+		//remove theme gutena menu
+		remove_submenu_page( 'themes.php', 'gutena-theme-dashboard' );
 		
 		$page_hook_suffix = add_submenu_page( 'themes.php', 'Gutena', 'Gutena', 'manage_options', 'gutenakit_admin_dashboard', array( $this, 'demo_import_page' ));
 
@@ -316,13 +305,13 @@ class Gutena_Kit_Admin {
 
 		return $gutena_theme_action;
 	}
-
+ 
 	/**
 	 * Demo import script
 	 */
 	public function demo_import_dashboard_scripts() {
 		if ( function_exists( 'wp_json_file_decode' ) ) {
-			wp_enqueue_script( 'gutena-kit-admin-dashboard', GUTENA_KIT_PLUGIN_URL . 'includes/demo-import/admin-dashboard/build/index.js', array( 'wp-components', 'wp-element', 'wp-i18n' ), $this->version, false );
+			wp_enqueue_script( 'gutena-kit-admin-dashboard', GUTENA_KIT_PLUGIN_URL . 'includes/demo-import/admin-dashboard/build/index.js', array( 'wp-components', 'wp-dom-ready', 'wp-element', 'wp-i18n' ), $this->version, true );
 
 			//Demo related data
 			wp_localize_script( 
@@ -363,7 +352,7 @@ class Gutena_Kit_Admin {
 							 'description'   => esc_html__( 'Gutena is a free block theme for WordPress with modern block patterns in-built. It comes packed with beautiful design patterns which suits a variety of use cases. Gutena aims to be at the forefront of WordPress FSE (Full Site Editing) philosophy. ', 'gutena-kit' ),
 							 'button_text'   => esc_html__( 'Visit Website', 'gutena-kit' ),
 							 'button_link'   => $gutena_url,
-							 'video_link'   => esc_url( 'https://www.youtube.com/watch?v=qmK16jI9X1A' ),
+							 'video_link'   => esc_url( 'https://youtu.be/I-x5dqNeKEA' ),
 							 'video_img_url' => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/video.png' ),
 						 ) : array(
 							'tab_title'     => esc_html__( 'Getting Started', 'gutena-kit' ),
@@ -371,7 +360,7 @@ class Gutena_Kit_Admin {
 							'description'   => esc_html__( 'Power-up the Gutenberg editor with Gutena Kit. It gives you advanced controls, powerful blocks and beautiful pre-made templates that help you build websites in less time! These templates can be imported in just a few clicks.', 'gutena-kit' ),
 							'button_text'   => esc_html__( 'Visit Website', 'gutena-kit' ),
 							'button_link'   => $gutena_url,
-							'video_link'   => esc_url( 'https://www.youtube.com/watch?v=qmK16jI9X1A' ),
+							'video_link'   => esc_url( 'https://youtu.be/I-x5dqNeKEA' ),
 							'video_img_url' => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/video-gutena-kit.png' ),
 						),
 						 'templates'     => array(
@@ -452,6 +441,11 @@ class Gutena_Kit_Admin {
 									 'name'       => esc_html__( 'Lightbox', 'gutena-kit' ),
 									 'is_enabled' => class_exists( 'Gutena_Lightbox' ),
 								 ),
+								 array(
+									'slug'       => 'gutena-tabs',
+									'name'       => esc_html__( 'Gutena Tabs', 'gutena-kit' ),
+									'is_enabled' => class_exists( 'Gutena_Tabs' ),
+								),
 								 array(
 									 'slug'       => 'post-featured-tag-block-by-gutena',
 									 'name'       => esc_html__( 'Recent Post Tag', 'gutena-kit' ),
