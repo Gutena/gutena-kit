@@ -1,10 +1,10 @@
-=== Gutena Kit - Gutenberg Blocks, Templates and Advanced Controls ===
+=== Gutena Kit - Gutenberg Blocks and Templates ===
 Contributors: expresstech
 Tags: blocks, gutenberg, page builder, wordpress blocks, Full site editing
 Requires at least: 6.1
 Tested up to: 6.1
 Requires PHP: 5.6
-Stable tag: 1.0.6
+Stable tag: 2.0.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -87,7 +87,7 @@ Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtab
 
 == Changelog ==
 
-= 1.0.7 | Beta =
+= 2.0.0 | 23rd January 2023 =
 * Added gutena-kit advance controls settings to core blocks
 * Added normal and hover color settings for text, background and link  
 * Added normal and hover overlay settings for group and column block

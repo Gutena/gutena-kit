@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import domReady from '@wordpress/dom-ready';
 import {render, useContext } from '@wordpress/element';
 import './style.scss';
 //On boarding dashboard
@@ -17,7 +18,7 @@ const GutenaKitAdminDashboard = () => {
 }
 
 //Set dashboard at HTML id echo by Gutena_Kit_Admin class
-wp.domReady( () => {
+domReady( () => {
     //check for info
     if ( typeof gutenakit_demo_info === 'undefined' || typeof gutenakit_dahboard_info === 'undefined' ){
         return(<div>{ __( 'Sorry! Gutena kit dashboard not available.', 'gutena-kit' ) }</div>);
@@ -27,6 +28,6 @@ wp.domReady( () => {
           <GutenaKitAdminDashboard />
         </DashboardContextProvider>
         ,
-        document.querySelector('#gutenakit-admin-dashboard-page')
+        document.getElementById('gutenakit-admin-dashboard-page')
     );
 });
