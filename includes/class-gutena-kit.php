@@ -136,7 +136,7 @@ class Gutena_Kit {
 		/**
 		 * Load active blocks
 		 */
-		foreach ( gutenakit_block_list() as $blockName => $block) {
+		foreach ( gutenakit_block_list() as $blockName => $block ) {
 			if ( $block['active'] && file_exists( GUTENA_KIT_DIR_PATH . 'includes/gutena-blocks/'.$block['filepath'] ) ) {
 				require_once GUTENA_KIT_DIR_PATH . 'includes/gutena-blocks/'.$block['filepath'];
 			}
@@ -174,9 +174,14 @@ class Gutena_Kit {
 		$plugin_admin = new Gutena_Kit_Admin( $this->get_gutena_kit(), $this->get_version() );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'admin_menu', $plugin_admin , 'add_admin_menu' );
-		$this->loader->add_action( 'admin_init',$plugin_admin,'add_blocks_and_settings' );
-		$this->loader->add_action( 'save_post', $plugin_admin,'save_post_settings_and_styles', 10,3 );
+		$this->loader->add_action( 'admin_menu', $plugin_admin , 'add_admin_menu', 99 );
+		$this->loader->add_action( 'activated_plugin', $plugin_admin , 'gutenakit_onboarding_redirect', 999, 2 );
+		$this->loader->add_action( 'enqueue_block_editor_assets',$plugin_admin,'add_blocks_and_settings' );
+		$this->loader->add_action( 'wp_ajax_save_global_typography', $plugin_admin, 'save_global_typography' );
+		//Manage Block plugins: install or activate
+		$this->loader->add_action( 'wp_ajax_manage_gutena_blocks', $plugin_admin, 'manage_gutena_block_plugins_ajax' );
+		//Gutena theme install or activate
+		$this->loader->add_action( 'wp_ajax_activate_gutena_theme', $plugin_admin, 'activate_gutena_theme_ajax' );
 	}
 
 	/**
@@ -190,13 +195,15 @@ class Gutena_Kit {
 
 		$plugin_public = new Gutena_Kit_Public( $this->get_gutena_kit(), $this->get_version() );
 		
-		$this->loader->add_action( 'wp_enqueue_scripts',$plugin_public,'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts',$plugin_public,'enqueue_scripts' );
-		$this->loader->add_action( 'after_setup_theme',$plugin_public,'add_editor_styles' );
+		//Register custom block category - gutena
+		$this->loader->add_action( 'block_categories_all', $plugin_public, 'register_block_category', 10, 2 );
 		
-		$this->loader->add_action( 'wp_head', $plugin_public,'add_post_css' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_action( 'after_setup_theme', $plugin_public, 'add_editor_styles' );
+		
 		//Filters the metadata provided for registering a block type
-		$this->loader->add_filter( 'block_type_metadata', $plugin_public, 'block_settings_setup', 10, 2 );
+		$this->loader->add_filter( 'block_type_metadata', $plugin_public, 'edit_block_metadata' );
 		$this->loader->add_filter( 'render_block', $plugin_public, 'render_block_customization', 10, 2 );
 		
 

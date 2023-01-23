@@ -128,7 +128,7 @@ function create_zip(){
     
     //Ignore directory path
     let ignorePath = [
-        '!./public/block_editor/',
+        '!./includes/block-editor/',
         '!./includes/demo-import/admin-dashboard/'
     ];
 
@@ -164,7 +164,62 @@ function create_zip(){
         }) );
 }
 
+//create zip file
+function create_zip_src(){
+    //Zip path for create plugin production zip
+    var zipPath = [ 
+        './', 
+        './**', 
+        '!./node_modules', 
+        '!./node_modules/**', 
+        '!./build', 
+        '!./build/**', 
+        '!./gulpfile.js', 
+        '!./package.json', 
+        '!./package-lock.json', 
+        '!./phpcs.xml',
+        '!./LICENSE',
+        '!./README.md'
+    ];
+    
+    //Ignore directory path
+    let ignorePath = [
+        '!./includes/block-editor/',
+        '!./includes/demo-import/admin-dashboard/'
+    ];
+
+    //Prepare Ignore directory list
+    GutenaBlocksRepo.forEach( function( ignoreDirPath ) {
+        ignorePath.push( '!./includes/gutena-blocks/'+ignoreDirPath+'/' );
+    });
+
+    //common sub-directory and files to ignore
+    let ignoreFiles = [
+        'gulpfile.js',
+        'package.json',
+        'package-lock.json',
+        'node_modules',
+        'node_modules/**'
+    ];
+    
+    //Prepare final zip files list
+    ignorePath.forEach( function( ignorefilePath ) {
+        ignoreFiles.forEach( function( ignorefile ) {
+            zipPath.push( ignorefilePath+''+ignorefile );
+        });
+    });
+
+    return gulp.src( zipPath, { base : '../' } )
+            .pipe( zip( 'gutena-kit.zip' ) )
+            .pipe( gulp.dest( './build/' ) )
+            .pipe( notify({
+                message : 'Zip process complete! Build Successfull',
+                onLast : true
+        }) );
+}
+
 //(cmd: gulp build): run for development. It retain src and all other files
-exports.build = series(clean_files, clone_gutena_blocks, parallel(css_minification,js_minification),create_zip);
+exports.build = series(clean_files, clone_gutena_blocks, parallel(css_minification,js_minification),create_zip_src);
 //(cmd: gulp): run for production. It delete src and other unnecessary files
-exports.default = series(clean_files, clone_gutena_blocks, clean_gutena_blocks, parallel(css_minification,js_minification),create_zip);
+//exports.default = series(clean_files, clone_gutena_blocks, clean_gutena_blocks, parallel(css_minification,js_minification),create_zip);
+exports.default = series(clean_files, parallel(css_minification,js_minification),create_zip);

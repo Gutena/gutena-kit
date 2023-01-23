@@ -1,0 +1,34 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "gutena/navigation-child",
+	"title": "Navigation Block Child",
+	"category": "gutena",
+	"parent": [ "core/navigation" ],
+	"icon": "layout",
+	"description": "Able to add other blocks inside navigation block",
+	"supports": {
+		"html": false,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"reusable": false,
+		"__experimentalSlashInserter": true,
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true,
+			"__experimentalFontFamily": true,
+			"__experimentalFontWeight": true,
+			"__experimentalFontStyle": true,
+			"__experimentalTextTransform": true,
+			"__experimentalTextDecoration": true,
+			"__experimentalLetterSpacing": true,
+			"__experimentalDefaultControls": {
+				"fontSize": true
+			}
+		}
+	},
+	"textdomain": "gutena-kit",
+	"editorScript": "file:./index.js"
+}

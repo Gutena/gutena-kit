@@ -31,6 +31,7 @@ class GutenakitDemoSetup extends Merlin{
 	function __construct( $config = array(), $strings = array() ) {
 
         parent::__construct( $config, $strings );
+		$this->set_required_plugins();
         $this->remove_actions();
         $this->add_actions();
         $this->add_filters();
@@ -111,6 +112,22 @@ class GutenakitDemoSetup extends Merlin{
 		);
 
 		$this->steps = apply_filters( $this->theme->template . '_merlin_steps', $this->steps );
+	}
+
+	private function set_required_plugins() {
+		if ( ! isset( $_GET['demo_index'] ) || ! is_numeric( $_GET['demo_index'] ) ) {
+			return;
+		}
+
+		$selected_import_index = (int) sanitize_text_field( wp_unslash( $_GET['demo_index'] ) );
+
+		//set_transient for required plugins for tgmpa plugin registeration 
+		$demo = gutendkit_demo_deatils_list( $selected_import_index );
+		
+		if ( ! empty( $demo ) && ! empty( $demo['required_plugins'] ) && is_array( $demo['required_plugins'] ) ) {
+			//set_transient for 30 minutes
+			set_transient( 'gutenakit_demo_required_plugins', $demo['required_plugins'], 1800 );
+		}
 	}
 
     /**
@@ -223,20 +240,17 @@ class GutenakitDemoSetup extends Merlin{
 	public function before_import_reset(){
 		if ( $this->is_gutena_theme_activated ) {
 			//Reset Templates: post_type:wp_template
-			$this->reset_templates(array(
-				'post_type' => 'wp_template', 
-				"source"    => "custom",
-			), 'wp_template' );
+			$this->reset_templates( array(), 'wp_template' );
 			//Reset post_type:wp_template_part
-			$this->reset_templates(array(
-				'post_type' => 'wp_template_part', 
-				"source"    => "custom",
-			), 'wp_template_part' );
+			$this->reset_templates( array(), 'wp_template_part' );
 		}
 	}
     
 	/*After Demo Import Set Home Page*/
     public function after_import_setup( $index ) {
+	   //delete required plugin transient
+	   delete_transient( 'gutenakit_demo_required_plugins' );
+	   //get demo details
 	   $demo = gutendkit_demo_deatils_list( $index );
 	   $main_menu = empty( $demo['main_menu'] ) ? 'Main Menu' : sanitize_text_field( $demo['main_menu'] );
 	   $home_page = empty( $demo['home_page'] ) ? 'Home' : sanitize_text_field( $demo['home_page'] );
@@ -255,12 +269,21 @@ class GutenakitDemoSetup extends Merlin{
 			);
 		}
 
-	   if ( ! empty( $demo['site_logo'] ) ) {
+		//set site logo
+		if ( ! empty( $demo['site_logo'] ) ) {
 			$site_logo = get_page_by_title( $demo['site_logo'], OBJECT, 'attachment' );
 			if ( ! empty( $site_logo ) && ! empty( $site_logo->ID ) ) {
 				set_theme_mod( 'custom_logo', $site_logo->ID );
 			}
-	   }
+		}
+
+		//set site icon
+		if ( ! empty( $demo['site_icon'] ) ) {
+			$site_icon = get_page_by_title( $demo['site_icon'], OBJECT, 'attachment' );
+			if ( ! empty( $site_icon ) && ! empty( $site_icon->ID ) ) {
+				update_option( 'site_icon', $site_icon->ID );
+			}
+		}
 	   
        // Assign front page and posts page (blog page).
        $home_page = get_page_by_title( $home_page );
@@ -278,31 +301,22 @@ class GutenakitDemoSetup extends Merlin{
        		update_option( 'page_for_posts', (int) $blog_page->ID );
 	   }
 
-		//correct excerpt block if required
-		if ( ! empty( $demo['demo_slug'] ) && 'saas_company' === $demo['demo_slug'] ) {
-			
-			// get blog page object
-			$blog_page  = get_page_by_title( 'Saas Blog' );
-
-			//check if blog page is exist and require to update
-			if ( ! empty( $blog_page ) && ! empty( $blog_page->ID ) && is_numeric($blog_page->ID) && 1 < $blog_page->ID  && ! empty( $blog_page->post_content ) && stripos( $blog_page->post_content, '<!-- wp:post-excerpt {"moreText":"u003cstrongu003eRead Article') > 0 ) {
-
-				//replace incorrect block content with correct block content
-				$blog_page->post_content = str_ireplace(
-					'<!-- wp:post-excerpt {"moreText":"u003cstrongu003eRead Article u003cimg class=u0022wp-image-1595u0022 style=u0022width: 14px;u0022 src=u0022https://demo.gutena.io/saas-company/wp-content/themes/gutena/assets/img/icons/arrow-right-black.svgu0022 alt=u0022arrow-rightu0022u003eu003c/strongu003e","style":{"typography":{"lineHeight":"1.9","fontStyle":"normal","fontWeight":"500","letterSpacing":"-0.01em"}},"textColor":"tertiary","fontSize":"normal"} /-->',
-					'<!-- wp:post-excerpt {"moreText":"\u003cstrong\u003eRead Article \u003cimg class=\u0022wp-image-1595\u0022 style=\u0022width: 14px;\u0022 src=\u0022https://demo.gutena.io/saas-company/wp-content/themes/gutena/assets/img/icons/arrow-right-black.svg\u0022 alt=\u0022arrow-right\u0022\u003e\u003c/strong\u003e","style":{"typography":{"lineHeight":"1.9","fontStyle":"normal","fontWeight":"500","letterSpacing":"-0.01em"}},"textColor":"tertiary","fontSize":"normal"} /-->', 
-					$blog_page->post_content 
-				);
-				//update static blog page
-				wp_update_post( $blog_page );
-			}
-		}
-
 	   //Set global styles
 	   if ( ! empty( $demo['style_variation'] ) ) {
 		$demo['style_variation'] = is_array( $demo['style_variation'] ) ? wp_json_encode( $demo['style_variation'] ) : $demo['style_variation'];
 		$this->reset_set_global_styles( $demo['style_variation'] );
 	   }
+
+	    //Set global typography
+		if ( ! empty( $demo['gutena_kit_global_typography'] ) && is_array( $demo['gutena_kit_global_typography'] ) ) {
+			//check for multisite
+			if ( defined( 'MULTISITE' ) && true === MULTISITE && function_exists( 'get_sites' ) && class_exists( 'WP_Site_Query' ) && function_exists( 'get_blog_option' ) && function_exists( 'get_current_blog_id' ) ) {
+				//update current site option
+				update_blog_option( get_current_blog_id(), 'gutena_kit_global_typography' , gutenakit_sanitize_array( $demo['gutena_kit_global_typography'] ) ) ;
+			} else {
+				update_option( 'gutena_kit_global_typography', gutenakit_sanitize_array( $demo['gutena_kit_global_typography'] ) );
+			}
+		}
 	   
     }
 
@@ -335,13 +349,14 @@ class GutenakitDemoSetup extends Merlin{
 	}
 
 	
-	//reset templates
+	//reset custom templates for gutena theme only
 	private function reset_templates( $query_array, $template_type ) {
 		if ( ! function_exists( 'get_block_templates' ) ) {
 			return;
 		}
+		//get templates array
 		$templates = get_block_templates( $query_array, $template_type );
-		//print_r( $templates);
+		
 		if ( ! empty( $templates) ) {
 			foreach ( $templates as $template ) {
 				if ( ! empty( $template->wp_id ) && is_numeric( $template->wp_id ) && $template->wp_id > 0 && ! empty( $template->id ) && 'custom' === $template->source && $template->type === $template_type ) {

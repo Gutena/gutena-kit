@@ -31,6 +31,23 @@ class Gutena_Kit_Admin {
 	private $version;
 
 	/**
+	 * Gutena theme slug.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $gutena_theme    Gutena theme slug.
+	 */
+	private $gutena_theme;
+
+	/**
+	 * Gutena block plugin list.
+	 *
+	 * @access   private
+	 * @var      array    $gutena_plugins    The current version of this plugin.
+	 */
+	private $gutena_plugins;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -38,9 +55,18 @@ class Gutena_Kit_Admin {
 	 * @param      string    $version    The version of this plugin.
 	 */
 	public function __construct( $gutena_kit, $version ) {
-
 		$this->gutena_kit = $gutena_kit;
-		$this->version = $version;
+		$this->gutena_plugins = array( 
+			'gutena-accordion', 
+			'gutena-forms', 
+			'newsletter-block-by-gutena',
+			'photofeed-block-by-gutena',
+			'gutena-lightbox',
+			'gutena-tabs',
+			'post-featured-tag-block-by-gutena',
+		);
+		$this->gutena_theme = 'gutena';
+		$this->version        = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? time() : $version;
 		$this->load_dependencies();
 	}
 
@@ -52,10 +78,16 @@ class Gutena_Kit_Admin {
 		 * Admin helper functions
 		 */
 		require_once GUTENA_KIT_DIR_PATH . 'includes/helpers/admin-helpers.php';
+		//Add TGM for plugin activation
+		require_once GUTENA_KIT_DIR_PATH . 'includes/demo-import/tgmpa/class-tgm-plugin-activation.php';
 		//Merlin WP for demo import
 		require_once GUTENA_KIT_DIR_PATH . 'includes/demo-import/merlin/class-merlin.php';
 		//Extend and modify Merlin WP
 		require_once GUTENA_KIT_DIR_PATH . 'includes/demo-import/class-gutenakit-demosetup.php';
+
+		if ( class_exists( 'TGM_Plugin_Activation' ) ) {
+			add_action( 'tgmpa_register', array( $this, 'gutena_kit_register_required_plugins' ) );
+		}
 		
 		if ( ! class_exists( 'Merlin' ) || ! class_exists( 'GutenakitDemoSetup' ) ) {
 			return;
@@ -157,6 +189,37 @@ class Gutena_Kit_Admin {
 		);
 	}
 
+	/**
+	 * Register required plugins
+	 */
+	public function gutena_kit_register_required_plugins(){
+		if ( ! function_exists( 'tgmpa' ) || ! function_exists( 'get_transient' ) ) {
+			return;
+		}
+
+		//Get required plugin list for demo
+		$plugins = get_transient( 'gutenakit_demo_required_plugins' );
+
+		if ( empty( $plugins ) || ! is_array( $plugins ) ) {
+			return;
+		}
+
+		$config = array(
+			'id'           => 'gutena-kit',                 // Unique ID for hashing notices for multiple instances of TGMPA.
+			'default_path' => '',                      // Default absolute path to bundled plugins.
+			'menu'         => 'tgmpa-install-plugins', // Menu slug.
+			'parent_slug'  => 'plugins.php',            // Parent menu slug.
+			'capability'   => 'manage_options',    // Capability needed to view plugin install page, should be a capability associated with the parent menu used.
+			'has_notices'  => false,                    // Show admin notices or not.
+			'dismissable'  => true,                    // If false, a user cannot dismiss the nag message.
+			'dismiss_msg'  => '',                      // If 'dismissable' is false, this message will be output at top of nag.
+			'is_automatic' => false,                   // Automatically activate plugins after installation or not.
+			'message'      => '',                      // Message to output right before the plugins table.
+
+		);
+
+		tgmpa( $plugins, $config );
+	}
 
 	/**
 	 * Register the stylesheets for the admin area.
@@ -164,7 +227,13 @@ class Gutena_Kit_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-		wp_enqueue_style( $this->gutena_kit, GUTENA_KIT_PLUGIN_URL . 'admin/css/gutena-kit-admin.css', array(), $this->version, 'all' );
+		//Add css for merlin importer
+        wp_add_inline_style( 'merlin', '
+		.merlin__content--transition svg{
+			max-width: 150px;
+			margin: auto;
+		}
+		' );
 	}
 
 	/**
@@ -176,10 +245,26 @@ class Gutena_Kit_Admin {
 		wp_enqueue_script( $this->gutena_kit, GUTENA_KIT_PLUGIN_URL . 'admin/js/gutena-kit-admin.js', array(), $this->version, false );
 	}
 
-	public function add_admin_menu(){
-		$page_hook_suffix =	add_submenu_page( 'themes.php', 'Gutena Kit', 'Gutena Kit', 'manage_options', 'gutenakit_demo_import', array( $this, 'demo_import_page' ));
+	//On activate plugin redirect admin to gutena kit on boarding : not for MULTISITE
+	public function gutenakit_onboarding_redirect( $plugin, $network_activation ) {
+		if ( ! empty( $plugin ) && 'gutena-kit/gutena-kit.php' === $plugin &&
+			function_exists( 'is_multisite' ) && ! is_multisite() &&
+			! empty( get_option( 'gutenakit_onboarding', 1 ) ) && 
+			function_exists( 'wp_safe_redirect' ) && 
+			function_exists( 'admin_url' ) && 
+			wp_safe_redirect( esc_url( admin_url( 'themes.php?page=gutenakit_admin_dashboard' ) ) ) ) {
+			exit;
+		}
+	}
 
-		if ( ! empty( $page_hook_suffix ) ){
+	//Adds a Gutena submenu page to the Appearance main menu 
+	public function add_admin_menu(){
+		//remove theme gutena menu
+		remove_submenu_page( 'themes.php', 'gutena-theme-dashboard' );
+		
+		$page_hook_suffix = add_submenu_page( 'themes.php', 'Gutena', 'Gutena', 'manage_options', 'gutenakit_admin_dashboard', array( $this, 'demo_import_page' ));
+
+		if ( ! empty( $page_hook_suffix ) ) {
 			add_action( 'admin_print_styles-' . $page_hook_suffix, array( $this, 'demo_import_dashboard_styles' ) );
 			add_action( 'admin_print_scripts-' . $page_hook_suffix, array( $this, 'demo_import_dashboard_scripts' ) );
 	   }
@@ -193,80 +278,705 @@ class Gutena_Kit_Admin {
 	 * List Demos and Import
 	 */
 	public function demo_import_page(){
-		echo '<div id="gutenakit-demo-import-page"></div>';
+		echo '<div id="gutenakit-admin-dashboard-page"></div>';
 	}
 
 	/**
 	 * Demo import styles
 	 */
 	public function demo_import_dashboard_styles() {
-		wp_enqueue_style( 'gutena-theme-dashboard-style', GUTENA_KIT_PLUGIN_URL . 'includes/demo-import/admin-dashboard/assets/dashboard.css', array(), $this->version, 'all' );
+		wp_enqueue_style( 'gutena-theme-dashboard-style', GUTENA_KIT_PLUGIN_URL . 'includes/demo-import/admin-dashboard/build/style-index.css', array( 'wp-components' ), $this->version, 'all' );
 	}
 
+	//Check if theme require to install or activate
+	private function get_gutena_theme_action() {
+		$gutena_theme_action = 'install';
+		if ( function_exists( 'gutena_setup' ) ) {
+			$gutena_theme_action = '';
+		} else {
+			$gutena_theme = wp_get_theme( $this->gutena_theme );
+			//Installation require
+			$gutena_theme_action = 'install';
+			//If gutena theme already installed
+			if ( $gutena_theme->exists() ) {
+				$gutena_theme_action = 'activate';
+			}
+		}
+
+		return $gutena_theme_action;
+	}
+ 
 	/**
 	 * Demo import script
 	 */
 	public function demo_import_dashboard_scripts() {
 		if ( function_exists( 'wp_json_file_decode' ) ) {
-			wp_enqueue_script( 'gutena-kit-demo-import-dashboard', GUTENA_KIT_PLUGIN_URL . 'includes/demo-import/admin-dashboard/build/index.js', array( 'wp-components', 'wp-element', 'wp-i18n' ), $this->version, false );
-	
+			wp_enqueue_script( 'gutena-kit-admin-dashboard', GUTENA_KIT_PLUGIN_URL . 'includes/demo-import/admin-dashboard/build/index.js', array( 'wp-components', 'wp-dom-ready', 'wp-element', 'wp-i18n' ), $this->version, true );
+
+			//Demo related data
 			wp_localize_script( 
-			'gutena-kit-demo-import-dashboard' , 
-			'gutenakit_demo_info',
+				'gutena-kit-admin-dashboard', 
+				'gutenakit_demo_info',
 				array(
-				'show_demo_type_filter' => '0',
-				'show_category_filter'  => '0',
-				'category' => gutendkit_demo_category_list(),
-				'demo_list' => gutendkit_categorize_demo_list(),
-				'logo' => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/logo.png' ),
-				'demo_import_url' => esc_url( admin_url( 'options.php?page=merlin&demo_index=' ) ),
-				'styles' => wp_json_file_decode( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/styles/all_styles.json', array( 'associative' => true ) )
+					'gutena_theme_available' => function_exists( 'gutena_setup' ) ? 1 : 0,
+					'gutena_theme_action'    => $this->get_gutena_theme_action(),
+					'show_demo_type_filter'  => '0',
+					'show_category_filter'   => '0',
+					'category'               => gutendkit_demo_category_list(),
+					'demo_list'              => gutendkit_categorize_demo_list(),
+					'logo'                   => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/logo.png' ),
+					'link_icon'              => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/link.svg' ),
+					'pro_icon'               => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/pro-tag.svg' ),
+					'warning_icon'           => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/warning.svg' ),
+					'success_icon_green'     => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/round-check-green.svg' ),
+					'success_icon_white'     => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/round-check-white.svg' ),
+					'download_icon'          => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/download.svg' ),
+					'logo'                   => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/logo.png' ),
+					'demo_import_url'        => esc_url( admin_url( 'options.php?page=merlin&demo_index=' ) ),
+					'styles'                 => file_exists( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/styles/all_styles.json' ) ? wp_json_file_decode( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/styles/all_styles.json', array( 'associative' => true ) ) : array(),
+				)
+			);
+
+			//gutena official url
+			$gutena_url = esc_url( 'https://gutena.io/' );
+
+			//Admin dashboard details
+			wp_localize_script( 
+				'gutena-kit-admin-dashboard' , 
+				'gutenakit_dahboard_info',
+				 array(
+					 'tabs'            => array(
+						 'welcome'       => function_exists( 'gutena_setup' ) ? array(
+							 'tab_title'     => esc_html__( 'Getting Started', 'gutena-kit' ),
+							 'title'         => esc_html__( 'Welcome to Gutena!', 'gutena-kit' ),
+							 'description'   => esc_html__( 'Gutena is a free block theme for WordPress with modern block patterns in-built. It comes packed with beautiful design patterns which suits a variety of use cases. Gutena aims to be at the forefront of WordPress FSE (Full Site Editing) philosophy. ', 'gutena-kit' ),
+							 'button_text'   => esc_html__( 'Visit Website', 'gutena-kit' ),
+							 'button_link'   => $gutena_url,
+							 'video_link'   => esc_url( 'https://youtu.be/I-x5dqNeKEA' ),
+							 'video_img_url' => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/video.png' ),
+						 ) : array(
+							'tab_title'     => esc_html__( 'Getting Started', 'gutena-kit' ),
+							'title'         => esc_html__( 'Welcome to Gutena Kit!', 'gutena-kit' ),
+							'description'   => esc_html__( 'Power-up the Gutenberg editor with Gutena Kit. It gives you advanced controls, powerful blocks and beautiful pre-made templates that help you build websites in less time! These templates can be imported in just a few clicks.', 'gutena-kit' ),
+							'button_text'   => esc_html__( 'Visit Website', 'gutena-kit' ),
+							'button_link'   => $gutena_url,
+							'video_link'   => esc_url( 'https://youtu.be/I-x5dqNeKEA' ),
+							'video_img_url' => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/video-gutena-kit.png' ),
+						),
+						 'templates'     => array(
+							 'tab_title' => esc_html__( 'Starter Templates', 'gutena-kit' ),
+						 ),
+						 'blockSettings' => array(
+							 'tab_title' => esc_html__( 'Block Settings', 'gutena-kit' ),
+						 ),
+						 'doc'           => array(
+							 'tab_title' => esc_html__( 'Knowledge Base', 'gutena-kit' ),
+							 'title'     => esc_html__( 'Topics', 'gutena-kit' ),
+							 'topics'    => array(
+								 array(
+									 'heading'     => esc_html__( 'How to Add a Favicon in Block Theme?', 'gutena-kit' ),
+									 'link'        => esc_url( $gutena_url . 'how-to-add-a-favicon-in-block-theme' ),
+									 'description' => esc_html__( '', 'gutena-kit' ),
+								 ),
+								 array(
+									 'heading'     => esc_html__( 'How to Create Sidebar with Block Theme?', 'gutena-kit' ),
+									 'link'        => esc_url( $gutena_url . 'how-to-create-sidebar-with-block-theme' ),
+									 'description' => esc_html__( '', 'gutena-kit' ),
+								 ),
+								 array(
+									 'heading'     => esc_html__( 'How to fix demo page navigation link issue?', 'gutena-kit' ),
+									 'link'        => esc_url( $gutena_url . 'fix-navigation-link-not-working-issue' ),
+									 'description' => esc_html__( '', 'gutena-kit' ),
+								 ),
+							 ),
+							 'support'   => array(
+								 'title'              => esc_html__( 'Need Help?', 'gutena-kit' ),
+								 'description'        => esc_html__( 'Have a question, we are happy to help! Get in touch with our support team.', 'gutena-kit' ),
+								 'documentation_link' => esc_url( $gutena_url.'/blog' ),
+								 'link_text'          => esc_html__( 'Submit Ticket', 'gutena-kit' ),
+								 'link_url'           => esc_url( 'https://wordpress.org/support/plugin/gutena-kit/' ),
+							 ),
+							 'changelog' => array(
+								 'title'       => esc_html__( 'Releases and fixes', 'gutena-kit' ),
+								 'description' => $this->get_changelog(),
+							 ),
+						 ),
+					 ),
+					 'logo'            => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/logo.png' ),
+					 'onboarding'      => ! empty( get_option( 'gutenakit_onboarding', 1 ) ),
+					 'onboarding_info' => array( 
+						 'heading'  => esc_html__( 'Gutena Kit Onboarding Wizard', 'gutena-kit' ),
+						 'step_one' => array(
+							 'step_name'   => esc_html__( 'Get started', 'gutena-kit' ),
+							 'title'       => esc_html__( 'Welcome to Gutena Kit', 'gutena-kit' ),
+							 'description' => esc_html__( 'Power-up the Gutenberg editor with Gutena Kit. It gives you advanced controls, powerful blocks and beautiful pre-made templates that help you build websites in less time!', 'gutena-kit' ),
+							 'button_text' => esc_html__( 'Get started', 'gutena-kit' ),
+						 ),
+						 'step_two' => array(
+							 'step_name' => esc_html__( 'Choose Blocks', 'gutena-kit' ),
+							 'title'     => esc_html__( 'Choose Blocks', 'gutena-kit' ),
+							 'blocks'    => array(
+								 array(
+									 'slug'       => 'gutena-accordion',
+									 'name'       => esc_html__( 'Accordion', 'gutena-kit' ),
+									 'is_enabled' => class_exists( 'Gutena_Accordion' ),
+								 ),
+								 array(
+									 'slug'       => 'gutena-forms',
+									 'name'       => esc_html__( 'Forms', 'gutena-kit' ),
+									 'is_enabled' => class_exists( 'Gutena_Forms' ),
+								 ),
+								 array(
+									 'slug'       => 'newsletter-block-by-gutena',
+									 'name'       => esc_html__( 'Newsletter', 'gutena-kit' ),
+									 'is_enabled' => class_exists( 'Gutena_Newsletter' ),
+								 ),
+								 array(
+									 'slug'       => 'photofeed-block-by-gutena',
+									 'name'       => esc_html__( 'PhotoFeed', 'gutena-kit' ),
+									 'is_enabled' => class_exists( 'Gutena_Instagram_Gallery' ),
+								 ),
+								 array(
+									 'slug'       => 'gutena-lightbox',
+									 'name'       => esc_html__( 'Lightbox', 'gutena-kit' ),
+									 'is_enabled' => class_exists( 'Gutena_Lightbox' ),
+								 ),
+								 array(
+									'slug'       => 'gutena-tabs',
+									'name'       => esc_html__( 'Gutena Tabs', 'gutena-kit' ),
+									'is_enabled' => class_exists( 'Gutena_Tabs' ),
+								),
+								 array(
+									 'slug'       => 'post-featured-tag-block-by-gutena',
+									 'name'       => esc_html__( 'Recent Post Tag', 'gutena-kit' ),
+									 'is_enabled' => class_exists( 'Gutena_Post_Featured_Tag' ),
+								 ),
+							 ),
+						 ),
+					 ),
+					 'nonce'           => wp_create_nonce( 'gutena-kit-nonce' ),
+					 'ajax_url'        => esc_url( admin_url('admin-ajax.php') ),
+					 'theme_slug'      => $this->gutena_theme,
+				 )
+			);
+		}
+	}
+
+	private function disable_gutenaKit_on_boarding() {
+		return update_option( 'gutenakit_onboarding', '0' );
+	}
+
+	//Manage gutena block plugins
+	public function manage_gutena_block_plugins_ajax() {
+		
+		if ( 1 !== check_ajax_referer( 'gutena-kit-nonce', 'gutena_kit_security' ) && function_exists( 'is_gutenakit_admin' ) && true !== is_gutenakit_admin( 'install_plugins' ) ) {
+			wp_send_json_error(
+				array(
+					'error'   => 1,
+					'message' => esc_html__( 'Sorry, you are not allowed to access this page', 'gutena-kit' ),
 				)
 			);
 		}
+
+		//Skip on-boarding 
+		if ( ! empty( $_POST['skip_settings'] ) && empty( $_POST['slug'] ) && 'skip' === sanitize_key( wp_unslash( $_POST['skip_settings'] ) ) ) {
+
+			//Disable on boarding
+			$this->disable_gutenaKit_on_boarding();
+
+			wp_send_json_success(
+				array(
+					'error'   => 0,
+					'message' => esc_html__( 'On boarding choice updated successfully!', 'gutena-kit' ),
+				)
+			);
+
+		} elseif ( empty( $_POST['slug'] ) || empty( $_POST['activate_action'] ) ) {
+			wp_send_json_error(
+				array(
+					'error'   => 1,
+					'message' => esc_html__( 'Required input missing', 'gutena-kit' ),
+				)
+			);
+		}
+		
+		$slug = sanitize_key( wp_unslash( $_POST['slug'] ) );
+
+		//Check if require plugin is one of the gutena plugin
+		if ( ! in_array( $slug, $this->gutena_plugins ) ) {
+			wp_send_json_error(
+				array(
+					'error'   => 1,
+					'message' => esc_html__( 'Not a gutena block', 'gutena-kit' ),
+				)
+			);
+		}
+
+		$activate_action = sanitize_key( wp_unslash( $_POST['activate_action'] ) );
+		
+		//Validate action for plugin
+		$action = $this->validate_plugin_action( $slug, $activate_action );
+
+		if ( false === $action ) {
+			//No action required: Send success message
+			wp_send_json_success(
+				array(
+					'error'   => 0,
+					'message' => $slug.' '.esc_html__( 'block status saved successfully!', 'gutena-kit' ),
+				)
+			);
+		}
+
+		//check activate_plugin function exists 
+		if ( ! function_exists( 'activate_plugin' ) && file_exists( ABSPATH . 'wp-admin/includes/plugin.php' ) ) {
+			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		}
+
+		$error = false;
+		$msg = '' ;
+		//If require to install plugin
+		if ( 'install-plugin' === $action ) {
+			//check plugins_api function exists 
+			if ( ! function_exists( 'plugins_api' ) && file_exists( ABSPATH . 'wp-admin/includes/plugin-install.php' ) ) {
+				include_once ABSPATH . 'wp-admin/includes/plugin-install.php';
+			}
+				//check WP_Upgrader class exists 
+			if ( ! class_exists( 'WP_Upgrader' ) && file_exists( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' ) ) {
+				require_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
+			}
+			//check WP_Ajax_Upgrader_Skin class exists 
+			if ( ! class_exists( 'WP_Ajax_Upgrader_Skin' ) && file_exists( ABSPATH . 'wp-admin/includes/class-wp-ajax-upgrader-skin.php' ) ) {
+				require_once( ABSPATH . 'wp-admin/includes/class-wp-ajax-upgrader-skin.php' );
+			}
+			//check Plugin_Upgrader class exists 
+			if ( ! class_exists( 'Plugin_Upgrader' ) && file_exists( ABSPATH . 'wp-admin/includes/class-plugin-upgrader.php' ) ) {
+				require_once( ABSPATH . 'wp-admin/includes/class-plugin-upgrader.php' );
+			}
+
+			//make sure all required function and class available
+			if ( function_exists( 'activate_plugin' ) && function_exists( 'plugins_api' ) && class_exists( 'WP_Upgrader' ) && class_exists( 'WP_Ajax_Upgrader_Skin' ) && class_exists( 'Plugin_Upgrader' ) ) {
+				$api = plugins_api(
+					'plugin_information',
+					array(
+						'slug'   => $slug,
+						'fields' => array(
+							'short_description' => false,
+							'sections'          => false,
+							'requires'          => false,
+							'rating'            => false,
+							'ratings'           => false,
+							'downloaded'        => false,
+							'last_updated'      => false,
+							'added'             => false,
+							'tags'              => false,
+							'compatibility'     => false,
+							'homepage'          => false,
+							'donate_link'       => false,
+						),
+					)
+				);
+				if ( ! is_wp_error( $api ) && ! empty( $api->download_link ) ) {
+					$upgrader = new Plugin_Upgrader( new WP_Ajax_Upgrader_Skin() );
+					$result = $upgrader->install( $api->download_link );
+					if ( empty( $result ) || is_wp_error( $result ) ) {
+						$error = true;
+						$msg = esc_html__( 'Failed to install', 'gutena-kit' );
+					} else {
+						$plugin_path = $this->get_plugin_path( $slug );
+						if ( $plugin_path ) {
+							$result = activate_plugin( $plugin_path, '', false, true );
+							if ( is_wp_error( $result ) ) {
+								$error = true;
+								$msg = esc_html__( 'Failed to activate ', 'gutena-kit' );
+							}
+						}
+					}
+				}
+			}
+		} elseif ( 'activate-plugin' === $action ) {
+			$plugin_path = $this->get_plugin_path( $slug );
+			if ( $plugin_path ) {
+				$result = activate_plugin( $plugin_path, '', false, true );
+				if ( is_wp_error( $result ) ) {
+					$error = true;
+					$msg = esc_html__( 'Failed to activate ', 'gutena-kit' );
+				}
+			}
+		} elseif ( 'deactivate-plugin' === $action ) {
+			$plugin_path = $this->get_plugin_path( $slug );
+			if ( $plugin_path ) {
+				$result = deactivate_plugins( $plugin_path, '', false, true );
+				if ( is_wp_error( $result ) ) {
+					$error = true;
+					$msg = esc_html__( 'Failed to deactivate ', 'gutena-kit' );
+				}
+			}
+		}
+
+		$slug = ucfirst( str_replace( "-", " ", $slug ) );
+
+		//If error found
+		if ( $error ) {
+			wp_send_json_error(
+				array(
+					'error'   => 1,
+					'message' => $msg.' '.$slug.' block plugin.',
+				)
+			);
+		} 
+		
+		if ( ! empty( $_POST['skip_settings'] ) && 'skip' === sanitize_key( wp_unslash( $_POST['skip_settings'] ) ) ) {
+			//Disable on boarding
+			$this->disable_gutenaKit_on_boarding();
+		}
+
+		//Send success message
+		wp_send_json_success(
+			array(
+				'error'   => 0,
+				'message' => $slug.' '.esc_html__( 'block status saved successfully!', 'gutena-kit' ),
+			)
+		);
+		
+	}
+
+	//get plugin path for activation or deactivation. return false if not found
+	private function get_plugin_path( $slug ) {
+		
+		//Include reuired file for get_plugins function
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		if ( ! function_exists( 'get_plugins' ) ) {
+			return false;
+		}
+		
+		/**Checks the plugins directory and retrieve all plugin files with plugin data
+		e.g. array('gutena-accordion/gutena-accordion.php' => Array()) **/
+		$plugins = array_keys( get_plugins() );
+        
+		//initialize 
+		$plugin_path = false;
+
+		//match plugin slug
+		foreach ( $plugins as $plugin ) {
+			$path = explode("/",$plugin);
+			if ( $slug === $path[0] ) {
+				$plugin_path = $plugin;
+				break;
+			}
+		}
+
+		return ( false === $plugin_path || false === stripos( $plugin_path, "gutena" ) || false === stripos( $plugin_path, ".php" ) ) ? false : $plugin_path;
+	}
+
+	//Validate plugin action : install, activate or deactivate
+	private function validate_plugin_action( $slug, $activate_action ) {
+		//Include reuired file for get_plugins function
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		if ( ! function_exists( 'get_plugins' ) ) {
+			return false;
+		}
+		
+		//Checks the plugins directory and retrieve all plugin files with plugin data
+		//e.g. array('gutena-accordion/gutena-accordion.php' => Array())
+		$plugins = array_keys( get_plugins() );
+		$plugins = array_map( function( $plugin_path ) {
+			$plugin_path = explode("/",$plugin_path);
+			return( $plugin_path[0] );
+		}, $plugins );
+
+		$activated_plugins = array();
+		$apl = array();//active_plugins list
+
+		/**Active Plugin List : array('newsletter-block-by-gutena/newsletter-block-gutena.php') **/
+		//check for multisite
+		if ( function_exists( 'is_multisite' ) && is_multisite() && function_exists( 'get_sites' ) && class_exists( 'WP_Site_Query' ) && function_exists( 'get_blog_option' ) && function_exists( 
+			'get_current_blog_id' ) && function_exists( 'get_site_option' ) ) {
+			// Network activated
+			$apl = array_keys( get_site_option('active_sitewide_plugins', array() ) );
+			//current site
+			$site_plugins = get_blog_option( get_current_blog_id(), 'active_plugins' , array() ) ;
+
+			$apl = array_merge( $apl, $site_plugins );
+
+		} else {
+			$apl = get_option('active_plugins');
+		}
+
+		//active plugin list
+		$apl = array_map( function( $plugin_path ) {
+			$plugin_path = explode("/",$plugin_path);
+			return( $plugin_path[0] );
+		}, $apl );
+
+		
+		$action = false;
+
+		//If action require to activate plugin - check if installed or not 
+		if ( 'activate' === $activate_action ) {
+			if ( in_array( $slug, $plugins ) && ! in_array( $slug, $apl ) ) {
+				//Plugin installed but not active 
+				$action = 'activate-plugin';
+			} elseif ( ! in_array( $slug, $plugins ) ) {
+				$action = 'install-plugin';
+			} 
+		} elseif ( 'deactivate' === $activate_action && in_array( $slug, $plugins ) && in_array( $slug, $apl ) ) {
+			//check if plugin is active 
+			$action = 'deactivate-plugin';
+		} 
+
+		return $action;
+	}
+
+	//Install and activate gutena theme
+	public function activate_gutena_theme_ajax() {
+
+		if ( 1 !== check_ajax_referer( 'gutena-kit-nonce', 'gutena_kit_security' ) && function_exists( 'is_gutenakit_admin' ) && true !== is_gutenakit_admin( 'install_plugins' ) ) {
+			wp_send_json_error(
+				array(
+					'error'   => 1,
+					'message' => esc_html__( 'Sorry, you are not allowed to access this page', 'gutena-kit' ),
+				)
+			);
+		}
+	
+		//theme already activated
+		if ( function_exists( 'gutena_setup' ) ) {
+			//No action required: send success message
+			wp_send_json_success(
+				array(
+					'error'   => 0,
+					'message' => esc_html__( 'Gutena theme activated successfully!', 'gutena-kit' ),
+				)
+			);
+		}
+
+		if ( empty( $_POST['theme_slug'] ) || $this->gutena_theme !== sanitize_key( wp_unslash( $_POST['theme_slug'] ) ) ) {
+			wp_send_json_error(
+				array(
+					'error'   => 1,
+					'message' => esc_html__( 'Required input missing', 'gutena-kit' ),
+				)
+			);
+		}
+	
+		//For activating or switching theme
+		if ( ! function_exists( 'switch_theme' ) && file_exists( ABSPATH . 'wp-includes/theme.php' ) ) {
+			include_once ABSPATH . 'wp-includes/theme.php';
+		}
+		
+		$action = $this->get_gutena_theme_action();
+		
+		$error = false;
+		$msg = esc_html__( 'Failed to activate ', 'gutena-kit' );
+	
+		if ( 'install' === $action ) {
+			//check themes_api function exists 
+			if ( ! function_exists( 'themes_api' ) && file_exists( ABSPATH . 'wp-admin/includes/theme.php' ) ) {
+				require_once( ABSPATH . 'wp-admin/includes/theme.php' );
+			}
+	
+			//check WP_Upgrader class exists 
+			if ( ! class_exists( 'WP_Upgrader' ) && file_exists( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' ) ) {
+			require_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
+			}
+			//check WP_Ajax_Upgrader_Skin class exists 
+			if ( ! class_exists( 'WP_Ajax_Upgrader_Skin' ) && file_exists( ABSPATH . 'wp-admin/includes/class-wp-ajax-upgrader-skin.php' ) ) {
+				require_once( ABSPATH . 'wp-admin/includes/class-wp-ajax-upgrader-skin.php' );
+			}
+			//check Theme_Upgrader class exists 
+			if ( ! class_exists( 'Theme_Upgrader' ) && file_exists( ABSPATH . 'wp-admin/includes/class-theme-upgrader.php' ) ) {
+				require_once( ABSPATH . 'wp-admin/includes/class-theme-upgrader.php' );
+			}
+		
+			//make sure all required function and class available
+			if ( function_exists( 'switch_theme' ) && function_exists( 'themes_api' ) && class_exists( 'WP_Upgrader' ) && class_exists( 'WP_Ajax_Upgrader_Skin' ) && class_exists( 'Theme_Upgrader' ) ) {
+				//Get theme information
+				$api = themes_api(
+					'theme_information',
+					array(
+						'slug'   => $this->gutena_theme,
+						'fields' => array(
+							'downloadlink' => true,
+						),
+					)
+				);
+	
+				if ( ! is_wp_error( $api ) && ! empty( $api->download_link ) && false !== stripos( $api->download_link, $this->gutena_theme ) ) {
+					$upgrader = new Theme_Upgrader( new WP_Ajax_Upgrader_Skin() );
+					$result = $upgrader->install( $api->download_link );
+					if ( empty( $result ) || is_wp_error( $result ) ) {
+						$error = true;
+						$msg = esc_html__( 'Failed to install', 'gutena-kit' );
+					} else {
+						$action = 'activate';
+					}
+				}
+			}
+		}
+	
+		if ( function_exists( 'switch_theme' ) && function_exists( 'wp_get_theme' ) && ! function_exists( 'gutena_setup' ) && 'activate' === $action ) {
+			$theme = wp_get_theme( $this->gutena_theme );
+			//If gutena theme already installed
+			if ( $theme->exists() ) {
+				$result = switch_theme( $this->gutena_theme );
+				if ( is_wp_error( $result ) ) {
+					$error = true;
+					$msg = esc_html__( 'Failed to activate ', 'gutena-kit' );
+				}
+			}
+		}
+	
+		if ( $error ) {
+			wp_send_json_error(
+				array(
+					'error'   => 1,
+					'message' => $msg.' '.$this->gutena_theme.' theme.',
+				)
+			);
+		} 
+
+		//send success message
+		wp_send_json_success(
+			array(
+				'error'   => 0,
+				'message' => esc_html__( 'Gutena theme activated successfully!', 'gutena-kit' ),
+			)
+		);
+	}
+
+	//Get Changelog from readme.txt file
+	private function get_changelog() {
+		$response = '';
+		if ( function_exists( 'wp_remote_get' ) ) {
+			//get readme file
+			$response = wp_remote_get( GUTENA_KIT_PLUGIN_URL . 'readme.txt', array(
+				'sslverify' => false
+			) );
+
+			if ( ! is_wp_error( $response ) ) {
+				//get content 
+				$response = wp_remote_retrieve_body( $response );
+				$response = explode( '== Changelog ==', $response, 2 );
+				if ( 2 === count( $response ) ) {
+					if ( ! empty($response[1]) ) {
+						$response = $response[1];
+						$response = str_ireplace( "= ", "<hr><br><span class='version'>", $response );
+						$response = str_ireplace( " =", "</span><br>", $response );
+					}
+				}
+			} else {
+				$response = '';
+			}
+		}
+		return $response;
 	}
 
 	/**
-	 * Gutena Kit addition with block editor
+	 * Gutena Kit scripts and styles for block editor
 	 */
-	public function add_blocks_and_settings(){
-		wp_enqueue_script( 'gutena-kit-block-editor', GUTENA_KIT_PLUGIN_URL.'public/block_editor/build/index.js', array( 'wp-block-editor', 'wp-blocks', 'wp-hooks', 'wp-components', 'wp-compose', 'wp-element', 'wp-i18n' ), $this->version );
+	public function add_blocks_and_settings() {
+		$asset_file = include( GUTENA_KIT_DIR_PATH . 'includes/block-editor/build/index.asset.php' );
+
+		wp_enqueue_script( 'gutena-kit-block-editor', GUTENA_KIT_PLUGIN_URL . 'includes/block-editor/build/index.js', $asset_file['dependencies'], $asset_file['version'], true );
+		wp_enqueue_style( 'gutena-kit-block-editor', GUTENA_KIT_PLUGIN_URL . 'includes/block-editor/build/index.css', array(), $this->version );
+
+		wp_enqueue_style( 'gutena-kit-block-editor-style', GUTENA_KIT_PLUGIN_URL . 'admin/css/gutena-kit-editor.css', array(), $this->version, 'all' );
+
+		//enqueue global typography
+		global $gutena_kit_global_typography;
+
+		//check if global typography exists 
+		if ( ! isset( $gutena_kit_global_typography ) ) {
+			$gutena_kit_global_typography = get_option( 'gutena_kit_global_typography', array() );
+		}
+
+		wp_localize_script( 
+			'gutena-kit-block-editor' , 
+			'gutena_kit_block_editor',
+			array(
+				'save_typography_action' => 'save_global_typography',
+				'nonce'                  => wp_create_nonce( 'gutena-kit-save' ),
+				'ajax_url'               => esc_url( admin_url('admin-ajax.php') ),
+				'globalTypography'       => $gutena_kit_global_typography,
+				'media_query_tab'        => apply_filters('gutena-kit-media-query-tab', '1080px' ),
+				'media_query_mobile'     => apply_filters('gutena-kit-media-query-mobile', '767px' ),
+			)
+		);
 	}
 
-	public function save_post_settings_and_styles( $post_id, $post, $update ) {
-		static $exit_counter = 0;//for exit in case of loop
-		if ( ! is_gutenakit_admin() || empty( $post_id) || empty( $post) || ! function_exists( 'parse_blocks' ) || ! in_array( $post->post_type, array( 'post', 'page' ), true ) ) {
-			return;
-		}
-     	//developer.wordpress.org/reference/functions/parse_blocks/
-		$block_res = gutendkit_extract_css_from_block( parse_blocks( $post->post_content ) );
-
-		//exit in case of loop
-		if ( $exit_counter > 0 ) {
-			return;
-		}
-		++$exit_counter;
+	/**
+	 * Save global typography
+	 */
+	public function save_global_typography(){
+		check_ajax_referer( 'gutena-kit-save', 'nonce' );
 		
-		if ( ! empty( $block_res['gutenakit_css'] ) && is_array( $block_res['gutenakit_ids'] ) ) {
-			//Save post styles data in post meta
-			update_post_meta(
-				$post_id,
-				'gutenakit_post_config',
+		if ( ! function_exists( 'is_gutenakit_admin' ) || true !== is_gutenakit_admin() ) {
+			wp_send_json(
 				array(
-					'gutenakit_ids' => array_map( 'sanitize_text_field', $block_res['gutenakit_ids'] ),
-					'gutenakit_css' => sanitize_text_field( $block_res['gutenakit_css'] ),
+					'status'  => 'error',
+					'message' => __( 'Incorrect permission', 'gutena-kit' ),
 				)
 			);
 		}
-		
-		
-		if ( ! empty( $block_res['duplicate_blocks'] ) ) {
-			wp_send_json( array(
-				'msg'              => 'duplicate block ids exist', 
-				'duplicate_blocks' => $duplicate_blocks,
-			) );
-		}
-		
-	}
 
+		if ( empty( $_POST['typography'] ) ) {
+			wp_send_json(
+				array(
+					'status'  => 'error',
+					'message' => __( 'Missing typography name', 'gutena-kit' ),
+				)
+			);
+		}
+
+		$typography = gutenakit_sanitize_array( json_decode( stripslashes( $_POST['typography'] ), true ) );
+		if ( empty( $typography['slug'] ) ) {
+			wp_send_json(
+				array(
+					'status'  => 'error',
+					'message' => __( 'Missing typography name', 'gutena-kit' ),
+					'details' => __( 'Missing typography name slug', 'gutena-kit' ),
+				)
+			);
+		}
+
+		$typography['slug'] = sanitize_key( $typography['slug'] );
+		$typography_group = empty( $_POST['typography_group'] ) ? 'default' : sanitize_key( wp_unslash( $_POST['typography_group'] ) );
+		
+		// Get global typography
+		$global_typography = get_option( 'gutena_kit_global_typography', array() );
+
+		$message = '';
+		if ( isset( $_POST['delete_typography'] ) ) {
+			$typography_to_delete = sanitize_key( wp_unslash( $_POST['delete_typography'] ) );
+			if ( $typography['slug'] === $typography_to_delete && 
+				! empty( $global_typography[ $typography_group ] ) && 
+				! empty( $global_typography[ $typography_group ][ $typography['slug'] ] ) ) {
+				// destroy a single element of an array
+				unset( $global_typography[ $typography_group ][ $typography['slug'] ] );
+			}
+			$message = __( 'Typography deleted', 'gutena-kit' );
+		} else {
+			// slug : typography 
+			$global_typography[ $typography_group ][ $typography['slug'] ] = $typography;
+			$message = __( 'Typography saved', 'gutena-kit' );
+		}
+
+		// Set global typography
+		update_option( 'gutena_kit_global_typography', $global_typography );
+
+		//Success
+		wp_send_json(
+			array(
+				'status'           => 'success',
+				'message'          => $message,
+				'globalTypography' => $global_typography,
+			)
+		);
+	}
 }

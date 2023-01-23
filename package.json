@@ -4,11 +4,19 @@
   "description": "wordpress block editor additional tools and blocks",
   "main": "gulpfile.js",
   "scripts": {
+    "build": "wp-scripts build --webpack-src-dir=includes/block-editor/src --output-path=includes/block-editor/build",
+    "format": "wp-scripts format --webpack-src-dir=includes/block-editor/src/",
+    "lint:css": "wp-scripts lint-style --webpack-src-dir=includes/block-editor/src/",
+    "lint:js": "wp-scripts lint-js --webpack-src-dir=includes/block-editor/src/",
+    "packages-update": "wp-scripts packages-update",
+    "plugin-zip": "wp-scripts plugin-zip",
+    "start": "wp-scripts start --webpack-src-dir=includes/block-editor/src/ --output-path=includes/block-editor/build/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "expresstech",
   "license": "ISC",
   "devDependencies": {
+    "@wordpress/scripts": "^25.0.0",
     "autoprefixer": "^10.4.2",
     "cssnano": "^5.0.16",
     "del": "^6.0.0",
@@ -23,5 +31,10 @@
     "gulp-rename": "^2.0.0",
     "gulp-uglify": "^3.0.2",
     "gulp-zip": "^5.1.0"
+  },
+  "dependencies": {
+    "@wordpress/icons": "^9.14.0",
+    "classnames": "^2.3.2",
+    "html-react-parser": "^3.0.4"
   }
 }
