@@ -256,13 +256,13 @@ const BlockSettings = ( props ) => {
         let btnName = '';
         switch ( blockData.saveStatus ) {
             case 0://initial
-                btnName = __( 'Save', 'gutena-kit' );
+                btnName = onBoarding ? __( 'Activate', 'gutena-kit' ) : __( 'Save', 'gutena-kit' );
             break;
             case 1://In progress
-                btnName = __( 'Saving...', 'gutena-kit' );
+                btnName = onBoarding ? __( 'Activating...', 'gutena-kit' ) : __( 'Saving...', 'gutena-kit' );
             break;
             case 2://Success
-                btnName = __( 'Saved', 'gutena-kit' );
+                btnName = onBoarding ? __( 'Activated', 'gutena-kit' ) : __( 'Saved', 'gutena-kit' );
             break;
             case 3://failed
                 btnName = __( 'Save', 'gutena-kit' );
@@ -373,7 +373,7 @@ const BlockSettings = ( props ) => {
                 }
                 {
                     ( 2 === blockData.saveStatus ) ? 
-                    <div id='block_success' className='notice gk-notice notice-success is-dismissible'><p>{ __( 'Success: Block settings saved successfully.', 'gutena-kit' ) } </p>
+                    <div id='block_success' className='notice gk-notice notice-success is-dismissible'><p>{ onBoarding ? __( 'Blocks activated successfully.', 'gutena-kit' ) : __( 'Success: Block settings saved successfully.', 'gutena-kit' ) } </p>
                     <button 
                     type='button' 
                     className='notice-dismiss'

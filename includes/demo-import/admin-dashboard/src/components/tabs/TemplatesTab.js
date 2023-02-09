@@ -157,6 +157,11 @@ const TemplatesTab = ( props ) => {
         
     }
 
+    const dismissGutenaThemeNotice = (e) => {
+        //console.log("dismiss",e.target.parentNode.parentNode);
+        e.target.parentNode.parentNode.remove();
+    }
+
     //HTML VIEW
     return(
         <Fragment> 
@@ -237,7 +242,17 @@ const TemplatesTab = ( props ) => {
                 <div className="gk-dashboard-body">
                 {
                     '1' === gutenaThemeStatus.available ? '' :
-                    <div id='block_warning' className={ ' gk-save-block-settings notice gk-notice gutena-theme-require-notice is-dismissible notice-'+getGutenaActionInfo( 'statusClass' ) } ><img src={ 2 === gutenaThemeStatus.status ? gutenakit_demo_info.success_icon_green : gutenakit_demo_info.warning_icon } alt="gutena-theme-require" /> <p>  { getGutenaActionInfo( 'message' ) } </p>
+                    <div id='block_warning' className={ ' gk-save-block-settings notice gk-notice gutena-theme-require-notice is-dismissible notice-'+getGutenaActionInfo( 'statusClass' ) } ><img src={ 2 === gutenaThemeStatus.status ? gutenakit_demo_info.success_icon_green : gutenakit_demo_info.warning_icon } alt="gutena-theme-require" /> <p>  { getGutenaActionInfo( 'message' ) }  
+                    {  2 === gutenaThemeStatus.status ? 
+                        <span 
+                        className='dismiss-link'
+                        onClick={(e)=>dismissGutenaThemeNotice(e)}
+                        >
+                           { __( ' Dismiss ', 'gutena-kit' ) } 
+                        </span>
+                        : ''
+                    }
+                    </p>
                       <span 
                       className={ `gutena-action-button gutena-button ${ 1 === gutenaThemeStatus.status? 'start-installing':'' } ${getGutenaActionInfo( 'statusClass' )}-btn` } onClick={ () => activate_gutena_theme() } > 
                       <img src={  2 === gutenaThemeStatus.status ? gutenakit_demo_info.success_icon_white : gutenakit_demo_info.download_icon } alt={ getGutenaActionInfo( 'btnName' ) } /> 

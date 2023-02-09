@@ -480,6 +480,18 @@ $gutenakit_heading_color : #21222F;
 				font-weight: 600;
 				color:#92400E;
 			}
+
+			.dismiss-link{
+				color: $gutenakit_heading_color;
+				cursor: pointer;
+				text-decoration: underline 2px;
+    			text-underline-offset: 2px;
+				
+				&:hover{
+					color: $gutenakit_primary_color;
+				}
+				
+			}
 			
 			&.notice-warning{
 				background-color: #FFFBEB;
