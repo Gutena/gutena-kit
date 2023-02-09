@@ -60,13 +60,16 @@ const BlockSettings = ( props ) => {
         return { is_enabled: status > 0 , msg: message };
     }
 
+   
     //Block data : blocks:[{slug, name, is_enabled}], allBlocksActionToggle:{ is_enabled, msg: message }
     const [ blockData, setBlockData ] = useState( { 
         blocks: blocks, 
         allBlocksActionToggle : getAllBlockActionToggleStatus( blocks ),
         saveStatus: 0, //0:not initiated, 1 : in progress, 2: Completed, 3:Error
         onBoard: onBoarding,
-        step:1
+        step:1,
+        currentBlockSlug:'',
+        completedBlockSlugs:[]
     } );
 
     //Set Blocks status
@@ -79,7 +82,8 @@ const BlockSettings = ( props ) => {
         setBlockData( {
             ...blockData,
             blocks: blocks,
-            allBlocksActionToggle: getAllBlockActionToggleStatus( blocks )
+            allBlocksActionToggle: getAllBlockActionToggleStatus( blocks ),
+            completedBlockSlugs:[]
         } );
     }
 
@@ -93,7 +97,8 @@ const BlockSettings = ( props ) => {
         setBlockData( {
             ...blockData,
             blocks: blocks,
-            allBlocksActionToggle: getAllBlockActionToggleStatus( blocks )
+            allBlocksActionToggle: getAllBlockActionToggleStatus( blocks ),
+            completedBlockSlugs:[]
         } );
     }
 
@@ -185,7 +190,9 @@ const BlockSettings = ( props ) => {
         //Set status in progress 
         setBlockData( {
             ...blockData,
-            saveStatus: 1
+            saveStatus: 1,
+            currentBlockSlug:'',
+            completedBlockSlugs:[]
         } );
 
         
@@ -193,6 +200,12 @@ const BlockSettings = ( props ) => {
             if ( current_plugin.slug &&  -1 === plugin_processed.indexOf( current_plugin.slug ) ) {
                 //Add in activated block list
                 plugin_processed.push( current_plugin.slug );
+
+                //Set block Data
+                setBlockData( {
+                    ...blockData,
+                    currentBlockSlug:current_plugin.slug,
+                } );
                 
                 fetch(gutenakit_dahboard_info.ajax_url, {
                     method: 'POST',
@@ -212,6 +225,15 @@ const BlockSettings = ( props ) => {
                 }).then((response) => response.json()).then((data) => { 
                     //Store response for log
                     resStore[ current_plugin.slug ] = data;
+                    
+                    let completedBlockSlugs = blockData.completedBlockSlugs;
+                    completedBlockSlugs.push( current_plugin.slug );
+                    //Set block Data for completed blocks
+                    setBlockData( {
+                        ...blockData,
+                        completedBlockSlugs:completedBlockSlugs
+                    } );
+
                     if ( false === resError && false === data.success ) {
                         resError = true;
                     }
@@ -274,6 +296,7 @@ const BlockSettings = ( props ) => {
         return btnName;
     }
 
+    console.log("blockData",blockData);
     //HTML VIEW
     return(
         <>
@@ -346,6 +369,11 @@ const BlockSettings = ( props ) => {
                                     isActive={ block.is_enabled }
                                     onChangeFunc={ () => toggleBlockStatus( block.slug ) }
                                     />
+                                </div>
+                            </div>
+                            <div className={`gk-block-loader ${ -1 !== blockData.completedBlockSlugs.indexOf( block.slug ) ? ' completed':'' } ${ block.slug === blockData.currentBlockSlug ? ' start':'' }`}>
+                                <div className={`gk-loader ${ -1 !== blockData.completedBlockSlugs.indexOf( block.slug ) ? ' load-complete':'' }`} >
+                                    <div className="gk-checkmark draw"></div>
                                 </div>
                             </div>
                         </div>
