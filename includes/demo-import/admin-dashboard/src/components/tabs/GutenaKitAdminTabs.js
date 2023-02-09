@@ -40,6 +40,26 @@ const GutenaKitAdminTabs = (props) => {
     const onSelect = ( tabName ) => {
     };
 
+    const getInitialTabName = () => {
+        
+        let initiaActiveTab = 'welcome';
+        //get Url part start from ?
+        let urlParams = new URLSearchParams( window.location.search );
+        let activeTab = urlParams.get('tab');
+
+        if ( 'undefined' !== typeof activeTab && null != activeTab && '' !== activeTab ) {
+            if ( 'blocksettings' === activeTab ) {
+                initiaActiveTab = 'blockSettings';
+            } else if ( 'templates' === activeTab ) {
+                initiaActiveTab = 'templates';
+            } else if ( 'doc' === activeTab ) {
+                initiaActiveTab = 'doc';
+            }
+        }
+
+        return initiaActiveTab;
+    }
+
     return(
         <Fragment>   
             <DemoContextProvider>    
@@ -56,7 +76,7 @@ const GutenaKitAdminTabs = (props) => {
                     activeClass="active-tab"
                     onSelect={ onSelect }
                     tabs={ tabs }
-                    initialTabName={ makeTemplateTabActive ? 'templates': 'welcome' }
+                    initialTabName={ makeTemplateTabActive ? 'templates': getInitialTabName() }
                 >
                     { ( tab ) => {
                     const TabSelected = tabsComponent[tab.name] || WelcomeTab;

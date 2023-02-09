@@ -247,7 +247,10 @@ class Gutena_Kit_Admin {
 
 	//On activate plugin redirect admin to gutena kit on boarding : not for MULTISITE
 	public function gutenakit_onboarding_redirect( $plugin, $network_activation ) {
-		if ( ! empty( $plugin ) && 'gutena-kit/gutena-kit.php' === $plugin &&
+		if ( 
+			( empty( $_GET['rest_route'] ) || '/wp/v2/plugins/gutena-kit/gutena-kit' !==  sanitize_url( $_GET['rest_route'] ) ) && 
+			( empty( $_POST['slug'] ) || 'gutena-kit' !==  sanitize_key( $_POST['slug'] ) )  && 
+			! empty( $plugin ) && 'gutena-kit/gutena-kit.php' === $plugin &&
 			function_exists( 'is_multisite' ) && ! is_multisite() &&
 			! empty( get_option( 'gutenakit_onboarding', 1 ) ) && 
 			function_exists( 'wp_safe_redirect' ) && 

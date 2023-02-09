@@ -87,6 +87,11 @@ Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtab
 
 == Changelog ==
 
+= 2.0.1 | Beta =
+* Fixed php warnings
+* In gutena dashboard make theme activation notice dismissible
+* Added block activation animation in dashboard
+
 = 2.0.0 | 23rd January 2023 =
 * Added gutena-kit advance controls settings to core blocks
 * Added normal and hover color settings for text, background and link  
