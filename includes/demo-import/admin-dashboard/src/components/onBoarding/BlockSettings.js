@@ -11,6 +11,7 @@ const ToggleTickCross = ( props ) => {
         toggleID = ( Math.floor(Math.random() * 1000) + 1) , // Returns a random integer from 1 to 1000
         size = '',//large or default
         isActive = false,
+        className = '',
         onChangeFunc = noop,
         msg = ''
     } = props;
@@ -18,7 +19,7 @@ const ToggleTickCross = ( props ) => {
     const newToggleID = "gk-switch-target-"+toggleID;
     
     return(
-        <div className={ "gk-toggle-tick-cross "+size } > 
+        <div className={ "gk-toggle-tick-cross "+size+" "+className } > 
             <div className="gk-toggle">
             <input type="checkbox" 
             id={ newToggleID } 
@@ -296,7 +297,7 @@ const BlockSettings = ( props ) => {
         return btnName;
     }
 
-    console.log("blockData",blockData);
+    
     //HTML VIEW
     return(
         <>
@@ -359,6 +360,11 @@ const BlockSettings = ( props ) => {
                 blockData.blocks.map((block)=>{
                     return(
                         <div className={ 'gk-block-control-section '+block.slug } key={ block.slug } >
+                            <div className={`gk-block-loader ${ -1 !== blockData.completedBlockSlugs.indexOf( block.slug ) ? ' completed':'' } ${ block.slug === blockData.currentBlockSlug ? ' start':'' }`}>
+                                <div className={`gk-loader ${ -1 !== blockData.completedBlockSlugs.indexOf( block.slug ) ? ' load-complete':'' } ${  block.is_enabled? ' activation':' deactivation' }`} >
+                                    <div className="gk-checkmark draw"></div>
+                                </div>
+                            </div>
                             <div className='gk-block-control-wrapper' >
                                 <div className='gk-block-name'>
                                     { block.name }
@@ -367,15 +373,12 @@ const BlockSettings = ( props ) => {
                                     <ToggleTickCross 
                                     toggleID={ block.slug }
                                     isActive={ block.is_enabled }
+                                    className={ ( block.is_enabled === block.status || -1 !== blockData.completedBlockSlugs.indexOf( block.slug ) ) ? '': 'action-required' }
                                     onChangeFunc={ () => toggleBlockStatus( block.slug ) }
                                     />
                                 </div>
                             </div>
-                            <div className={`gk-block-loader ${ -1 !== blockData.completedBlockSlugs.indexOf( block.slug ) ? ' completed':'' } ${ block.slug === blockData.currentBlockSlug ? ' start':'' }`}>
-                                <div className={`gk-loader ${ -1 !== blockData.completedBlockSlugs.indexOf( block.slug ) ? ' load-complete':'' }`} >
-                                    <div className="gk-checkmark draw"></div>
-                                </div>
-                            </div>
+                           
                         </div>
                     )
                 })

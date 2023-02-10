@@ -1,12 +1,13 @@
 /*gutena kit admin dashboard */
 $gutenakit_primary_color: #0EA489;
+$gutenakit_red_color: #E24F4F;
 $gutenakit_white_color: #ffffff;
 $gutenakit_body_text_color : #484952;
 $gutenakit_heading_color : #21222F;
-$loader-size: 1.8em;
+$loader-size: 1.5em;
 $check-height: calc($loader-size/2);
 $check-width: calc($check-height/2);
-$check-left: calc(calc($loader-size/12) + calc($loader-size/12));
+$check-left: calc(calc($loader-size/14) + calc($loader-size/14));
 $check-thickness: 3px;
 $check-color: $gutenakit_primary_color;
 
@@ -726,7 +727,7 @@ $check-color: $gutenakit_primary_color;
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				gap: 1rem;
+				gap: 0.8rem;
 			}
 			
 			.gk-block-control-section:nth-child(odd) {
@@ -746,13 +747,13 @@ $check-color: $gutenakit_primary_color;
 			/*Gk loader: start*/
 			.gk-block-loader {
 				visibility: hidden;
-				&.start, &.completed{
+				&.start{
 					visibility: visible;
 				}
 			}
 			.gk-loader {
 				/*margin-bottom: $loader-size/2;*/
-				border: 3px solid rgba(0, 0, 0, 0.2);
+				border: 2.5px solid rgba(0, 0, 0, 0.2);
 				border-left-color: $check-color;
 				animation: gk-loader-spin 1.2s infinite linear;
 				position: relative;
@@ -761,6 +762,9 @@ $check-color: $gutenakit_primary_color;
 				border-radius: 50%;
 				width: $loader-size;
 				height: $loader-size;
+				&.deactivation{
+					border-left-color: $gutenakit_red_color;
+				}
 			}
 			
 			.load-complete {
@@ -982,27 +986,36 @@ $check-color: $gutenakit_primary_color;
 		
 		.gk-toggle-knob::before,
 		.gk-toggle-knob::after {
-		background: rgba(97, 97, 97, 1);
+		background: $gutenakit_red_color;
 		border-radius: 2px;
 		}
 		
-		
-		/* pesduo class on toggle */
-		
+		/* pesduo class on toggle - on checked */
+
 		input[type="checkbox"]:checked ~ .gk-toggle .gk-toggle-knob::before {
 		height: 7px;
-		top: calc(55% - 4px);
+		top: calc(55% - 5px);
 		left: calc(60% - 1px);
 		background: #ffffff;
 		}
 		
 		input[type="checkbox"]:checked ~ .gk-toggle .gk-toggle-knob::after {
 		width: 5px;
-		top: calc(95% - 8px);
+		top: calc(95% - 9px);
 		left: calc(22.5% + 1px);
 		background: #ffffff;
 		}
 	
+		/* If action required to perform - install or uninstall*/
+		&.action-required {
+			input[type="checkbox"]:checked ~ .gk-toggle .gk-toggle-knob::before,
+			input[type="checkbox"]:checked ~ .gk-toggle .gk-toggle-knob::after,
+			.gk-toggle-knob::before,
+			.gk-toggle-knob::after {
+				background: transparent;
+			}
+		}
+
 		/*Large toggle*/
 		&.large{
 			/*toggle length and height*/
