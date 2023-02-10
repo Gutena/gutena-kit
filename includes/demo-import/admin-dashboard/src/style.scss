@@ -19,6 +19,10 @@ $check-color: $gutenakit_primary_color;
 	display: none;
 }
 
+.gk-notice .notice-dismiss {
+	top:2px;
+}
+
 .gutena-buttons {
 	display: flex;
 	gap: 21px;

@@ -84,6 +84,7 @@ const BlockSettings = ( props ) => {
             ...blockData,
             blocks: blocks,
             allBlocksActionToggle: getAllBlockActionToggleStatus( blocks ),
+            saveStatus: 0,
             completedBlockSlugs:[]
         } );
     }
@@ -99,6 +100,7 @@ const BlockSettings = ( props ) => {
             ...blockData,
             blocks: blocks,
             allBlocksActionToggle: getAllBlockActionToggleStatus( blocks ),
+            saveStatus: 0,
             completedBlockSlugs:[]
         } );
     }
