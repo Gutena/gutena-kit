@@ -7,7 +7,11 @@ const DashboardContext = createContext();
 
 const DashboardContextProvider = (props) =>{
     let dashboardInfo = {
-        blocks: gutenakit_dahboard_info.onboarding_info.step_two.blocks.map( block => ( { ...block, status: block.is_enabled } ) ),
+        blocks: gutenakit_dahboard_info.onboarding_info.step_two.blocks.map( block => ( { 
+            ...block, 
+            status: block.is_enabled, 
+            is_enabled: '1' == gutenakit_dahboard_info.onboarding ? true : block.is_enabled 
+        } ) ),
         onBoarding: gutenakit_dahboard_info.onboarding,
         makeTemplateTabActive: false,
     };
