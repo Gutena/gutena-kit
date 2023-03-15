@@ -64,6 +64,9 @@ class Gutena_Kit_Admin {
 			'gutena-lightbox',
 			'gutena-tabs',
 			'post-featured-tag-block-by-gutena',
+			'gutena-star-ratings',
+			'gutena-testimonial',
+			'gutena-team',
 		);
 		$this->gutena_theme = 'gutena';
 		$this->version        = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? time() : $version;
@@ -446,7 +449,7 @@ class Gutena_Kit_Admin {
 								 ),
 								 array(
 									'slug'       => 'gutena-tabs',
-									'name'       => esc_html__( 'Gutena Tabs', 'gutena-kit' ),
+									'name'       => esc_html__( 'Tabs', 'gutena-kit' ),
 									'is_enabled' => class_exists( 'Gutena_Tabs' ),
 								),
 								 array(
@@ -454,6 +457,21 @@ class Gutena_Kit_Admin {
 									 'name'       => esc_html__( 'Recent Post Tag', 'gutena-kit' ),
 									 'is_enabled' => class_exists( 'Gutena_Post_Featured_Tag' ),
 								 ),
+								 array(
+									'slug'       => 'gutena-star-ratings',
+									'name'       => esc_html__( 'Star Ratings', 'gutena-kit' ),
+									'is_enabled' => class_exists( 'Gutena_Star_Ratings' ),
+								),
+								array(
+									'slug'       => 'gutena-testimonial',
+									'name'       => esc_html__( 'Testimonial Slider', 'gutena-kit' ),
+									'is_enabled' => class_exists( 'Gutena_Testimonial' ),
+								),
+								array(
+									'slug'       => 'gutena-team',
+									'name'       => esc_html__( 'Team Slider and Grid', 'gutena-kit' ),
+									'is_enabled' => class_exists( 'Gutena_Team' ),
+								),
 							 ),
 						 ),
 					 ),
@@ -739,7 +757,7 @@ class Gutena_Kit_Admin {
 	//Install and activate gutena theme
 	public function activate_gutena_theme_ajax() {
 
-		if ( 1 !== check_ajax_referer( 'gutena-kit-nonce', 'gutena_kit_security' ) && function_exists( 'is_gutenakit_admin' ) && true !== is_gutenakit_admin( 'install_plugins' ) ) {
+		if ( 1 !== check_ajax_referer( 'gutena-kit-nonce', 'gutena_kit_security' ) || ( function_exists( 'is_gutenakit_admin' ) && true !== is_gutenakit_admin( 'install_plugins' ) ) ) {
 			wp_send_json_error(
 				array(
 					'error'   => 1,

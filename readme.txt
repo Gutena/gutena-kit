@@ -4,7 +4,7 @@ Tags: blocks, gutenberg, page builder, wordpress blocks, Full site editing
 Requires at least: 6.1
 Tested up to: 6.1
 Requires PHP: 5.6
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -86,6 +86,9 @@ If you like this plugin, consider exploring our other themes and plugins:
 Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtabor/MerlinWP) for demo import.
 
 == Changelog ==
+
+= 2.0.2 | 15th March 2023 =
+* Added Gutena Star Ratings, Testimonial Slider and Team block plugins controls in block settings
 
 = 2.0.1 | 10th February 2023 =
 * Made theme activation notice dismissible in dashboard
