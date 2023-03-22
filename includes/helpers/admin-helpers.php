@@ -74,6 +74,18 @@ if ( ! function_exists( 'gutendkit_categorize_demo_list' ) ) {
 						'#015D61',
 					),
 				),
+				'seo'    => array(
+					'fontFamily' => array(
+						'Nunito',
+					),
+					'colors'     => array(
+						'#F4AB00',
+						'#5B25B3',
+						'#2C1258',
+						'#604B83',
+						'#ECE1FF',
+					),
+				),
 				'architecture' => array(
 					'fontFamily' => array(
 						'Urbanist',
