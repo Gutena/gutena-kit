@@ -83,7 +83,7 @@ const TypographyControl = ( props ) => {
 
     //Get Device preview type
     const deviceType = useSelect( select => {
-        return select( 'core/edit-post' ).__experimentalGetPreviewDeviceType();
+        return gkIsEmpty( select("core/edit-post") ) ? select("core/edit-site").__experimentalGetPreviewDeviceType() : select("core/edit-post").__experimentalGetPreviewDeviceType();;
     }, [] );
 
     //If device preview not required

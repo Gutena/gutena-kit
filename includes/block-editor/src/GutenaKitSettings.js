@@ -14,6 +14,7 @@ import {
     FlexItem,
     Button,
     Icon,
+    RangeControl,
 } from '@wordpress/components';
 import SelectDeviceDropdown from './components/SelectDeviceDropdown';
 import Translate3dControl  from './components/Translate3dControl';
@@ -63,6 +64,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             translate3d: false,
             textContentGap: ( -1 !== [ 'core/paragraph', 'core/heading' ].indexOf( name ) ),
             linkSettings: ( -1 !== [ 'core/paragraph', 'core/heading', 'core/group' ].indexOf( name ) ),
+            zIndex:( -1 !== [ 'core/group' ].indexOf( name ) ),
         };
         /***** Check Core support for block : start ******/
         /**
@@ -141,7 +143,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
 
          //Get Device preview type
         const deviceType = useSelect( ( select ) => {
-            return select("core/edit-post").__experimentalGetPreviewDeviceType();
+            return gkIsEmpty( select("core/edit-post") ) ? select("core/edit-site").__experimentalGetPreviewDeviceType() : select("core/edit-post").__experimentalGetPreviewDeviceType();
         }, [] );
         
         //Style name based on device type
@@ -404,6 +406,11 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             //translate3d in desktop
             if ( ! gkIsEmpty( cssJson?.[preVar+'translate3d-default'] ) ) {
                 css += ' transform: '+cssJson[preVar+'translate3d-default']+';';
+            }
+
+            //link text decoration
+            if ( ! gkIsEmpty( cssJson?.[preVar+'zindex'] ) ) {
+                css += 'position: relative; z-index:'+cssJson[preVar+'zindex']+';';
             }
             
             css += ' }';
@@ -674,6 +681,11 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             //Link text decoration
             if ( ! gkIsEmpty( styleVar?.linkDecorationLineNone ) && true === styleVar.linkDecorationLineNone ) {
                 cssVar += varName+'-linkdecorationline:none;';
+            }
+
+            //z index
+            if ( ! gkIsEmpty( styleVar?.zIndex ) &&  ! isNaN( styleVar.zIndex ) ) {
+                cssVar += varName+'-zindex:'+styleVar.zIndex+';';
             }
 
             if ( 10 > cssVar.length ) {
@@ -1051,6 +1063,20 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                                                 checked={ gkIsEmpty( gutenaKitStyle?.hideDisplay?.[deviceStyle] ) ? false : gutenaKitStyle?.hideDisplay?.[deviceStyle]  }
                                                 onChange={ ( value ) =>  setAttr( value, 'hideDisplay', null, deviceStyle  ) }
                                             /> ) } 
+                                        )
+                                    }
+                                    {
+                                        gkSupports.zIndex && (
+                                            <RangeControl
+                                                label={ __( 'Z index', 'gutena-kit' ) }
+                                                value={ gutenaKitStyle?.zIndex }
+                                                withInputField={ true }
+                                                onChange={ ( value ) => setAttr( value, 'zIndex' ) }
+                                                min={ -999 }
+                                                max={ 999 }
+                                                step={ 1 }
+                                                className="components-border-radius-control__range-control"
+                                            />
                                         )
                                     }
                                 </PanelBody>

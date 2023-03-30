@@ -20,14 +20,14 @@ const SelectDeviceDropdown = ( {
 
     //Get Device preview type
     const deviceType = useSelect( select => {
-        return select( 'core/edit-post' ).__experimentalGetPreviewDeviceType();
+        return gkIsEmpty( select("core/edit-post") ) ? select("core/edit-site").__experimentalGetPreviewDeviceType() : select("core/edit-post").__experimentalGetPreviewDeviceType();;
     }, [] );
     
     //Local device type based on parent component
     const deviceTypeView = gkIsEmpty( deviceTypeLocal ) ? deviceType : deviceTypeLocal;
 
     //Set Preview
-    const { __experimentalSetPreviewDeviceType: setPreviewDeviceType } = useDispatch( 'core/edit-post' );
+    const { __experimentalSetPreviewDeviceType: setPreviewDeviceType } = gkIsEmpty( useDispatch( 'core/edit-post' ) ) ? useDispatch( 'core/edit-site' ) : useDispatch( 'core/edit-post' );
     
     const setDeviceType = gkIsEmpty( onChangefunc ) ? setPreviewDeviceType : onChangefunc;
 

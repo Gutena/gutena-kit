@@ -75,7 +75,7 @@ const TypographySettings = ( {
     
     //Get Device preview type
     const deviceType = useSelect( select => {
-        return select( 'core/edit-post' ).__experimentalGetPreviewDeviceType();
+        return gkIsEmpty( select("core/edit-post") ) ? select("core/edit-site").__experimentalGetPreviewDeviceType() : select("core/edit-post").__experimentalGetPreviewDeviceType();;
     }, [] );
 
     //Save Global Typography

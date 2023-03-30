@@ -40,15 +40,16 @@ const RangeControlUnit = ( props ) => {
 
     return (
         <>
-            <fieldset className="components-gk-range-unit-control">
+            <fieldset className="components-border-radius-control">
                 <legend>{ gkIsEmpty( rangeLabel ) ? '' : rangeLabel }</legend>
-                <div className="components-gk-range-unit-control__wrapper">
+                <div className="components-border-radius-control__wrapper">
                     <UnitControl
-                            units={ units }
-                            value={ attrValue }
-                            onChange={ ( attrValue ) => onChangeFunc( attrValue ) }
-                            className="components-spacing-sizes-control__custom-value-input"
-                        /> 
+                        units={ units }
+                        value={ attrValue }
+                        onChange={ ( attrValue ) => onChangeFunc( attrValue ) }
+                        className="components-border-radius-control__unit-control"
+                        size={ '__unstable-large' }
+                    /> 
                     <RangeControl
                         value={ getQtyOrunit( attrValue, 'Qty' ) }
                         withInputField={ false }
@@ -56,7 +57,7 @@ const RangeControlUnit = ( props ) => {
                         min={ rangeMin }
                         max={ rangeMax[ getQtyOrunit( attrValue ) ] }
                         step={ rangeStep }
-                        className="components-spacing-sizes-control__custom-value-range"
+                        className="components-border-radius-control__range-control"
                     />
                 </div>
             </fieldset>

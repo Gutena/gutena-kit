@@ -338,6 +338,11 @@ class Gutena_Kit_Public {
 			$css .= ' transform: '.$attrs['gutenaKitStyle']['cssJson'][ $preVar.'translate3d-default' ].';';
 		}
 
+		// Link color
+		if ( true === array_key_exists( $preVar.'zindex', $attrs['gutenaKitStyle']['cssJson'] ) ) {
+			$css .= ' position: relative; z-index: '.$attrs['gutenaKitStyle']['cssJson'][ $preVar.'zindex' ].';';
+		}
+
 		if ( ! empty( $css ) ) {
 			$attrs['gutenaKitCSS']['generatedCss'] .= $gk_id .'{ ' . $css . '}';
 		}
