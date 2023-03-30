@@ -3,31 +3,6 @@
  * included in this file.
  */
 
-.components-gk-range-unit-control .components-gk-range-unit-control__wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 10px;
-}
-
-.components-gk-range-unit-control:last-of-type .components-gk-range-unit-control__wrapper {
-    margin-bottom: 0;
-}
-
-.components-gk-range-unit-control .components-gk-range-unit-control__wrapper .components-range-control {
-    width: calc(70% - 26px);
-    margin-bottom: 8px;
-}
-
-.components-gk-range-unit-control .components-gk-range-unit-control__wrapper .components-range-control input {
-    width: calc(100% + 12px) !important;
-}
-
-.components-gk-range-unit-control .components-gk-range-unit-control__wrapper .components-unit-control-wrapper {
-    width: 30%;
-    margin-bottom: 8px;
-}
-
 .components-gk-range-unit-control legend {
     padding-top: 0;
     padding-bottom: 0.8rem;
