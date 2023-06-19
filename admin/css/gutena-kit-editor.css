@@ -48,8 +48,23 @@
     border: 1px solid #e0e0e0;
 }
 
-.block-editor-block-inspector .gutena-kit-settings .components-base-control {
-    margin-bottom: 16px;
+.block-editor-block-inspector .gutena-kit-settings .components-base-control:not(.components-toggle-control) {
+    margin-bottom: 2px;
+}
+
+.block-editor-block-inspector .gutena-kit-settings .components-base-control.components-toggle-control {
+  margin-bottom: 14px;
+}
+
+.block-editor-block-inspector .gutena-kit-settings .components-font-size-picker__header__hint {
+  margin-left: 3px;
+}
+
+.block-editor-block-inspector .gutena-kit-settings .gutena-kit-typography-control .components-unit-control-wrapper .components-input-control__container .components-input-control__input {
+  height: 30px;
+  min-height: 30px;
+  padding-left: calc(8px);
+  padding-right: calc(8px);
 }
 
 .block-editor-block-inspector .gutena-kit-settings .components-base-control.components-toggle-control:last-of-type {
@@ -73,6 +88,10 @@
 .block-editor-block-inspector .gutena-kit-settings .gutena-kit-typography-control .block-editor-text-transform-control .block-editor-text-transform-control__buttons .components-button.has-icon {
     min-width: 0;
     height: 21px;
+}
+
+.block-editor-block-inspector .gutena-kit-settings .gutena-kit-typography-control .components-base-control__label {
+    margin-bottom: calc(3px);
 }
 
 .block-editor-block-inspector .gutena-kit-settings .edit-site-typography-panel__full-width-control {
@@ -105,7 +124,7 @@
     display: flex;
     flex-direction: row;
     gap: 4px;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 }
 
