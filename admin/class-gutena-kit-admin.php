@@ -250,9 +250,8 @@ class Gutena_Kit_Admin {
 
 	//On activate plugin redirect admin to gutena kit on boarding : not for MULTISITE
 	public function gutenakit_onboarding_redirect( $plugin, $network_activation ) {
-		if ( 
-			( empty( $_GET['rest_route'] ) || '/wp/v2/plugins/gutena-kit/gutena-kit' !==  sanitize_url( $_GET['rest_route'] ) ) && 
-			( empty( $_POST['slug'] ) || 'gutena-kit' !==  sanitize_key( $_POST['slug'] ) )  && 
+		if ( ( empty( $_GET['rest_route'] ) || '/wp/v2/plugins/gutena-kit/gutena-kit' !== sanitize_url( $_GET['rest_route'] ) ) && 
+			( empty( $_POST['slug'] ) || 'gutena-kit' !== sanitize_key( $_POST['slug'] ) ) && 
 			! empty( $plugin ) && 'gutena-kit/gutena-kit.php' === $plugin &&
 			function_exists( 'is_multisite' ) && ! is_multisite() &&
 			! empty( get_option( 'gutenakit_onboarding', 1 ) ) && 
@@ -264,12 +263,12 @@ class Gutena_Kit_Admin {
 	}
 
 	//Adds a Gutena submenu page to the Appearance main menu 
-	public function add_admin_menu(){
+	public function add_admin_menu() {
 		//remove theme gutena menu
 		remove_submenu_page( 'themes.php', 'gutena-theme-dashboard' );
-		
-		$page_hook_suffix = add_submenu_page( 'themes.php', 'Gutena', 'Gutena', 'manage_options', 'gutenakit_admin_dashboard', array( $this, 'demo_import_page' ));
+		remove_submenu_page( 'themes.php', 'gutena-kit-pro-dashboard' );
 
+		$page_hook_suffix = add_submenu_page( 'themes.php', 'Gutena', 'Gutena', 'manage_options', 'gutenakit_admin_dashboard', array( $this, 'demo_import_page' ) );
 		if ( ! empty( $page_hook_suffix ) ) {
 			add_action( 'admin_print_styles-' . $page_hook_suffix, array( $this, 'demo_import_dashboard_styles' ) );
 			add_action( 'admin_print_scripts-' . $page_hook_suffix, array( $this, 'demo_import_dashboard_scripts' ) );
@@ -316,171 +315,231 @@ class Gutena_Kit_Admin {
 	 * Demo import script
 	 */
 	public function demo_import_dashboard_scripts() {
-		if ( function_exists( 'wp_json_file_decode' ) ) {
-			wp_enqueue_script( 'gutena-kit-admin-dashboard', GUTENA_KIT_PLUGIN_URL . 'includes/demo-import/admin-dashboard/build/index.js', array( 'wp-components', 'wp-dom-ready', 'wp-element', 'wp-i18n' ), $this->version, true );
-
-			//Demo related data
-			wp_localize_script( 
-				'gutena-kit-admin-dashboard', 
-				'gutenakit_demo_info',
-				array(
-					'gutena_theme_available' => function_exists( 'gutena_setup' ) ? 1 : 0,
-					'gutena_theme_action'    => $this->get_gutena_theme_action(),
-					'show_demo_type_filter'  => '0',
-					'show_category_filter'   => '0',
-					'category'               => gutendkit_demo_category_list(),
-					'demo_list'              => gutendkit_categorize_demo_list(),
-					'logo'                   => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/logo.png' ),
-					'link_icon'              => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/link.svg' ),
-					'pro_icon'               => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/pro-tag.svg' ),
-					'warning_icon'           => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/warning.svg' ),
-					'success_icon_green'     => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/round-check-green.svg' ),
-					'success_icon_white'     => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/round-check-white.svg' ),
-					'download_icon'          => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/download.svg' ),
-					'logo'                   => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/logo.png' ),
-					'demo_import_url'        => esc_url( admin_url( 'options.php?page=merlin&demo_index=' ) ),
-					'styles'                 => file_exists( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/styles/all_styles.json' ) ? wp_json_file_decode( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/styles/all_styles.json', array( 'associative' => true ) ) : array(),
-				)
-			);
-
-			//gutena official url
-			$gutena_url = esc_url( 'https://gutena.io/' );
-
-			//Admin dashboard details
-			wp_localize_script( 
-				'gutena-kit-admin-dashboard' , 
-				'gutenakit_dahboard_info',
-				 array(
-					 'tabs'            => array(
-						 'welcome'       => function_exists( 'gutena_setup' ) ? array(
-							 'tab_title'     => esc_html__( 'Getting Started', 'gutena-kit' ),
-							 'title'         => esc_html__( 'Welcome to Gutena!', 'gutena-kit' ),
-							 'description'   => esc_html__( 'Gutena is a free block theme for WordPress with modern block patterns in-built. It comes packed with beautiful design patterns which suits a variety of use cases. Gutena aims to be at the forefront of WordPress FSE (Full Site Editing) philosophy. ', 'gutena-kit' ),
-							 'button_text'   => esc_html__( 'Visit Website', 'gutena-kit' ),
-							 'button_link'   => $gutena_url,
-							 'video_link'   => esc_url( 'https://youtu.be/I-x5dqNeKEA' ),
-							 'video_img_url' => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/video.png' ),
-						 ) : array(
-							'tab_title'     => esc_html__( 'Getting Started', 'gutena-kit' ),
-							'title'         => esc_html__( 'Welcome to Gutena Kit!', 'gutena-kit' ),
-							'description'   => esc_html__( 'Power-up the Gutenberg editor with Gutena Kit. It gives you advanced controls, powerful blocks and beautiful pre-made templates that help you build websites in less time! These templates can be imported in just a few clicks.', 'gutena-kit' ),
-							'button_text'   => esc_html__( 'Visit Website', 'gutena-kit' ),
-							'button_link'   => $gutena_url,
-							'video_link'   => esc_url( 'https://youtu.be/I-x5dqNeKEA' ),
-							'video_img_url' => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/video-gutena-kit.png' ),
-						),
-						 'templates'     => array(
-							 'tab_title' => esc_html__( 'Starter Templates', 'gutena-kit' ),
-						 ),
-						 'blockSettings' => array(
-							 'tab_title' => esc_html__( 'Block Settings', 'gutena-kit' ),
-						 ),
-						 'doc'           => array(
-							 'tab_title' => esc_html__( 'Knowledge Base', 'gutena-kit' ),
-							 'title'     => esc_html__( 'Topics', 'gutena-kit' ),
-							 'topics'    => array(
-								 array(
-									 'heading'     => esc_html__( 'How to Add a Favicon in Block Theme?', 'gutena-kit' ),
-									 'link'        => esc_url( $gutena_url . 'how-to-add-a-favicon-in-block-theme' ),
-									 'description' => esc_html__( '', 'gutena-kit' ),
-								 ),
-								 array(
-									 'heading'     => esc_html__( 'How to Create Sidebar with Block Theme?', 'gutena-kit' ),
-									 'link'        => esc_url( $gutena_url . 'how-to-create-sidebar-with-block-theme' ),
-									 'description' => esc_html__( '', 'gutena-kit' ),
-								 ),
-								 array(
-									 'heading'     => esc_html__( 'How to fix demo page navigation link issue?', 'gutena-kit' ),
-									 'link'        => esc_url( $gutena_url . 'fix-navigation-link-not-working-issue' ),
-									 'description' => esc_html__( '', 'gutena-kit' ),
-								 ),
-							 ),
-							 'support'   => array(
-								 'title'              => esc_html__( 'Need Help?', 'gutena-kit' ),
-								 'description'        => esc_html__( 'Have a question, we are happy to help! Get in touch with our support team.', 'gutena-kit' ),
-								 'documentation_link' => esc_url( $gutena_url.'/blog' ),
-								 'link_text'          => esc_html__( 'Submit Ticket', 'gutena-kit' ),
-								 'link_url'           => esc_url( 'https://wordpress.org/support/plugin/gutena-kit/' ),
-							 ),
-							 'changelog' => array(
-								 'title'       => esc_html__( 'Releases and fixes', 'gutena-kit' ),
-								 'description' => $this->get_changelog(),
-							 ),
-						 ),
-					 ),
-					 'logo'            => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/logo.png' ),
-					 'onboarding'      => ! empty( get_option( 'gutenakit_onboarding', 1 ) ),
-					 'onboarding_info' => array( 
-						 'heading'  => esc_html__( 'Gutena Kit Onboarding Wizard', 'gutena-kit' ),
-						 'step_one' => array(
-							 'step_name'   => esc_html__( 'Get started', 'gutena-kit' ),
-							 'title'       => esc_html__( 'Welcome to Gutena Kit', 'gutena-kit' ),
-							 'description' => esc_html__( 'Power-up the Gutenberg editor with Gutena Kit. It gives you advanced controls, powerful blocks and beautiful pre-made templates that help you build websites in less time!', 'gutena-kit' ),
-							 'button_text' => esc_html__( 'Get started', 'gutena-kit' ),
-						 ),
-						 'step_two' => array(
-							 'step_name' => esc_html__( 'Choose Blocks', 'gutena-kit' ),
-							 'title'     => esc_html__( 'Choose Blocks', 'gutena-kit' ),
-							 'blocks'    => array(
-								 array(
-									 'slug'       => 'gutena-accordion',
-									 'name'       => esc_html__( 'Accordion', 'gutena-kit' ),
-									 'is_enabled' => class_exists( 'Gutena_Accordion' ),
-								 ),
-								 array(
-									 'slug'       => 'gutena-forms',
-									 'name'       => esc_html__( 'Forms', 'gutena-kit' ),
-									 'is_enabled' => class_exists( 'Gutena_Forms' ),
-								 ),
-								 array(
-									 'slug'       => 'newsletter-block-by-gutena',
-									 'name'       => esc_html__( 'Newsletter', 'gutena-kit' ),
-									 'is_enabled' => class_exists( 'Gutena_Newsletter' ),
-								 ),
-								 array(
-									 'slug'       => 'photofeed-block-by-gutena',
-									 'name'       => esc_html__( 'PhotoFeed', 'gutena-kit' ),
-									 'is_enabled' => class_exists( 'Gutena_Instagram_Gallery' ),
-								 ),
-								 array(
-									 'slug'       => 'gutena-lightbox',
-									 'name'       => esc_html__( 'Lightbox', 'gutena-kit' ),
-									 'is_enabled' => class_exists( 'Gutena_Lightbox' ),
-								 ),
-								 array(
-									'slug'       => 'gutena-tabs',
-									'name'       => esc_html__( 'Tabs', 'gutena-kit' ),
-									'is_enabled' => class_exists( 'Gutena_Tabs' ),
-								),
-								 array(
-									 'slug'       => 'post-featured-tag-block-by-gutena',
-									 'name'       => esc_html__( 'Recent Post Tag', 'gutena-kit' ),
-									 'is_enabled' => class_exists( 'Gutena_Post_Featured_Tag' ),
-								 ),
-								 array(
-									'slug'       => 'gutena-star-ratings',
-									'name'       => esc_html__( 'Star Ratings', 'gutena-kit' ),
-									'is_enabled' => class_exists( 'Gutena_Star_Ratings' ),
-								),
-								array(
-									'slug'       => 'gutena-testimonial',
-									'name'       => esc_html__( 'Testimonial Slider', 'gutena-kit' ),
-									'is_enabled' => class_exists( 'Gutena_Testimonial' ),
-								),
-								array(
-									'slug'       => 'gutena-team',
-									'name'       => esc_html__( 'Team Slider and Grid', 'gutena-kit' ),
-									'is_enabled' => class_exists( 'Gutena_Team' ),
-								),
-							 ),
-						 ),
-					 ),
-					 'nonce'           => wp_create_nonce( 'gutena-kit-nonce' ),
-					 'ajax_url'        => esc_url( admin_url('admin-ajax.php') ),
-					 'theme_slug'      => $this->gutena_theme,
-				 )
-			);
+		if ( ! function_exists( 'wp_json_file_decode' ) ) {
+			return;
 		}
+
+		$asset_file = include( GUTENA_KIT_DIR_PATH . 'includes/demo-import/admin-dashboard/build/index.asset.php' );
+		wp_enqueue_script( 'gutena-kit-admin-dashboard', GUTENA_KIT_PLUGIN_URL . 'includes/demo-import/admin-dashboard/build/index.js', $asset_file['dependencies'], $asset_file['version'], true );
+
+		// Demo related data
+		wp_localize_script( 
+			'gutena-kit-admin-dashboard', 
+			'gutenakit_demo_info',
+			array(
+				'gutena_theme_available' => function_exists( 'gutena_setup' ) ? 1 : 0,
+				'gutena_theme_action'    => $this->get_gutena_theme_action(),
+				'show_demo_type_filter'  => '0',
+				'show_category_filter'   => '0',
+				'category'               => gutendkit_demo_category_list(),
+				'demo_list'              => gutendkit_categorize_demo_list(),
+				'logo'                   => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/logo.png' ),
+				'link_icon'              => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/link.svg' ),
+				'pro_icon'               => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/pro-tag.svg' ),
+				'warning_icon'           => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/warning.svg' ),
+				'success_icon_green'     => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/round-check-green.svg' ),
+				'success_icon_white'     => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/round-check-white.svg' ),
+				'download_icon'          => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/download.svg' ),
+				'logo'                   => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/logo.png' ),
+				'demo_import_url'        => esc_url( admin_url( 'options.php?page=merlin&demo_index=' ) ),
+				'styles'                 => file_exists( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/styles/all_styles.json' ) ? wp_json_file_decode( GUTENA_KIT_DIR_PATH . 'includes/demo-import/demo-files/styles/all_styles.json', array( 'associative' => true ) ) : array(),
+			)
+		);
+
+		//gutena official url
+		$gutena_url = 'https://gutena.io';
+
+		// Welcome Tab Content
+		$welcome_tab = array(
+			'tab_title'     => esc_html__( 'Getting Started', 'gutena-kit' ),
+			'title'         => esc_html__( 'Welcome to Gutena!', 'gutena-kit' ),
+			'description'   => esc_html__( 'Power-up the Gutenberg editor with Gutena Kit. It gives you advanced controls, powerful blocks and beautiful pre-made templates that help you build websites in less time! These templates can be imported in just a few clicks.', 'gutena-kit' ),
+			'button_text'   => esc_html__( 'Visit Website', 'gutena-kit' ),
+			'button_link'   => esc_url( $gutena_url ),
+			'video_link'    => esc_url( 'https://youtu.be/I-x5dqNeKEA' ),
+			'video_img_url' => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/overview.jpg' ),
+			'pro_cta'       => array(
+				'title'           => esc_html__( 'Introducing Gutena Kit Pro!', 'gutena-kit' ),
+				'description'     => esc_html__( 'Gutena Form Pro is available as part of the comprehensive Gutena Kit Pro.', 'gutena-kit' ),
+				'ticker_tag'      => esc_html__( 'Announcement', 'gutena-kit' ),
+				'button_text'     => esc_html__( 'Go Premium', 'gutena-kit' ),
+				'button_link'     => esc_url( $gutena_url . '/pricing' ),
+				'button_text_sub' => esc_html__( 'Learn more', 'gutena-kit' ),
+				'button_link_sub' => esc_url( $gutena_url ),
+				'features'        => array(),
+				'forms'           => array(
+					'form_tag'       => esc_html__( 'Gutena Forms Pro Includes:', 'gutena-kit' ),
+					'input_label'    => esc_html__( 'Input Fields:', 'gutena-kit' ),
+					'input_features' => array(
+						esc_html__( 'Text', 'gutena-kit' ),
+						esc_html__( 'Number', 'gutena-kit' ),
+						esc_html__( 'Range', 'gutena-kit' ),
+						esc_html__( 'Email', 'gutena-kit' ),
+						esc_html__( 'Dropdown', 'gutena-kit' ),
+						esc_html__( 'Radio', 'gutena-kit' ),
+						esc_html__( 'Checkbox', 'gutena-kit' ),
+						esc_html__( 'Time', 'gutena-kit' ),
+						esc_html__( 'Date', 'gutena-kit' ),
+						esc_html__( 'Rating', 'gutena-kit' ),
+						esc_html__( 'Phone', 'gutena-kit' ),
+						esc_html__( 'Country', 'gutena-kit' ),
+						esc_html__( 'State', 'gutena-kit' ),
+						esc_html__( 'File Upload', 'gutena-kit' ),
+						esc_html__( 'URL', 'gutena-kit' ),
+					),
+					'db_label'       => esc_html__( 'Entry Database Management:', 'gutena-kit' ),
+					'db_features'    => array(
+						esc_html__( 'View, Edit and Delete entries', 'gutena-kit' ),
+						esc_html__( 'Add status to entries', 'gutena-kit' ),
+						esc_html__( 'Add Notes to entries', 'gutena-kit' ),
+						esc_html__( 'Mark Starred/ important to any entry', 'gutena-kit' ),
+						esc_html__( 'Entry detailed view', 'gutena-kit' ),
+						esc_html__( 'Advance search filters', 'gutena-kit' ),
+						esc_html__( 'Related entries of user', 'gutena-kit' ),
+						esc_html__( 'Tags management', 'gutena-kit' ),
+						esc_html__( 'Status management', 'gutena-kit' ),
+						esc_html__( 'User access management', 'gutena-kit' ),
+					),
+				),
+				'is_installed' => defined( 'GUTENA_KIT_PRO_VERSION' ),
+			),
+		);
+
+		// Check if Gutena theme is present
+		if ( function_exists( 'gutena_setup' ) ) {
+			// $welcome_tab = array_merge( $welcome_tab, array(
+			// 	'title'         => esc_html__( 'Welcome to Gutena!', 'gutena-kit' ),
+			// 	'description'   => esc_html__( 'Gutena is a free block theme for WordPress with modern block patterns in-built. It comes packed with beautiful design patterns which suits a variety of use cases. Gutena aims to be at the forefront of WordPress FSE (Full Site Editing) philosophy. ', 'gutena-kit' ),
+			// 	'video_img_url' => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/video.png' ),
+			// ) );
+		}
+
+		//Admin dashboard details
+		wp_localize_script( 
+			'gutena-kit-admin-dashboard', 
+			'gutena_kit_dashboard_info',
+			apply_filters( 'gutena_kit_dashboard_info_data', array(
+				'tabs'            => array(
+					'welcome'       => $welcome_tab,
+					'templates'     => array(
+						'tab_title' => esc_html__( 'Starter Templates', 'gutena-kit' ),
+					),
+					'blockSettings' => array(
+						'tab_title' => esc_html__( 'Block Settings', 'gutena-kit' ),
+					),
+					'doc'           => array(
+						'tab_title' => esc_html__( 'Changelog', 'gutena-kit' ),
+						'title'     => esc_html__( 'Topics', 'gutena-kit' ),
+						'topics'    => array(
+							array(
+								'heading'     => esc_html__( 'How to Add a Favicon in Block Theme?', 'gutena-kit' ),
+								'link'        => esc_url( $gutena_url . '/how-to-add-a-favicon-in-block-theme' ),
+								'description' => esc_html__( '', 'gutena-kit' ),
+							),
+							array(
+								'heading'     => esc_html__( 'How to Create Sidebar with Block Theme?', 'gutena-kit' ),
+								'link'        => esc_url( $gutena_url . '/how-to-create-sidebar-with-block-theme' ),
+								'description' => esc_html__( '', 'gutena-kit' ),
+							),
+							array(
+								'heading'     => esc_html__( 'How to fix demo page navigation link issue?', 'gutena-kit' ),
+								'link'        => esc_url( $gutena_url . '/fix-navigation-link-not-working-issue' ),
+								'description' => esc_html__( '', 'gutena-kit' ),
+							),
+						),
+						'support'   => array(
+							'title'              => esc_html__( 'Need Help?', 'gutena-kit' ),
+							'description'        => esc_html__( 'Have a question, we are happy to help! Get in touch with our support team.', 'gutena-kit' ),
+							'documentation_link' => esc_url( $gutena_url . '/blog' ),
+							'documentation_text' => esc_html__( 'Documentation', 'gutena-kit' ),
+							'link_text'          => esc_html__( 'Submit Ticket', 'gutena-kit' ),
+							'link_url'           => esc_url( 'https://wordpress.org/support/plugin/gutena-kit/' ),
+						),
+						'changelog' => array(
+							'title'       => esc_html__( 'Releases and fixes', 'gutena-kit' ),
+							'description' => $this->get_changelog(),
+						),
+					),
+				),
+				'logo'            => esc_url( GUTENA_KIT_PLUGIN_URL . 'admin/img/logo.png' ),
+				'onboarding'      => ! empty( get_option( 'gutenakit_onboarding', 1 ) ),
+				'onboarding_info' => array( 
+					'heading'  => esc_html__( 'Gutena Kit Onboarding Wizard', 'gutena-kit' ),
+					'step_one' => array(
+						'step_name'   => esc_html__( 'Get started', 'gutena-kit' ),
+						'title'       => esc_html__( 'Welcome to Gutena Kit', 'gutena-kit' ),
+						'description' => esc_html__( 'Power-up the Gutenberg editor with Gutena Kit. It gives you advanced controls, powerful blocks and beautiful pre-made templates that help you build websites in less time!', 'gutena-kit' ),
+						'button_text' => esc_html__( 'Get started', 'gutena-kit' ),
+					),
+					'step_two' => array(
+						'step_name' => esc_html__( 'Choose Blocks', 'gutena-kit' ),
+						'title'     => esc_html__( 'Choose Blocks', 'gutena-kit' ),
+						'blocks'    => array(
+							array(
+								'slug'       => 'gutena-forms',
+								'name'       => esc_html__( 'Forms', 'gutena-kit' ),
+								'is_enabled' => class_exists( 'Gutena_Forms' ),
+							),
+							array(
+								'slug'       => 'gutena-accordion',
+								'name'       => esc_html__( 'Accordion', 'gutena-kit' ),
+								'is_enabled' => class_exists( 'Gutena_Accordion' ),
+							),
+							array(
+								'slug'       => 'newsletter-block-by-gutena',
+								'name'       => esc_html__( 'Newsletter', 'gutena-kit' ),
+								'is_enabled' => class_exists( 'Gutena_Newsletter' ),
+							),
+							array(
+								'slug'       => 'photofeed-block-by-gutena',
+								'name'       => esc_html__( 'PhotoFeed', 'gutena-kit' ),
+								'is_enabled' => class_exists( 'Gutena_Instagram_Gallery' ),
+							),
+							array(
+								'slug'       => 'gutena-lightbox',
+								'name'       => esc_html__( 'Lightbox', 'gutena-kit' ),
+								'is_enabled' => class_exists( 'Gutena_Lightbox' ),
+							),
+							array(
+								'slug'       => 'gutena-tabs',
+								'name'       => esc_html__( 'Tabs', 'gutena-kit' ),
+								'is_enabled' => class_exists( 'Gutena_Tabs' ),
+							),
+							array(
+								'slug'       => 'post-featured-tag-block-by-gutena',
+								'name'       => esc_html__( 'Recent Post Tag', 'gutena-kit' ),
+								'is_enabled' => class_exists( 'Gutena_Post_Featured_Tag' ),
+							),
+							array(
+								'slug'       => 'gutena-star-ratings',
+								'name'       => esc_html__( 'Star Ratings', 'gutena-kit' ),
+								'is_enabled' => class_exists( 'Gutena_Star_Ratings' ),
+							),
+							array(
+								'slug'       => 'gutena-testimonial',
+								'name'       => esc_html__( 'Testimonial Slider', 'gutena-kit' ),
+								'is_enabled' => class_exists( 'Gutena_Testimonial' ),
+							),
+							array(
+								'slug'       => 'gutena-team',
+								'name'       => esc_html__( 'Team Slider and Grid', 'gutena-kit' ),
+								'is_enabled' => class_exists( 'Gutena_Team' ),
+							),
+						),
+					),
+				),
+				'nonce'           => wp_create_nonce( 'gutena-kit-nonce' ),
+				'ajax_url'        => esc_url( admin_url( 'admin-ajax.php' ) ),
+				'theme_slug'      => $this->gutena_theme,
+				'pro_version'     => array(
+					'is_installed' => false,
+					'purchase_url' => 'https://gutena.io/pricing',
+					'text'         => array(
+						'purchase_btn' => esc_html__( 'Go Premium', 'gutena-kit' ),
+					),
+				),
+			) )
+		);
 	}
 
 	private function disable_gutenaKit_on_boarding() {
@@ -877,7 +936,7 @@ class Gutena_Kit_Admin {
 		if ( function_exists( 'wp_remote_get' ) ) {
 			//get readme file
 			$response = wp_remote_get( GUTENA_KIT_PLUGIN_URL . 'readme.txt', array(
-				'sslverify' => false
+				'sslverify' => false,
 			) );
 
 			if ( ! is_wp_error( $response ) ) {
@@ -885,17 +944,17 @@ class Gutena_Kit_Admin {
 				$response = wp_remote_retrieve_body( $response );
 				$response = explode( '== Changelog ==', $response, 2 );
 				if ( 2 === count( $response ) ) {
-					if ( ! empty($response[1]) ) {
+					if ( ! empty( $response[1] ) ) {
 						$response = $response[1];
-						$response = str_ireplace( "= ", "<hr><br><span class='version'>", $response );
-						$response = str_ireplace( " =", "</span><br>", $response );
+						$response = str_ireplace( "= ", "<span class='version'>", $response );
+						$response = str_ireplace( " =", "</span>", $response );
 					}
 				}
 			} else {
 				$response = '';
 			}
 		}
-		return $response;
+		return trim( $response );
 	}
 
 	/**

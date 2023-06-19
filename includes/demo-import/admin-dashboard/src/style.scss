@@ -1,41 +1,41 @@
 /*gutena kit admin dashboard */
-$gutenakit_primary_color: #0EA489;
-$gutenakit_red_color: #E24F4F;
-$gutenakit_white_color: #ffffff;
-$gutenakit_body_text_color : #484952;
-$gutenakit_heading_color : #21222F;
+$gutena_kit_primary_color: #0ea489;
+$gutena_kit_red_color: #e24f4f;
+$gutena_kit_white_color: #ffffff;
+$gutena_kit_body_text_color: #484952;
+$gutena_kit_heading_color: #21222f;
 $loader-size: 1.5em;
 $check-height: calc($loader-size/2);
 $check-width: calc($check-height/2);
 $check-left: calc(calc($loader-size/14) + calc($loader-size/14));
 $check-thickness: 3px;
-$check-color: $gutenakit_primary_color;
+$check-color: $gutena_kit_primary_color;
 
-.appearance_page_gutenakit_admin_dashboard #wpcontent{
-    padding: 0;
+.appearance_page_gutenakit_admin_dashboard #wpcontent {
+	padding: 0;
 }
 
-#wpbody-content .notice:not(.gk-notice)  {
+#wpbody-content .notice:not(.gk-notice) {
 	display: none;
 }
 
 .gk-notice .notice-dismiss {
-	top:2px;
+	top: 2px;
 }
 
 .gutena-buttons {
 	display: flex;
 	gap: 21px;
-	a:visited{
-		color:$gutenakit_white_color;
+	a:visited {
+		color: $gutena_kit_white_color;
 	}
 }
 
 /*Gutena Btn*/
 .gutena-button {
-	background: $gutenakit_primary_color;
+	background: $gutena_kit_primary_color;
 	border-radius: 5px;
-	color: $gutenakit_white_color;
+	color: $gutena_kit_white_color;
 	font-weight: 600;
 	font-size: 1rem;
 	line-height: 1.31;
@@ -45,9 +45,9 @@ $check-color: $gutenakit_primary_color;
 }
 
 .gk-black-btn.gutena-button {
-	background-color: $gutenakit_heading_color;
+	background-color: $gutena_kit_heading_color;
 	display: flex;
-    align-items: center;
+	align-items: center;
 }
 
 /*Gutena Theme installation modal :start*/
@@ -67,11 +67,10 @@ $check-color: $gutenakit_primary_color;
 		img {
 			padding-top: 10px;
 
-			&.success{
+			&.success {
 				padding-top: 5px;
 			}
 		}
-
 
 		p {
 			margin: 0;
@@ -83,8 +82,9 @@ $check-color: $gutenakit_primary_color;
 
 	.gutena-theme-require-modal-buttons {
 		padding-left: 28px;
+		
 		.gutena-button {
-			color: $gutenakit_white_color;
+			color: $gutena_kit_white_color;
 			font-size: 15px;
 			line-height: 1.27;
 			display: flex;
@@ -94,96 +94,189 @@ $check-color: $gutenakit_primary_color;
 			width: inherit;
 			position: relative;
 			overflow: hidden;
-			&::before{
-				background: linear-gradient(97.91deg, rgba(0,0,0,0.2) 11.27%, rgba(0,0,0,0.2) 86.28%);
+			&::before {
+				background: linear-gradient(97.91deg, rgba(0, 0, 0, 0.2) 11.27%, rgba(0, 0, 0, 0.2) 86.28%);
 				border-radius: 5px;
-				content: '';
+				content: "";
 				position: absolute;
 				top: 0;
 				left: -100%;
 				height: 100%;
 				width: 100%;
 			}
-	
+
 			&.start-installing::before {
 				animation: gkinstalling 50s ease-in-out forwards;
-			 } 
-	
-			 @keyframes gkinstalling {
-				0%{
-					left:-100%;
-				} 
-				10%{
-					left:-80%;
-				} 
-				20%{
-					left:-70%;
-				} 
-				30%{
-					left:-65%;
-				} 
-				40%{
-					left:-60%;
-				} 
-				50%{
-					left:-50%;
-				} 
-				60%{
-					left:-40%;
-				} 
-				80%{
-					left:-20%;
-				} 
-				90%{
-					left:-10%;
-				} 
-				100%{
-					left:0%;
-				} 
-			 }
+			}
+
+			@keyframes gkinstalling {
+				0% {
+					left: -100%;
+				}
+				10% {
+					left: -80%;
+				}
+				20% {
+					left: -70%;
+				}
+				30% {
+					left: -65%;
+				}
+				40% {
+					left: -60%;
+				}
+				50% {
+					left: -50%;
+				}
+				60% {
+					left: -40%;
+				}
+				80% {
+					left: -20%;
+				}
+				90% {
+					left: -10%;
+				}
+				100% {
+					left: 0%;
+				}
+			}
 		}
 	}
-
-	
 }
 /*Gutena Theme installation modal :end*/
 
 #gutenakit-admin-dashboard-page .gutenakit-admin-dashboard {
-
 	.components-tab-panel__tabs-item:focus:not(:disabled) {
 		box-shadow: none;
 		outline: none;
 	}
 	/*Primary color*/
 	.gk-primary-color {
-	  	color: $gutenakit_primary_color;
+		color: $gutena_kit_primary_color;
 	}
 
 	/* Header */
 	.gutena-header {
-		background: $gutenakit_white_color;
+		background: $gutena_kit_white_color;
 		display: flex;
 		padding: 1.25rem;
 		justify-content: space-between;
+		align-items: center;
+		border-bottom: 1px solid #e5e7eb;
+
+		.gutena-admin-logo {
+			display: flex;
+
+			img {
+				max-width: 182px;
+			}
+		}
+
+		.gutena-pro-license-container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 15px;
+
+			.gutena-pro-license-activated {
+				display: flex;
+				align-items: center;
+				background-color: #ceeee8;
+				font-size: 0.875rem;
+				padding: 0.78rem 1.125rem;
+				border-radius: 5px;
+
+				svg {
+					margin-right: 8px;
+				}
+			}
+
+			.gutena-pro-license-error {
+				display: flex;
+				align-items: center;
+				background-color: #ffd5d5;
+				font-size: 0.875rem;
+				padding: 0.78rem 1.125rem;
+				border-radius: 5px;
+				gap: 8px;
+			}
+
+			.gutena-pro-license-field {
+				font-size: 0.875rem;
+				padding: 0.438rem 0.875rem;
+				border: 1px solid $gutena_kit_heading_color;
+				border-radius: 5px;
+				box-shadow: none;
+				width: 280px;
+			}
+
+			.gutena-kit-pro-redirect,
+			.gutena-kit-pro-activate-button {
+				display: block;
+				background: #e35d3f;
+				border-radius: 5px;
+				color: #ffffff;
+				font-weight: 600;
+				font-size: 1rem;
+				padding: 0.75rem 1.375rem;
+				text-decoration: none;
+				text-align: center;
+				border: 0;
+				box-shadow: none;
+				cursor: pointer;
+			}
+
+			.gutena-kit-pro-activate-button {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 8px;
+			}
+
+			.gutena-kit-pro-deactivate-button {
+				background: transparent;
+				color: #e24f4f;
+				font-size: 1rem;
+				font-weight: 600;
+				border: 0;
+				box-shadow: none;
+				cursor: pointer;
+				text-align: center;
+				text-decoration: underline;
+				margin: 0;
+				padding: 0;
+			}
+
+			.gutena-kit-pro-retry-button {
+				background: transparent;
+				color: $gutena_kit_heading_color;
+				font-size: 1rem;
+				font-weight: 600;
+				border: 0;
+				box-shadow: none;
+				cursor: pointer;
+				text-align: center;
+				text-decoration: underline;
+				margin: 0;
+				padding: 0;
+			}
+		}
 	}
-	
-	.gutena-header .gutena-admin-logo img{
-		max-width: 182px;
-	}
-	
+
 	/* Tabs */
 	.gutena-tab-panel .components-tab-panel__tabs {
-		background-color: $gutenakit_white_color;
+		background-color: $gutena_kit_white_color;
 		display: flex;
 		justify-content: center;
 		box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
 	}
-	
+
 	.gutena-tab-panel .components-tab-panel__tabs-item {
 		border: none;
-		border-left: 1px solid #E5E7EB;;
-		background: $gutenakit_white_color;
-		color: #1D2327;
+		border-left: 1px solid #e5e7eb;
+		background: $gutena_kit_white_color;
+		color: #1d2327;
 		font-style: normal;
 		font-weight: 600;
 		font-size: 0.9375rem;
@@ -191,183 +284,397 @@ $check-color: $gutenakit_primary_color;
 		padding: 1rem 3.75rem;
 		cursor: pointer;
 	}
-	
+
 	.gutena-tab-panel .components-tab-panel__tabs-item:nth-child(1) {
 		border: none;
 	}
-	
+
 	/* Active Tab */
 	.gutena-tab-panel .components-tab-panel__tabs-item.active-tab {
-		color: $gutenakit_primary_color;
-		border-bottom: 2px solid $gutenakit_primary_color;
+		color: $gutena_kit_primary_color;
+		border-bottom: 2px solid $gutena_kit_primary_color;
 	}
-	
+
 	/* Tab Body */
 	.gutena-tab-panel .components-tab-panel__tab-content {
 		max-width: 950px;
 		margin: 0 auto;
 	}
-	
+
 	.gutena-tab-panel .components-tab-panel__tab-content .gutena-tab-body {
 		margin-top: 3.75rem;
 	}
-	
-	
+
 	/* Tab Body : Title */
 	.gutena-tab-panel .components-tab-panel__tab-content .gutena-title {
 		font-weight: 600;
 		font-size: 1.75rem;
 		line-height: 1.32;
-		color: #1D2327;
+		color: #1d2327;
 	}
-	
+
 	/* Tab Body : Paragraph */
-	.gutena-tab-panel .components-tab-panel__tab-content p{
-		color: $gutenakit_body_text_color;
+	.gutena-tab-panel .components-tab-panel__tab-content p {
+		color: $gutena_kit_body_text_color;
 		font-style: normal;
 		font-weight: 400;
 		font-size: 0.9375rem;
 		line-height: 1.6;
 	}
-	
-	.margin-auto{
+
+	.margin-auto {
 		margin: auto;
 	}
-	
-	 .gutena-notice {
+
+	.gutena-notice {
 		position: absolute;
 		top: 10rem;
 		right: 0;
 		padding: 1rem;
 	}
-	
-	 .gutena-notice.failed-notice {
+
+	.gutena-notice.failed-notice {
 		border-right: 5px solid #cc1818;
 		background: #f4a2a2;
 	}
-	
-	 .gutena-notice.success-notice {
+
+	.gutena-notice.success-notice {
 		border-right: 5px solid #4ab866;
 		background: #eff9f1;
 	}
-	
-	 .gutena-notice .gutena-dismiss-notice {
+
+	.gutena-notice .gutena-dismiss-notice {
 		font-weight: 1.5rem;
 		font-weight: 900;
 		margin-right: 10px;
 		cursor: pointer;
 	}
-	
-	 .gutena-notice.notice-dismissed {
+
+	.gutena-notice.notice-dismissed {
 		display: none;
 	}
-	
-	
+
 	/* Tab Body : Button hover */
 	.gutena-tab-panel .gutena-button:hover {
-		color: $gutenakit_white_color;
+		color: $gutena_kit_white_color;
 		box-shadow: inset 0 0 0 100px rgb(0 0 0 / 10%);
 		cursor: pointer;
 	}
-	
-	/* Tab Body :thematic break */
-	.gutena-tab-panel .components-tab-panel__tab-content hr {
-		border: 1px solid #1D2327;
-		opacity: 0.1;
-		height: 0;
+
+	.gutena-tab-panel .components-tab-panel__tab-content {
+		/* Tab Body : thematic break */
+		hr {
+			border: 1px solid #1d2327;
+			opacity: 0.1;
+			height: 0;
+		}
+
+		/* Tab Body : Welcome Tab */
+		.gutena-welcome-tab {
+			display: flex;
+			flex-direction: row;
+			gap: 4rem;
+
+			.gutena-column {
+				position: relative;
+				flex: 50%;
+
+				.gutena-video {
+					.gutena-video-link {
+						display: block;
+
+						.gutena-video-image {
+							width: 100%;
+							display: block;
+						}
+					}
+				}
+
+				.gutena-details {
+					.gutena-title {
+						margin: 1.7rem 0 1rem;
+					}
+
+					.gutena-description {
+						margin: 0 0 1rem 0;
+					}
+
+					.gutena-button {
+						display: inline-block;
+						margin-top: 1rem;
+					}
+				}
+
+				.gutena-pro-cta {
+					background-color: #fff;
+					padding: 2.7rem 2.7rem 2.2rem;
+					filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.06)) drop-shadow(0px 1px 3px rgba(0, 0, 0, 0.1));
+					height: 510px;
+					overflow: auto;
+
+					&::-webkit-scrollbar {
+						width: 5px;
+					}
+
+					&::-webkit-scrollbar-track {
+						background: #f1f1f1;
+					}
+
+					&::-webkit-scrollbar-thumb {
+						background: #b9b8b8;
+						border-radius: 5px;
+					}
+
+					.gutena-pro-cta-title {
+						margin: 0;
+						font-size: 1.375rem;
+
+						&.small {
+							font-size: 1.125rem;
+						}
+					}
+
+					.gutena-pro-cta-description {
+						font-size: 0.938rem;
+						color: $gutena_kit_body_text_color;
+					}
+
+					.gutena-pro-cta-form-heading {
+						font-weight: 600;
+						font-size: 13px;
+						line-height: 20px;
+						text-transform: uppercase;
+						color: #e35d3f;
+					}
+
+					.gutena-pro-cta-features {
+						margin: 0.75rem 0;
+
+						&.forms {
+							width: 100%;
+							display: flex;
+							flex-wrap: wrap;
+
+							> li {
+								width: calc(calc(100% / 3) - 28px);
+							}
+						}
+
+						.gutena-pro-cta-feature {
+							margin-bottom: 16px;
+							padding-left: 28px;
+							background: url("data:image/svg+xml,%0A%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 16C3.58172 16 0 12.4182 0 8C0 3.58172 3.58172 0 8 0C12.4182 0 16 3.58172 16 8C16 12.4182 12.4182 16 8 16ZM8 14.4C11.5346 14.4 14.4 11.5346 14.4 8C14.4 4.46538 11.5346 1.6 8 1.6C4.46538 1.6 1.6 4.46538 1.6 8C1.6 11.5346 4.46538 14.4 8 14.4ZM7.20208 11.2L3.80799 7.80592L4.93937 6.67448L7.20208 8.93728L11.7276 4.41178L12.859 5.54314L7.20208 11.2Z' fill='%2321222F'/%3E%3C/svg%3E")
+								no-repeat 2px 2px;
+							font-size: 0.938rem;
+							color: $gutena_kit_heading_color;
+						}
+					}
+
+					.gutena-pro-cta-tag {
+						// position: absolute;
+						// top: 12px;
+						// right: 12px;
+						background-color: #5d5fef;
+						border-radius: 3px;
+						color: #fff;
+						padding: 4px 8px;
+						font-size: 0.75rem;
+						margin-bottom: 20px;
+						display: inline-block;
+					}
+
+					.gutena-kit-pro-button {
+						display: block;
+						background: #e35d3f;
+						border-radius: 5px;
+						color: #ffffff;
+						font-weight: 600;
+						font-size: 1rem;
+						line-height: 1.31;
+						padding: 0.8125rem 1.1875rem;
+						text-decoration: none;
+						text-align: center;
+						margin: 1.563rem 0 1rem;
+					}
+
+					.gutena-kit-pro-learn-more {
+						display: block;
+						text-align: center;
+						font-size: 0.938rem;
+						color: $gutena_kit_heading_color;
+						font-weight: 600;
+					}
+				}
+			}
+		}
 	}
-	
-	/* Tab Body :Welcome Tab */
-	.gutena-tab-panel .components-tab-panel__tab-content .gutena-grid {
-		display: grid;
-		grid-template-columns: 430px 400px;
-		grid-gap: 3rem;
-	}
-	
-	.gutena-tab-panel .components-tab-panel__tab-content .gutena-welcome-tab .gutena-title {
-	   margin-bottom: 1rem;
-	}
-	
-	.gutena-tab-panel .components-tab-panel__tab-content .gutena-description {
-		padding-bottom: 1.75rem;
-	}
-	
+
 	/* Tab Body :Templates Tab */
-	.gutena-tab-panel .components-tab-panel__tab-content .gutena-templates-tab .gutena-details{
+	.gutena-tab-panel .components-tab-panel__tab-content .gutena-templates-tab .gutena-details {
 		text-align: center;
 		max-width: 506px;
 		margin: 0 auto;
 		padding-bottom: 4rem;
 	}
-	
-	.gutena-tab-panel .components-tab-panel__tab-content .gutena-templates-tab .gutena-title{
+
+	.gutena-tab-panel .components-tab-panel__tab-content .gutena-templates-tab .gutena-title {
 		margin-bottom: 1rem;
 	}
-	
+
 	/* Tab Body :Changelog Tab */
 	.gutena-knowledge-tab {
-		background: $gutenakit_white_color;
+		background: $gutena_kit_white_color;
 		padding: 2.5rem 2.875rem;
+
+		.gutena-title {
+			font-weight: 600;
+			font-size: 1.75rem;
+			color: $gutena_kit_heading_color;
+			line-height: 1.5;
+			margin: 0;
+		}
+
 		/* Tab Body :Doc Tab */
-		.gutena-doc-tab {
-			hr {
-				margin: 3.8rem 0;
-			 }
-			 
-			 .gutena-topics a {
-				 color: $gutenakit_heading_color;
-				 font-weight: 600;
-				 font-size: 1rem;
-				 line-height: 1.6;
-				 text-decoration-line: none;
-			 }
-			 
-			.gutena-support {
+		// .gutena-doc-tab {
+		// 	hr {
+		// 		margin: 3.8rem 0;
+		// 	}
+
+		// 	.gutena-topics a {
+		// 		color: $gutena_kit_heading_color;
+		// 		font-weight: 600;
+		// 		font-size: 1rem;
+		// 		line-height: 1.6;
+		// 		text-decoration-line: none;
+		// 	}
+
+		// 	.gutena-support {
+		// 		max-width: 321px;
+		// 		.gutena-title,
+		// 		.gutena-description {
+		// 			margin: 0;
+		// 		}
+
+		// 		.gutena-description {
+		// 			padding: 0.85rem 0 1.8rem 0;
+		// 		}
+		// 	}
+		// }
+
+		// .gutena-changelog-tab {
+		// 	.gutena-title {
+		// 		margin-bottom: 1rem;
+		// 	}
+
+		// 	.gutena-description {
+		// 		white-space: pre;
+		// 	}
+
+		// 	.version {
+		// 		color: #1d2327;
+		// 		font-weight: 600;
+		// 		font-size: 1.125rem;
+		// 		line-height: 1.3;
+		// 	}
+
+		// 	hr:nth-child(1) {
+		// 		display: none;
+		// 	}
+		// }
+
+		.gutena-docs {
+			margin-bottom: 30px;
+			padding-bottom: 30px;
+			border-bottom: 1px solid rgba(33, 34, 47, 0.1);
+
+			.gutena-title {
+				margin-bottom: 20px;
+			}
+
+			.gutena-topics {
+				.gutena-topic {
+					&::marker {
+						color: $gutena_kit_heading_color;
+						font-weight: 600;
+						font-size: 1rem;
+						line-height: 1.6;
+					}
+					a {
+						color: $gutena_kit_heading_color;
+						font-weight: 600;
+						font-size: 1rem;
+						line-height: 1.6;
+						text-decoration-line: none;
+					}
+				}
+			}
+		}
+
+		.gutena-support {
+			margin-bottom: 35px;
+			padding-bottom: 35px;
+			border-bottom: 1px solid rgba(33, 34, 47, 0.1);
+
+			.gutena-buttons {
+				display: flex;
+				gap: 21px;
+
+				a:visited {
+					color: $gutena_kit_white_color;
+				}
+			}
+
+			.gutena-details {
 				max-width: 321px;
-				.gutena-title, .gutena-description {
-					margin: 0;
+
+				.gutena-title {
+					margin-bottom: 10px;
 				}
 
 				.gutena-description {
 					padding: 0.85rem 0 1.8rem 0;
+					margin: 0;
 				}
-
 			}
 		}
 
-		.gutena-changelog-tab {
-			.gutena-title {
-				margin-bottom: 1rem;
-			}
-			
-			 .gutena-description {
-				white-space: pre;
-			}
-			
-			 .version {
-				color: #1D2327;
-				font-weight: 600;
-				font-size: 1.125rem;
-				line-height: 1.3;
-			}
-			
-			 hr:nth-child(1) {
-				display: none;
+		.gutena-changelog {
+			white-space: pre;
+
+			.gutena-details {
+				.gutena-title {
+					margin-bottom: 30px;
+				}
+
+				.gutena-description .version {
+					display: block;
+					color: #1d2327;
+					font-weight: 600;
+					font-size: 1.125rem;
+					padding-top: 25px;
+					border-top: 1px solid rgba(33, 34, 47, 0.1);
+					margin-bottom: -10px;
+
+					&:first-of-type {
+						padding: 0;
+						border: 0;
+					}
+				}
 			}
 		}
 	}
-	 
+
 	/*Tab panel settings : end*/
 	/*Starter template : start*/
 	.gk-dashboard {
-		padding-top: 30px;
+		padding-top: 3.75rem;
 		/*========================================================================
 		Header : It contains some filter for demos which may be enable in future
 		==========================================================================*/
 		.gk-top-header {
 			// display: flex;
 			display: none;
-			background: $gutenakit_white_color;
+			background: $gutena_kit_white_color;
 			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1);
 			justify-content: space-between;
 			align-items: center;
@@ -375,35 +682,35 @@ $check-color: $gutenakit_primary_color;
 			.gk-logo img {
 				max-width: 182px;
 			}
-	
+
 			.gk-center-tabs {
 				display: flex;
 				gap: 45px;
 				cursor: pointer;
 			}
-	
+
 			.gk-center-tabs .gk-tab {
 				padding: 8px 12px;
 				border-radius: 6px;
 			}
-	
-			.gk-center-tabs .gk-tab.selected, 
+
+			.gk-center-tabs .gk-tab.selected,
 			.gk-center-tabs .gk-tab:hover {
-				color: $gutenakit_primary_color;
-				background: #E5EDFF;
+				color: $gutena_kit_primary_color;
+				background: #e5edff;
 			}
 		}
 
 		.gk-demo-grid {
 			width: 100%;
-			margin: 39px auto;
+			margin: 0 auto;
 			display: grid;
-			grid-template-columns: repeat(3,1fr);
+			grid-template-columns: repeat(3, 1fr);
 			grid-gap: 50px;
 		}
 
 		.gk-demo-card {
-			background: $gutenakit_white_color;
+			background: $gutena_kit_white_color;
 			box-shadow: 0 10px 50px rgba(0, 0, 0, 0.05);
 			height: 345px;
 			position: relative;
@@ -413,13 +720,13 @@ $check-color: $gutenakit_primary_color;
 				display: none;
 			}
 
-		    .gk-demo-pro-icon {
+			.gk-demo-pro-icon {
 				position: absolute;
 				top: 13px;
 				left: 13px;
 				z-index: 9;
 			}
-			
+
 			&:hover {
 				box-shadow: 0 10px 50px rgba(0, 0, 0, 0.1);
 
@@ -431,8 +738,8 @@ $check-color: $gutenakit_primary_color;
 					z-index: 9;
 				}
 			}
-	
-			.gk-demo-card-img img { 
+
+			.gk-demo-card-img img {
 				position: relative;
 				overflow: hidden;
 			}
@@ -443,12 +750,12 @@ $check-color: $gutenakit_primary_color;
 				left: 0;
 				width: 100%;
 				height: 50px;
-				background-color: $gutenakit_white_color;
+				background-color: $gutena_kit_white_color;
 				display: grid;
 				grid-template-columns: 2fr 1fr;
 				justify-content: space-between;
 				align-items: center;
-				
+
 				.gk-demo-import-action {
 					cursor: pointer;
 					display: flex;
@@ -464,59 +771,56 @@ $check-color: $gutenakit_primary_color;
 				}
 
 				.gk-demo-title {
-					color: #1D2327;
+					color: #1d2327;
 					font-size: 14px;
 					line-height: 1.357;
-					font-weight: 600;  
-					padding-left: 1rem ;
+					font-weight: 600;
+					padding-left: 1rem;
 				}
 			}
-	
 		}
 
 		/*==========================================
 		Gutena Theme installation notice
 		===========================================*/
-
 		.gutena-theme-require-notice {
 			display: grid;
 			gap: 14px;
 			padding: 7px 7px 7px 20px;
-			margin: 0 0 0 0;
+			margin: -20px 0 30px 0;
 			align-items: center;
 			grid-template-columns: 1fr 30fr 12fr;
-			
-			p{
+
+			p {
 				font-size: 15px;
 				line-height: 1.6;
 				font-weight: 600;
-				color:#92400E;
+				color: #92400e;
 			}
 
-			.dismiss-link{
-				color: $gutenakit_heading_color;
+			.dismiss-link {
+				color: $gutena_kit_heading_color;
 				cursor: pointer;
 				text-decoration: underline 2px;
-    			text-underline-offset: 2px;
-				
-				&:hover{
-					color: $gutenakit_primary_color;
+				text-underline-offset: 2px;
+
+				&:hover {
+					color: $gutena_kit_primary_color;
 				}
-				
-			}
-			
-			&.notice-warning{
-				background-color: #FFFBEB;
 			}
 
-			&.notice-error{
+			&.notice-warning {
+				background-color: #fffbeb;
+			}
+
+			&.notice-error {
 				background-color: #fce1e2;
 			}
 
-			&.notice-success{
-				background-color: #E2F2EF;
+			&.notice-success {
+				background-color: #e2f2ef;
 				p {
-					color: $gutenakit_primary_color;
+					color: $gutena_kit_primary_color;
 				}
 			}
 
@@ -538,7 +842,7 @@ $check-color: $gutenakit_primary_color;
 		DEMO PREVIEW SCREEN : LEFT SECTION
 		========================================*/
 		.gk-demo-preview .gk-left-section {
-			background: $gutenakit_white_color;
+			background: $gutena_kit_white_color;
 			filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.1));
 		}
 		.gk-demo-preview .gk-header,
@@ -560,7 +864,7 @@ $check-color: $gutenakit_primary_color;
 		}
 
 		.gk-header .gk-back-button .gk-icon .dashicons,
-		.gk-header .gk-back-button .gk-icon .dashicons-before:before { 
+		.gk-header .gk-back-button .gk-icon .dashicons-before:before {
 			width: 13px;
 			height: 15px;
 			font-size: 15px;
@@ -573,13 +877,13 @@ $check-color: $gutenakit_primary_color;
 			line-height: 1.4;
 			font-weight: 600;
 			letter-spacing: 0.03em;
-			color: $gutenakit_body_text_color;
+			color: $gutena_kit_body_text_color;
 		}
 
 		.gk-section-title-reset-icon .gk-reset-icon:hover,
 		.gk-header .gk-back-button:hover,
 		.gk-header .gk-back-button .gk-text:hover {
-			color: $gutenakit_primary_color;;
+			color: $gutena_kit_primary_color;
 		}
 
 		.gk-demo-preview .gk-demo-title {
@@ -612,7 +916,7 @@ $check-color: $gutenakit_primary_color;
 			box-sizing: border-box;
 			cursor: pointer;
 			display: flex;
-			gap: 18px ;
+			gap: 18px;
 			align-items: center;
 			padding: 11px 19px;
 			border: 2px solid rgba(29, 35, 39, 0.2);
@@ -624,9 +928,9 @@ $check-color: $gutenakit_primary_color;
 			-o-transition: all 0.3s ease;
 		}
 
-		.gk-color-demo-variation-card.style-selected, 
+		.gk-color-demo-variation-card.style-selected,
 		.gk-color-demo-variation-card:hover {
-			border: 2px solid $gutenakit_primary_color;
+			border: 2px solid $gutena_kit_primary_color;
 		}
 
 		.gk-color-demo-variation-card .gk-demo-color-palette {
@@ -642,20 +946,19 @@ $check-color: $gutenakit_primary_color;
 			border: 1px solid #efefef;
 		}
 
-
 		.demo-style-details .style-title {
 			font-size: 16px;
 			line-height: 1.4;
 			font-weight: 600;
-			color: #1D2327;
+			color: #1d2327;
 			margin-bottom: 5px;
 		}
 
-		.demo-style-details .font-families { 
+		.demo-style-details .font-families {
 			font-size: 12px;
 			line-height: 1.4;
 			font-weight: 600;
-			color: $gutenakit_body_text_color;
+			color: $gutena_kit_body_text_color;
 		}
 
 		/*======================================
@@ -671,8 +974,8 @@ $check-color: $gutenakit_primary_color;
 			text-decoration: none;
 			cursor: pointer;
 			padding: 12px 20px;
-			background: $gutenakit_primary_color;
-			color: $gutenakit_white_color;
+			background: $gutena_kit_primary_color;
+			color: $gutena_kit_white_color;
 			border-radius: 3px;
 			display: flex;
 			gap: 8px;
@@ -684,7 +987,7 @@ $check-color: $gutenakit_primary_color;
 		}
 
 		.import-demo-action .import-demo-btn:hover {
-			box-shadow: inset 0 0 0 100px rgba(0,0,0,.1);
+			box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.1);
 		}
 
 		.import-demo-action .import-demo-btn .gk-btn-icon svg {
@@ -701,11 +1004,11 @@ $check-color: $gutenakit_primary_color;
 	/*Starter template : end*/
 	/*Block settings tab: start*/
 	.gk-block-settings-tab {
-		padding-top: 69px;
+		padding-top: 3.75rem;
 	}
 
 	.gk-block-settings-card {
-		background-color: $gutenakit_white_color;
+		background-color: $gutena_kit_white_color;
 		padding: 32px 38px 25px 34px;
 		margin-bottom: 45px;
 		font-weight: 600;
@@ -720,12 +1023,12 @@ $check-color: $gutenakit_primary_color;
 			}
 		}
 		/*Block list for activate deactivate settings*/
-		.gk-block-list{
+		.gk-block-list {
 			padding-top: 38px;
 			padding-bottom: 38px;
 			display: grid;
 			justify-content: space-between;
-			grid-template-columns: repeat( 2, 1fr );
+			grid-template-columns: repeat(2, 1fr);
 
 			.gk-block-control-section {
 				display: flex;
@@ -733,7 +1036,7 @@ $check-color: $gutenakit_primary_color;
 				align-items: center;
 				gap: 0.8rem;
 			}
-			
+
 			.gk-block-control-section:nth-child(odd) {
 				border-right: 1px solid rgba(33, 34, 47, 0.1);
 			}
@@ -745,13 +1048,13 @@ $check-color: $gutenakit_primary_color;
 				font-size: 15px;
 				line-height: 1.6;
 				display: flex;
-    			justify-content: space-between;
+				justify-content: space-between;
 			}
 
 			/*Gk loader: start*/
 			.gk-block-loader {
 				visibility: hidden;
-				&.start{
+				&.start {
 					visibility: visible;
 				}
 			}
@@ -766,11 +1069,11 @@ $check-color: $gutenakit_primary_color;
 				border-radius: 50%;
 				width: $loader-size;
 				height: $loader-size;
-				&.deactivation{
-					border-left-color: $gutenakit_red_color;
+				&.deactivation {
+					border-left-color: $gutena_kit_red_color;
 				}
 			}
-			
+
 			.load-complete {
 				-webkit-animation: none;
 				animation: none;
@@ -780,68 +1083,65 @@ $check-color: $gutenakit_primary_color;
 					display: block;
 				}
 			}
-			
+
 			.gk-checkmark {
 				display: none;
-				
+
 				&.draw:after {
-				animation-duration: 800ms;
-				animation-timing-function: ease;
-				animation-name: gk-checkmark;
-				transform: scaleX(-1) rotate(135deg);
+					animation-duration: 800ms;
+					animation-timing-function: ease;
+					animation-name: gk-checkmark;
+					transform: scaleX(-1) rotate(135deg);
 				}
-				
+
 				&:after {
-				opacity: 1;
-				height: $check-height;
-				width: $check-width;
-				transform-origin: left top;
-				border-right: $check-thickness solid $check-color;
-				border-top: $check-thickness solid $check-color;
-				content: '';
-				left: $check-left;
-				top: $check-height;
-				position: absolute;
+					opacity: 1;
+					height: $check-height;
+					width: $check-width;
+					transform-origin: left top;
+					border-right: $check-thickness solid $check-color;
+					border-top: $check-thickness solid $check-color;
+					content: "";
+					left: $check-left;
+					top: $check-height;
+					position: absolute;
 				}
 			}
-			
+
 			@keyframes gk-loader-spin {
 				0% {
-				transform: rotate(0deg);
+					transform: rotate(0deg);
 				}
 				100% {
-				transform: rotate(360deg);
+					transform: rotate(360deg);
 				}
 			}
-			
+
 			@keyframes gk-checkmark {
 				0% {
-				height: 0;
-				width: 0;
-				opacity: 1;
+					height: 0;
+					width: 0;
+					opacity: 1;
 				}
 				20% {
-				height: 0;
-				width: $check-width;
-				opacity: 1;
+					height: 0;
+					width: $check-width;
+					opacity: 1;
 				}
 				40% {
-				height: $check-height;
-				width: $check-width;
-				opacity: 1;
+					height: $check-height;
+					width: $check-width;
+					opacity: 1;
 				}
 				100% {
-				height: $check-height;
-				width: $check-width;
-				opacity: 1;
+					height: $check-height;
+					width: $check-width;
+					opacity: 1;
 				}
 			}
-			
+
 			/*Gk loader: end*/
 		}
-
-
-
 	}
 	.gk-save-block-settings {
 		display: flex;
@@ -852,11 +1152,11 @@ $check-color: $gutenakit_primary_color;
 		.gutena-button {
 			position: relative;
 			width: 150px;
-    		overflow: hidden;
-			&::before{
-				background: linear-gradient(97.91deg, rgba(0,0,0,0.2) 11.27%, rgba(0,0,0,0.2) 86.28%);
+			overflow: hidden;
+			&::before {
+				background: linear-gradient(97.91deg, rgba(0, 0, 0, 0.2) 11.27%, rgba(0, 0, 0, 0.2) 86.28%);
 				border-radius: 5px;
-				content: '';
+				content: "";
 				position: absolute;
 				top: 0;
 				left: -100%;
@@ -866,150 +1166,143 @@ $check-color: $gutenakit_primary_color;
 
 			&.start-installing::before {
 				animation: gkinstalling 50s ease-in-out forwards;
-			 } 
+			}
 
-			 @keyframes gkinstalling {
-				0%{
-					left:-100%;
-				} 
-				10%{
-					left:-80%;
-				} 
-				20%{
-					left:-70%;
-				} 
-				30%{
-					left:-65%;
-				} 
-				40%{
-					left:-60%;
-				} 
-				50%{
-					left:-50%;
-				} 
-				60%{
-					left:-40%;
-				} 
-				80%{
-					left:-20%;
-				} 
-				90%{
-					left:-10%;
-				} 
-				100%{
-					left:0%;
-				} 
-			 }
+			@keyframes gkinstalling {
+				0% {
+					left: -100%;
+				}
+				10% {
+					left: -80%;
+				}
+				20% {
+					left: -70%;
+				}
+				30% {
+					left: -65%;
+				}
+				40% {
+					left: -60%;
+				}
+				50% {
+					left: -50%;
+				}
+				60% {
+					left: -40%;
+				}
+				80% {
+					left: -20%;
+				}
+				90% {
+					left: -10%;
+				}
+				100% {
+					left: 0%;
+				}
+			}
 		}
 
 		.gk-skip-settings {
 			cursor: pointer;
 			font-weight: 600;
-			&:hover{
-				color: $gutenakit_primary_color;
+			&:hover {
+				color: $gutena_kit_primary_color;
 			}
 		}
 	}
-	
+
 	/*Block settings tab: end*/
 
 	/*Toggle Switch : tick cross : start*/
 	.gk-toggle-tick-cross {
-
 		input[type="checkbox"] {
-		display: none;
+			display: none;
 		}
-		
-		
+
 		/* Toggle State is :CHECKED */
-		
 		input[type="checkbox"]:checked ~ .gk-toggle {
-		background: #CEEEE8;
-		/* Teal bg */
-		box-shadow: 0 2px 1px -1px rgba(0, 0, 0, .2) 0 1px 1px 0 rgba(0, 0, 0, .14) 0 1px 3px 0 
+			background: #ceeee8;
+			/* Teal bg */
+			box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2) 0 1px 1px 0 rgba(0, 0, 0, 0.14) 0 1px 3px 0;
 		}
-		
+
 		input[type="checkbox"]:checked ~ .gk-toggle .gk-toggle-knob {
-		left: 21px;
-		transform: rotate(360deg);
-		background-color: #0EA489;
+			left: 21px;
+			transform: rotate(360deg);
+			background-color: #0ea489;
 		}
-		
-		
+
 		/* Shared */
-		
 		.gk-toggle,
 		.gk-toggle-knob {
-		border-radius: 9999px;
+			border-radius: 9999px;
 		}
-		
-		
+
 		/* Toggle State is 'un':checked */
-		
 		.gk-toggle {
-		height: 24px;
-		width: 44px;
-		background: rgba(224, 224, 224, 1);
-		position: relative;
-		display:block;
+			height: 24px;
+			width: 44px;
+			background: rgba(224, 224, 224, 1);
+			position: relative;
+			display: block;
 		}
-		
+
 		.gk-toggle-knob {
-		height: 20px;
-		width: 20px;
-		background: rgba(255, 255, 255, 1);
-		/* white knob */
-		position: absolute;
-		top: 2px;
-		left: 2px;
-		cursor: pointer;
-		box-shadow: 0 2px 1px -1px rgba(0, 0, 0, .2) 0 1px 1px 0 rgba(0, 0, 0, .14) 0 1px 3px 0 rgba(0, 0, 0, .12);
+			height: 20px;
+			width: 20px;
+			background: rgba(255, 255, 255, 1);
+			/* white knob */
+			position: absolute;
+			top: 2px;
+			left: 2px;
+			cursor: pointer;
+			box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2) 0 1px 1px 0 rgba(0, 0, 0, 0.14) 0 1px 3px 0 rgba(0, 0, 0, 0.12);
 		}
-		
+
 		.gk-toggle-knob::before {
-		content: '';
-		height: 10px;
-		width: 2px;
-		/* stroke */
-		position: absolute;
-		top: calc(50% - 4.5px);
-		left: calc(50% - 1px);
-		transform: rotate(45deg);
+			content: "";
+			height: 10px;
+			width: 2px;
+			/* stroke */
+			position: absolute;
+			top: calc(50% - 4.5px);
+			left: calc(50% - 1px);
+			transform: rotate(45deg);
 		}
-		
+
 		.gk-toggle-knob::after {
-		content: '';
-		height: 2px;
-		/* stroke */
-		width: 10px;
-		position: absolute;
-		top: calc(50% - 0.5px);
-		left: calc(50% - 5px);
-		transform: rotate(45deg);
+			content: "";
+			height: 2px;
+			/* stroke */
+			width: 10px;
+			position: absolute;
+			top: calc(50% - 0.5px);
+			left: calc(50% - 5px);
+			transform: rotate(45deg);
 		}
-		
+
 		.gk-toggle-knob::before,
 		.gk-toggle-knob::after {
-		background: $gutenakit_red_color;
-		border-radius: 2px;
+			background: $gutena_kit_red_color;
+			border-radius: 2px;
 		}
-		
+
 		/* pesduo class on toggle - on checked */
 
 		input[type="checkbox"]:checked ~ .gk-toggle .gk-toggle-knob::before {
-		height: 7px;
-		top: calc(55% - 5px);
-		left: calc(60% - 1px);
-		background: #ffffff;
+			height: 7px;
+			top: calc(55% - 5px);
+			left: calc(60% - 1px);
+			background: #ffffff;
 		}
-		
+
 		input[type="checkbox"]:checked ~ .gk-toggle .gk-toggle-knob::after {
-		width: 5px;
-		top: calc(95% - 9px);
-		left: calc(22.5% + 1px);
-		background: #ffffff;
+			width: 5px;
+			top: calc(95% - 9px);
+			left: calc(22.5% + 1px);
+			background: #ffffff;
 		}
-	
+
 		/* If action required to perform - install or uninstall*/
 		&.action-required {
 			input[type="checkbox"]:checked ~ .gk-toggle .gk-toggle-knob::before,
@@ -1021,7 +1314,7 @@ $check-color: $gutenakit_primary_color;
 		}
 
 		/*Large toggle*/
-		&.large{
+		&.large {
 			/*toggle length and height*/
 			.gk-toggle {
 				height: 36px;
@@ -1039,32 +1332,30 @@ $check-color: $gutenakit_primary_color;
 				display: flex;
 				align-items: center;
 				position: absolute;
-    			left: 45px;
+				left: 45px;
 				font-weight: 400;
 			}
-	
+
 			input[type="checkbox"]:checked ~ .gk-toggle .gk-toggle-knob::before {
 				height: 12.5px;
 				top: calc(55% - 7px);
 				left: calc(60% - 1.5px);
 			}
-	
+
 			input[type="checkbox"]:checked ~ .gk-toggle .gk-toggle-knob::after {
 				width: 7px;
 				top: calc(95% - 13px);
 				left: calc(22.5% + 2px);
 			}
-	
+
 			input[type="checkbox"]:checked ~ .gk-toggle .gk-toggle-knob {
 				left: 164px;
 			}
 
 			input[type="checkbox"]:checked ~ .gk-toggle .gk-toggle-msg {
-    			left: 25px;
+				left: 25px;
 			}
-			
 		}
-	
 	}
 	/*Toggle Switch : tick cross : end*/
 
@@ -1073,15 +1364,14 @@ $check-color: $gutenakit_primary_color;
 		font-size: 15px;
 		line-height: 1.6;
 		font-weight: 400;
-		color: $gutenakit_body_text_color;
-
+		color: $gutena_kit_body_text_color;
 
 		.gutena-header {
 			gap: 10px;
 			align-items: center;
 			justify-content: flex-start;
-			
-			h3{
+
+			h3 {
 				font-size: 17px;
 				line-height: 1.3;
 				font-weight: 500;
@@ -1094,39 +1384,38 @@ $check-color: $gutenakit_primary_color;
 			padding-bottom: 10px;
 			display: grid;
 			grid-template-columns: 1fr 4fr 1fr;
-			gap:13px;
+			gap: 13px;
 			max-width: 250px;
 			margin-left: auto;
 			margin-right: auto;
 			align-items: center;
 
 			.gk-step {
-				border: 2px solid #C7C7CA;
+				border: 2px solid #c7c7ca;
 				border-radius: 50%;
 				width: 32px;
 				height: 32px;
 				display: flex;
-				justify-content:center;
-				align-items:center;
+				justify-content: center;
+				align-items: center;
 				font-weight: 600;
-				
-				&.active{
-					border: 2px solid $gutenakit_primary_color;
-					color: $gutenakit_primary_color;
+
+				&.active {
+					border: 2px solid $gutena_kit_primary_color;
+					color: $gutena_kit_primary_color;
 				}
 
-				&.done{
-					border: 2px solid $gutenakit_primary_color;
-					background-color: $gutenakit_primary_color;
-					color: $gutenakit_white_color;
+				&.done {
+					border: 2px solid $gutena_kit_primary_color;
+					background-color: $gutena_kit_primary_color;
+					color: $gutena_kit_white_color;
 				}
-
 			}
-			
+
 			.gk-step-link {
-				border-bottom: 2px solid #C7C7CA;
-				&.active{
-					border-bottom: 2px solid $gutenakit_primary_color;
+				border-bottom: 2px solid #c7c7ca;
+				&.active {
+					border-bottom: 2px solid $gutena_kit_primary_color;
 				}
 			}
 		}
@@ -1143,10 +1432,10 @@ $check-color: $gutenakit_primary_color;
 				&.active {
 					font-weight: 600;
 				}
-	
+
 				&.done {
 					font-weight: 600;
-					color:$gutenakit_primary_color;
+					color: $gutena_kit_primary_color;
 				}
 			}
 		}
@@ -1168,9 +1457,6 @@ $check-color: $gutenakit_primary_color;
 				text-align: center;
 			}
 		}
-
 	}
 	/*On boarding : End*/
-	
-	  
 }

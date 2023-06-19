@@ -9,12 +9,12 @@
  import { Fragment, render, useState, useContext } from '@wordpress/element';
 
  //add all to category list
-gutenakit_demo_info.category.unshift('all');
+gutenakit_demo_info.category.unshift( 'all' );
 
 const TemplatesTab = ( props ) => {
     //check for info
-    if ( typeof gutenakit_demo_info === 'undefined' ){
-        return(<div>{ __( 'Sorry! Gutena kit dashboard not available.', 'gutena-kit' ) }</div>);
+    if ( typeof gutenakit_demo_info === 'undefined' ) {
+        return <div>{ __( 'Sorry! Gutena kit dashboard is not available.', 'gutena-kit' ) }</div>;
     }
 
     const { showGutenaThemeRequireModal, previewDemoDispatchData, dispatch } = useContext( DemoContext );
@@ -45,7 +45,6 @@ const TemplatesTab = ( props ) => {
             message: __( 'Starter templates requires Gutena theme to be installed in order to work properly.', 'gutena-kit' ),
             statusClass: 'warning'
         };
-        
 
         switch ( gutenaThemeStatus.status ) {
             case 0:
@@ -96,18 +95,18 @@ const TemplatesTab = ( props ) => {
         } );
 
         //Activate Theme
-        fetch(gutenakit_dahboard_info.ajax_url, {
+        fetch(gutena_kit_dashboard_info.ajax_url, {
             method: 'POST',
             credentials: 'same-origin', // <-- make sure to include credentials
             headers:{
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Accept': 'application/json',
-                'X-WP-Nonce' : gutenakit_dahboard_info.nonce
+                'X-WP-Nonce' : gutena_kit_dashboard_info.nonce
             },
             body: new URLSearchParams({
                 action: "activate_gutena_theme",
-                gutena_kit_security: gutenakit_dahboard_info.nonce,
-                theme_slug: gutenakit_dahboard_info.theme_slug
+                gutena_kit_security: gutena_kit_dashboard_info.nonce,
+                theme_slug: gutena_kit_dashboard_info.theme_slug
             })
         }).then((response) => response.json()).then((data) => { 
            

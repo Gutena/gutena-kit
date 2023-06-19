@@ -1,13 +1,13 @@
 /**
  * Demo Preview Screen : admin can select styles variation
  */
- import { DemoContext } from '../../data/DemoContextProvider';
+import { DemoContext } from '../../data/DemoContextProvider';
  
-const {__} = wp.i18n;
-const { Fragment, useContext } = wp.element;
-const { Icon } = wp.components;
+import { __ } from '@wordpress/i18n';
+import { Fragment, useContext } from '@wordpress/element';
+import { Icon } from '@wordpress/components';
 const DemoPreview = ( props ) => {
- 
+
     const { isPreviewDemo, previewDemoData, styleSelected, baseDemoIndex, demoIndex, dispatch } = useContext( DemoContext );
     const  defaultDemo = previewDemoData.default;
 

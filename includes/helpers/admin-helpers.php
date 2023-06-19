@@ -74,7 +74,7 @@ if ( ! function_exists( 'gutendkit_categorize_demo_list' ) ) {
 						'#015D61',
 					),
 				),
-				'seo'    => array(
+				'seo'          => array(
 					'fontFamily' => array(
 						'Nunito',
 					),
