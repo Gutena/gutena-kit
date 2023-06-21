@@ -1,8 +1,7 @@
 /* Block activate and deactivate settings */
 import { DashboardContext } from '../../data/DashboardContextProvider';
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
-import { useContext } from '@wordpress/element';
+import { useState, useContext } from '@wordpress/element';
 
 const noop = () => {};
 
@@ -37,7 +36,7 @@ const ToggleTickCross = ( props ) => {
 }
 
 const BlockSettings = ( props ) => {
-    const gutenaBlockData = gutenakit_dahboard_info.onboarding_info.step_two;
+    const gutenaBlockData = gutena_kit_dashboard_info?.onboarding_info.step_two;
     const { blocks, onBoarding, makeTemplateTabActive, dispatch } = useContext(DashboardContext);
     
     //Get status for all block action toogle btn
@@ -164,17 +163,17 @@ const BlockSettings = ( props ) => {
 
         //skip settings and go to templates tab
         if ( skipSettings || ( onBoarding && is_settings_already_saved() ) ) {
-            fetch(gutenakit_dahboard_info.ajax_url, {
+            fetch(gutena_kit_dashboard_info.ajax_url, {
                 method: 'POST',
                 credentials: 'same-origin', // <-- make sure to include credentials
                 headers:{
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'Accept': 'application/json',
-                    'X-WP-Nonce' : gutenakit_dahboard_info.nonce
+                    'X-WP-Nonce' : gutena_kit_dashboard_info.nonce
                 },
                 body: new URLSearchParams({
                     action: "manage_gutena_blocks",
-                    gutena_kit_security: gutenakit_dahboard_info.nonce,
+                    gutena_kit_security: gutena_kit_dashboard_info.nonce,
                     skip_settings: 'skip',
                 })
             }).then((response) => response.json()).then((data) => { 
@@ -210,17 +209,17 @@ const BlockSettings = ( props ) => {
                     currentBlockSlug:current_plugin.slug,
                 } );
                 
-                fetch(gutenakit_dahboard_info.ajax_url, {
+                fetch(gutena_kit_dashboard_info.ajax_url, {
                     method: 'POST',
                     credentials: 'same-origin', // <-- make sure to include credentials
                     headers:{
                         'Content-Type': 'application/x-www-form-urlencoded',
                         'Accept': 'application/json',
-                        'X-WP-Nonce' : gutenakit_dahboard_info.nonce
+                        'X-WP-Nonce' : gutena_kit_dashboard_info.nonce
                     },
                     body: new URLSearchParams({
                         action: "manage_gutena_blocks",
-                        gutena_kit_security: gutenakit_dahboard_info.nonce,
+                        gutena_kit_security: gutena_kit_dashboard_info.nonce,
                         slug: current_plugin.slug,
                         activate_action: current_plugin.activate ? 'activate': 'deactivate',
                         skip_settings: onBoarding ? 'skip' : '',
@@ -313,23 +312,23 @@ const BlockSettings = ( props ) => {
             </div> 
             <div className='gk-steps-name'>
                 <div className={ 'gk-step-name '+( blockData.step === 2 ? 'done': 'active' ) } > 
-                { gutenakit_dahboard_info.onboarding_info.step_one.step_name } 
+                { gutena_kit_dashboard_info.onboarding_info.step_one.step_name } 
                 </div>
                 <div className={ 'gk-step-name '+( blockData.step === 2 ? 'active': '' ) } > 
-                { gutenakit_dahboard_info.onboarding_info.step_two.step_name } 
+                { gutena_kit_dashboard_info.onboarding_info.step_two.step_name } 
                 </div>
             </div>
             {
                 1 === blockData.step ? 
                 <>
                 <div className="gutena-details">
-                    <h2 className="gutena-title" >{ gutenakit_dahboard_info.onboarding_info.step_one.title }</h2>
-                    <p className="gutena-description" >{ gutenakit_dahboard_info.onboarding_info.step_one.description }</p>
+                    <h2 className="gutena-title" >{ gutena_kit_dashboard_info.onboarding_info.step_one.title }</h2>
+                    <p className="gutena-description" >{ gutena_kit_dashboard_info.onboarding_info.step_one.description }</p>
                     
                     <span 
                     className="gutena-button"  
                     onClick={ () => setBlockData( { ...blockData, step : 2 } ) }
-                    >{ gutenakit_dahboard_info.onboarding_info.step_one.button_text }
+                    >{ gutena_kit_dashboard_info.onboarding_info.step_one.button_text }
                     </span> 
                 </div>
                 </>

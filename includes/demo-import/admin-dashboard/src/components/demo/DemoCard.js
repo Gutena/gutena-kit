@@ -1,10 +1,11 @@
 /**
  * Demo card
  */
- import { DemoContext } from '../../data/DemoContextProvider';
- const {__} = wp.i18n;
- const { Icon } = wp.components;
- const { Fragment, useContext } = wp.element;
+import { DemoContext } from '../../data/DemoContextProvider';
+
+import { __ } from '@wordpress/i18n';
+import { Icon } from '@wordpress/components';
+import { useContext } from '@wordpress/element';
 
 const DemoCard = ( props ) => {
     const { import_preview_image_url, import_file_name, preview_url, demo_type } = props.demoWithVariation.default;

@@ -1,18 +1,18 @@
 /**
  * Tab global data
  */
-const { createContext, useReducer } = wp.element;
+import { createContext, useReducer } from '@wordpress/element';
 import { DashboardReducer } from './DashboardReducer';
 const DashboardContext = createContext();
 
 const DashboardContextProvider = (props) =>{
     let dashboardInfo = {
-        blocks: gutenakit_dahboard_info.onboarding_info.step_two.blocks.map( block => ( { 
+        blocks: gutena_kit_dashboard_info.onboarding_info.step_two.blocks.map( block => ( { 
             ...block, 
             status: block.is_enabled, 
-            is_enabled: '1' == gutenakit_dahboard_info.onboarding ? true : block.is_enabled 
+            is_enabled: '1' == gutena_kit_dashboard_info.onboarding ? true : block.is_enabled 
         } ) ),
-        onBoarding: gutenakit_dahboard_info.onboarding,
+        onBoarding: gutena_kit_dashboard_info.onboarding,
         makeTemplateTabActive: false,
     };
     const [dashboardProgress, dispatch] = useReducer(DashboardReducer,dashboardInfo);

@@ -36,16 +36,19 @@ if ( ! defined( 'GUTENA_KIT_VERSION' ) ) {
  * Plugin dir path
  */
 if ( ! defined( 'GUTENA_KIT_DIR_PATH' ) ) {
-	define( 'GUTENA_KIT_DIR_PATH', trailingslashit(plugin_dir_path( __FILE__ ) ) );
+	define( 'GUTENA_KIT_DIR_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 }
 
 /**
  * Plugin url
  */
 if ( ! defined( 'GUTENA_KIT_PLUGIN_URL' ) ) {
-	define( 'GUTENA_KIT_PLUGIN_URL', trailingslashit(plugins_url( '', __FILE__ ) ) );
+	define( 'GUTENA_KIT_PLUGIN_URL', trailingslashit( plugins_url( '', __FILE__ ) ) );
 }
 
+/**
+ * Plugin min file extension
+ */
 if ( ! defined( 'GUTENA_KIT_MIN_FILE' ) ) {
 	define( 'GUTENA_KIT_MIN_FILE', ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min');
 }
@@ -58,6 +61,7 @@ function activate_gutena_kit() {
 	require_once GUTENA_KIT_DIR_PATH . 'includes/class-gutena-kit-activator.php';
 	Gutena_Kit_Activator::activate();
 }
+register_activation_hook( __FILE__, 'activate_gutena_kit' );
 
 /**
  * The code that runs during plugin deactivation.
@@ -67,8 +71,6 @@ function deactivate_gutena_kit() {
 	require_once GUTENA_KIT_DIR_PATH . 'includes/class-gutena-kit-deactivator.php';
 	Gutena_Kit_Deactivator::deactivate();
 }
-
-register_activation_hook( __FILE__, 'activate_gutena_kit' );
 register_deactivation_hook( __FILE__, 'deactivate_gutena_kit' );
 
 /**

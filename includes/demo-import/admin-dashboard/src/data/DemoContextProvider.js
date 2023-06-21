@@ -2,7 +2,7 @@
  * demo global data
  */
 import { DemoReducer } from './DemoReducer';
-const { createContext, useReducer } = wp.element;
+import { createContext, useReducer } from '@wordpress/element';
 const DemoContext = createContext();
 
 const DemoContextProvider = (props) => {
