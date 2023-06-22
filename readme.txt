@@ -87,6 +87,10 @@ Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtab
 
 == Changelog ==
 
+= 2.0.5 | Beta =
+* Fixed demo import screen spinner
+* Added 4 new demos finance, skin care, hair treatment, book download for import
+
 = 2.0.4 | 30th March 2023 =
 * Updated block editor range control component
 * Fixed site editor device type preview
