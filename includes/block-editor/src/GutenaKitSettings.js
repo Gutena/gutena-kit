@@ -5,7 +5,7 @@ import { useSelect } from "@wordpress/data";
 import { useEntityRecords } from '@wordpress/core-data';
 import { store as blocksStore } from '@wordpress/blocks';
 import { Fragment, useState, useEffect } from '@wordpress/element';
-import { InspectorControls, useSetting } from '@wordpress/block-editor';
+import { InspectorControls, useSettings } from '@wordpress/block-editor';
 import { 
     __experimentalHStack as HStack,
     __experimentalBoxControl as BoxControl,
@@ -94,9 +94,20 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
             return size;
         }
 
-        const fontFamilies = useSetting( 'typography.fontFamilies' );
-        const fontFamiliesList = fontFamilies.reduce( ( o, key ) => Object.assign( o, { [ key?.slug ]: key?.fontFamily } ), {} );
+        const getFontFamiliesList = ( fontFamilies ) => {
+            if ( gkIsEmpty( fontFamilies ) ) {
+                return {};
+            }
 
+            if ( Array.isArray( fontFamilies ) ) {
+                return fontFamilies.reduce( ( o, key ) => Object.assign( o, { [ key?.slug ]: key?.fontFamily } ), {} );
+            } else {
+               return Object.keys( fontFamilies ).reduce( ( fontFamiliesObj, fkey ) => Object.assign( fontFamiliesObj, fontFamilies[ fkey ].reduce( ( o, key ) => Object.assign( o, { [ key?.slug ]: key?.fontFamily } ), {} ) ), {} );
+            }
+        }
+
+        const [ fontFamilies ] = useSettings( 'typography.fontFamilies' );
+        const fontFamiliesList = getFontFamiliesList( fontFamilies );
         //Default sides
         let DefaultStyle = attributes.style;
 
@@ -143,7 +154,8 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
 
          //Get Device preview type
         const deviceType = useSelect( ( select ) => {
-            return gkIsEmpty( select("core/edit-post") ) ? select("core/edit-site").__experimentalGetPreviewDeviceType() : select("core/edit-post").__experimentalGetPreviewDeviceType();
+            return select( 'core/editor' ).getDeviceType();
+            //return gkIsEmpty( select("core/edit-post") ) ? select("core/edit-site").__experimentalGetPreviewDeviceType() : select("core/edit-post").__experimentalGetPreviewDeviceType();
         }, [] );
         
         //Style name based on device type
@@ -985,6 +997,7 @@ export const GutenaKitSettings = createHigherOrderComponent( ( BlockEdit ) => {
                             </HStack>
                             { gkSupports.typography &&
                                 <TypographySettings 
+                                    fontFamilies={ fontFamiliesList }
                                     blockName={ name }
                                     attrValue={ gutenaKitStyle?.typography }
                                     onChangeFunc = { ( typography ) => setAttr( typography, 'typography' ) }
