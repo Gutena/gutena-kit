@@ -8,6 +8,9 @@ import {
     __experimentalHStack as HStack,
     Icon,
 } from "@wordpress/components";
+import {
+	store as editorStore,
+} from '@wordpress/editor';
 import { gkIsEmpty } from '../helpers/helpers';
 import { desktopIcon, tabletIcon, mobileIcon  } from './gutenaIcons';
 
@@ -20,16 +23,16 @@ const SelectDeviceDropdown = ( {
 
     //Get Device preview type
     const deviceType = useSelect( select => {
-        return gkIsEmpty( select("core/edit-post") ) ? select("core/edit-site").__experimentalGetPreviewDeviceType() : select("core/edit-post").__experimentalGetPreviewDeviceType();;
+        return select( 'core/editor' ).getDeviceType();
     }, [] );
     
     //Local device type based on parent component
     const deviceTypeView = gkIsEmpty( deviceTypeLocal ) ? deviceType : deviceTypeLocal;
 
     //Set Preview
-    const { __experimentalSetPreviewDeviceType: setPreviewDeviceType } = gkIsEmpty( useDispatch( 'core/edit-post' ) ) ? useDispatch( 'core/edit-site' ) : useDispatch( 'core/edit-post' );
+    const { setDeviceType } = useDispatch( editorStore );
     
-    const setDeviceType = gkIsEmpty( onChangefunc ) ? setPreviewDeviceType : onChangefunc;
+    const setDeviceTypeFunc = gkIsEmpty( onChangefunc ) ? setDeviceType : onChangefunc;
 
     const selectedIcon = ( 'Desktop' === deviceTypeView ) ? desktopIcon : ( 'Tablet' === deviceTypeView ) ? tabletIcon : mobileIcon ;
 
@@ -47,17 +50,17 @@ const SelectDeviceDropdown = ( {
                     {
                         title: __( 'Desktop', 'gutena-kit' ),
                         icon: desktopIcon,
-                        onClick: () => setDeviceType( 'Desktop' ),
+                        onClick: () => setDeviceTypeFunc( 'Desktop' ),
                     },
                     {
                         title: __( 'Tablet', 'gutena-kit' ),
                         icon: tabletIcon,
-                        onClick: () => setDeviceType( 'Tablet' ),
+                        onClick: () => setDeviceTypeFunc( 'Tablet' ),
                     },
                     {
                         title: __( 'Mobile', 'gutena-kit' ),
                         icon: mobileIcon,
-                        onClick: () => setDeviceType( 'Mobile' ),
+                        onClick: () => setDeviceTypeFunc( 'Mobile' ),
                     }
                 ] }
             />
