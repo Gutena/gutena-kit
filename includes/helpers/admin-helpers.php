@@ -74,7 +74,53 @@ if ( ! function_exists( 'gutendkit_categorize_demo_list' ) ) {
 						'#015D61',
 					),
 				),
-				'seo'    => array(
+				'finance'          => array(
+					'fontFamily' => array(
+						'Manrope',
+						'Inter',
+					),
+					'colors'     => array(
+						'#34BD6B',
+						'#2D3745',
+						'#5E6773',
+						'#F0FAFC',
+						'#34BD6B',
+					),
+				),
+				'skin_care'          => array(
+					'fontFamily' => array(
+						'Inter',
+					),
+					'colors'     => array(
+						'#12B6B6',
+						'#2D3745',
+						'#647487',
+						'#EFFDFD',
+						'#EB5757',
+					),
+				),
+				'book_download_lead_management'          => array(
+					'fontFamily' => array(
+						'Inter',
+					),
+					'colors'     => array(
+						'#F13434',
+						'#200F47',
+						'#6C6087',
+						'#5D2DC3',
+					),
+				),
+				'hair_treatment'          => array(
+					'fontFamily' => array(
+						'Inter',
+					),
+					'colors'     => array(
+						'#DFA245',
+						'#272727',
+						'#595959',
+					),
+				),
+				'seo'          => array(
 					'fontFamily' => array(
 						'Nunito',
 					),

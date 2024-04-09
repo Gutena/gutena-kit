@@ -91,6 +91,7 @@ Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtab
 * Fixed: Font Family settings
 * Updated: setDeviceType function to preview responsive changes
 * Updated: getDeviceType function to check current preview device
+* Fixed: demo import screen spinner
 
 = 2.0.4 | 30th March 2023 =
 * Updated block editor range control component

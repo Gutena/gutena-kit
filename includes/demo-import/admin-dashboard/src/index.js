@@ -1,8 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import domReady from '@wordpress/dom-ready';
-import {render, useContext } from '@wordpress/element';
+import { render, useContext } from '@wordpress/element';
 import './style.scss';
-//On boarding dashboard
+//On boarding dashboardgutena-admin-logo
 import GutenaKitAdminOnBoarding from './components/onBoarding/GutenaKitAdminOnBoarding';
 //Admin dashboard Tabs
 import GutenaKitAdminTabs from './components/tabs/GutenaKitAdminTabs';
@@ -11,23 +11,25 @@ import  DashboardContextProvider, { DashboardContext } from './data/DashboardCon
 
 //Admin Dashboard
 const GutenaKitAdminDashboard = () => {
-    const { onBoarding, makeTemplateTabActive } = useContext(DashboardContext);
+    const { onBoarding, makeTemplateTabActive } = useContext( DashboardContext );
     return(
         onBoarding ? <GutenaKitAdminOnBoarding /> : <GutenaKitAdminTabs />   
     );
 }
 
-//Set dashboard at HTML id echo by Gutena_Kit_Admin class
-domReady( () => {
-    //check for info
-    if ( typeof gutenakit_demo_info === 'undefined' || typeof gutenakit_dahboard_info === 'undefined' ){
-        return(<div>{ __( 'Sorry! Gutena kit dashboard not available.', 'gutena-kit' ) }</div>);
-    }
-    render(
-        <DashboardContextProvider >
-          <GutenaKitAdminDashboard />
-        </DashboardContextProvider>
-        ,
-        document.getElementById('gutenakit-admin-dashboard-page')
-    );
-});
+// Set dashboard at HTML id echo by Gutena_Kit_Admin class
+let gutenaAdminDashboard = document.getElementById( 'gutenakit-admin-dashboard-page' );
+if ( gutenaAdminDashboard ) {
+    domReady( () => {
+        //check for info
+        if ( typeof gutenakit_demo_info === 'undefined' || typeof gutena_kit_dashboard_info === 'undefined' ) {
+            return <div>{ __( 'Sorry! Gutena Kit dashboard is not available.', 'gutena-kit' ) }</div>;
+        }
+        render(
+            <DashboardContextProvider >
+                <GutenaKitAdminDashboard />
+            </DashboardContextProvider>, 
+            gutenaAdminDashboard
+        );
+    } );
+}
