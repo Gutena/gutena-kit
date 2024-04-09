@@ -1,10 +1,10 @@
 === Gutena Kit - Gutenberg Blocks and Templates ===
 Contributors: expresstech
 Tags: blocks, gutenberg, page builder, wordpress blocks, Full site editing
-Requires at least: 6.4
+Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 5.6
-Stable tag: 2.0.5
+Stable tag: 2.0.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -87,8 +87,10 @@ Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtab
 
 == Changelog ==
 
-= 2.0.5 | 09th April 2024 =
+= 2.0.6 | 11th April 2024 =
 * Fixed: Font Family settings
+
+= 2.0.5 | 09th April 2024 =
 * Updated: setDeviceType function to preview responsive changes
 * Updated: getDeviceType function to check current preview device
 
