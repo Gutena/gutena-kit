@@ -16,7 +16,7 @@
   "author": "expresstech",
   "license": "ISC",
   "devDependencies": {
-    "@wordpress/scripts": "^25.0.0",
+    "@wordpress/scripts": "^27.6.0",
     "autoprefixer": "^10.4.2",
     "cssnano": "^5.0.16",
     "del": "^6.0.0",
