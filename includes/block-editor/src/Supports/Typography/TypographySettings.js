@@ -24,6 +24,7 @@ import { gkIsEmpty, getMatchArrObjKeyValue, typographyVar, generateSlug, gkCssJs
 const noop = () => {}; 
 
 const TypographySettings = ( {
+    fontFamilies={},
     blockName = '',
     attrValue = undefined,
 	onChangeFunc = noop,
@@ -75,7 +76,7 @@ const TypographySettings = ( {
     
     //Get Device preview type
     const deviceType = useSelect( select => {
-        return gkIsEmpty( select("core/edit-post") ) ? select("core/edit-site").__experimentalGetPreviewDeviceType() : select("core/edit-post").__experimentalGetPreviewDeviceType();;
+        return select( 'core/editor' ).getDeviceType();
     }, [] );
 
     //Save Global Typography
@@ -217,6 +218,7 @@ const TypographySettings = ( {
 
             {  'default' === activeTab ? 
                 <TypographyControl 
+                    fontFamilies = { fontFamilies }
                     attrValue = { attrValue }
                     onChangeFunc = { ( value ) => onChangeFunc( value ) }
                     withPanel = { false }
@@ -295,6 +297,7 @@ const TypographySettings = ( {
                             } ) }
                         />
                         <TypographyControl 
+                            fontFamilies = { fontFamilies }
                             attrValue = { addEditTypography }
                             onChangeFunc = { ( value ) => setAddEditTypography( {
                                 ...value, 

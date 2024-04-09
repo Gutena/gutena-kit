@@ -8,7 +8,7 @@ import {
 	__experimentalFontAppearanceControl as FontAppearanceControl,
 	__experimentalLetterSpacingControl as LetterSpacingControl,
     __experimentalTextTransformControl as TextTransformControl,
-    useSetting,
+    useSettings,
 } from '@wordpress/block-editor';
 import {
     PanelBody,
@@ -28,7 +28,7 @@ import { useState, useEffect } from '@wordpress/element';
 import GutenaFontSizePicker  from './GutenaFontSizePicker';
 import SelectDeviceDropdown from './SelectDeviceDropdown';
 import { questionIcon } from './gutenaIcons';
-import { gkIsEmpty, fluidSpacing, generateSlug } from '../helpers/helpers';
+import { gkIsEmpty, fluidSpacing, slugToName } from '../helpers/helpers';
 
 const DEFAULT_TYPOGRAPHY = {
     fluidTypography: false,
@@ -51,6 +51,7 @@ const noop = () => {};
 
 const TypographyControl = ( props ) => {
     const {
+        fontFamilies = null,
         label = __( 'Typography', 'gutena-kit' ),
         attrValue = {},
         onChangeFunc = noop,
@@ -69,6 +70,15 @@ const TypographyControl = ( props ) => {
         canReset = false
     } = props;
 
+	if ( gkIsEmpty( fontFamilies ) ) {
+		return null;
+	}
+
+	const fontFamiliesOptions = Object.keys( fontFamilies ).map( fontFamily => ( {
+				fontFamily: fontFamily,
+				name: slugToName( fontFamily )
+			} ) );
+
     const setAttr = ( value, attrName ) => {
         const newattrValue = gkIsEmpty( attrValue ) ? DEFAULT_TYPOGRAPHY : attrValue;
         newattrValue[ attrName ] = value;
@@ -83,7 +93,7 @@ const TypographyControl = ( props ) => {
 
     //Get Device preview type
     const deviceType = useSelect( select => {
-        return gkIsEmpty( select("core/edit-post") ) ? select("core/edit-site").__experimentalGetPreviewDeviceType() : select("core/edit-post").__experimentalGetPreviewDeviceType();;
+        return select( 'core/editor' ).getDeviceType();
     }, [] );
 
     //If device preview not required
@@ -136,6 +146,7 @@ const TypographyControl = ( props ) => {
             { hasFontFamilyControl && (
                 <div className="edit-site-typography-panel__full-width-control">
                     <FontFamilyControl
+                        fontFamilies={ fontFamiliesOptions }
                         value={ attrValue?.fontFamily }
                         onChange={ ( value ) => setAttr( value, 'fontFamily' ) }
                         size="__unstable-large"

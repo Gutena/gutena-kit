@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import {
     FontSizePicker,
-    useSetting,
+    useSettings,
 } from '@wordpress/block-editor';
 import {
     __experimentalUnitControl as UnitControl,
@@ -35,7 +35,7 @@ const GutenaFontSizePicker = ( props ) => {
     const [ customSize, setCustomSize ] = useState( setCustom || ( ! gkIsEmpty( fontSize ) && 10 > fontSize.length ) );
  
     //Theme font size preset
-    const fontSizes = useSetting( 'typography.fontSizes' );
+    const [fontSizes] = useSettings( 'typography.fontSizes' );
 
     //Font size array for select
     const fonSizesArray = gkIsEmpty( fontSizes ) ? [] : fontSizes.map( ( item ) => ( { label: item?.name ?? item.slug.replace( 'xx-', __( 'Extra Extra ', 'gutena-kit' ) ), value: 'has-' + item.slug + '-font-size', fontSize: item.size } ) );
