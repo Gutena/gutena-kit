@@ -1,3 +1,6 @@
+//Check if empty
+export const gkIsEmpty = data => 'undefined' === typeof data || null === data || '' === data;
+
 // Check if variable is numeric or not
 export const isNumericVar = n => ! isNaN( parseFloat( n ) ) && isFinite( n );
 
@@ -14,6 +17,9 @@ export const gutenakitDocReady = fn => {
 		document.addEventListener( 'DOMContentLoaded', fn );
 	}
 };
+
+// Slug to name 
+export const slugToName =  slug => gkIsEmpty( slug ) ? '' : slug.split('-').map( word => word.charAt(0).toUpperCase() + word.slice(1) ).join(' ');
 
 //Camel case to dash name
 export const gkCamelToDash = str => str.replace(/([A-Z])/g, val => `-${val.toLowerCase()}`);
@@ -55,9 +61,6 @@ export const getMatchArrObjKeyValue = ( arrObj, key, value, findKeyValue ) =>  {
 	let index = gkSearchArrObj( arrObj, key, value );
 	return ( -1 === index ) ? false: arrObj[ index ][ findKeyValue ];
 }
-
-//Check if empty
-export const gkIsEmpty = data => 'undefined' === typeof data || null === data || '' === data;
 
 //Get parent HTML elemnet
 export const getParents = ( el, query ) => {
