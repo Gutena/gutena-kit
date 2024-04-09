@@ -11,7 +11,7 @@
  * Plugin URI:        https://Gutena.io
  * Description:       Gutena Kit gives you advanced controls, powerful blocks and beautiful pre-made templates that help you build websites in less time! These templates can be imported in just a few clicks.
  * Version:           2.0.5
- * Requires at least: 6.2
+ * Requires at least: 6.4
  * Requires PHP:      5.6
  * Author:            ExpressTech
  * Author URI:        https://expresstech.io
