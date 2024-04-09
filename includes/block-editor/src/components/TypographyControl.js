@@ -75,7 +75,7 @@ const TypographyControl = ( props ) => {
 	}
 
 	const fontFamiliesOptions = Object.keys( fontFamilies ).map( fontFamily => ( {
-				fontFamily: fontFamily,
+				fontFamily: fontFamilies[ fontFamily ],
 				name: slugToName( fontFamily )
 			} ) );
 
