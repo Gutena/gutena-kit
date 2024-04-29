@@ -215,6 +215,27 @@ if ( ! class_exists( 'Merlin' ) ) {
 		public $logger;
 
 		/**
+		 * Theme slug.
+		 *
+		 * @var string $slug
+		 */
+		public $slug;
+
+		/**
+		 * Ready big button url.
+		 *
+		 * @var string $ready_big_button_url
+		 */
+		public $ready_big_button_url;
+
+		/**
+		 * hook suffix.
+		 *
+		 * @var string $hook_suffix
+		 */
+		public $hook_suffix;
+
+		/**
 		 * Setup plugin version.
 		 *
 		 * @access private
