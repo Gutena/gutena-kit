@@ -27,6 +27,9 @@ Gutena Kit gives you advanced controls, powerful blocks and beautiful pre-made t
 * No jQuery, so it won’t slow down your website
 
 == Frequently Asked Questions ==
+= Where do I report security bugs found in this plugin? =
+
+Please report security bugs found in the source code of the undefined plugin through the [Patchstack Vulnerability Disclosure  Program](https://patchstack.com/database/vdp/4f13b6a3-91a5-4b48-96d6-6c2348d4cf6d). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 = Demo page navigation link not working? =
 
