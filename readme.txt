@@ -1,5 +1,5 @@
 === Gutena Kit - Gutenberg Blocks and Templates ===
-Contributors: expresstech
+Contributors: wpexpertsio
 Tags: blocks, gutenberg, page builder, wordpress blocks, Full site editing
 Requires at least: 6.5
 Tested up to: 6.5
