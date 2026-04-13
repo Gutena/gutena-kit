@@ -2,7 +2,7 @@
 Contributors: wpexpertsio
 Tags: blocks, gutenberg, page builder, wordpress blocks, Full site editing
 Requires at least: 6.5
-Tested up to: 6.5
+Tested up to: 6.9
 Requires PHP: 5.6
 Stable tag: 2.0.7
 License: GPLv3
@@ -24,12 +24,12 @@ Gutena Kit gives you advanced controls, powerful blocks and beautiful pre-made t
 * Total control over Responsive Typography
 * Color, Shadow and Border settings for Group & Column
 * Set Display Conditions for Blocks
-* No jQuery, so it won’t slow down your website
+* No jQuery, so it wonâ€™t slow down your website
 
 == Frequently Asked Questions ==
 = Where do I report security bugs found in this plugin? =
 
-Please report security bugs found in the source code of the undefined plugin through the [Patchstack Vulnerability Disclosure  Program](https://patchstack.com/database/wordpress/plugin/gutena-kit/vulnerabilities). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+Please report security bugs found in the source code of the undefined plugin through the [Patchstack Vulnerability Disclosure  Program](https://patchstack.com/database/vdp/9e5fc0bd-962d-4b9f-8736-d4210d6417b6). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 = Demo page navigation link not working? =
 
