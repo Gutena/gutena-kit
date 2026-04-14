@@ -629,19 +629,20 @@ class Gutena_Kit_Public {
 				function() use ( $block ) {
 					$attributes = $block['attrs'];
 					$prefix     = str_replace( '/', '-', str_replace( 'core', 'gutena-advanced', $block['blockName'] ) );
+					$unique_id  = empty( $attributes['uniqueId'] ) ? '' : sanitize_html_class( (string) $attributes['uniqueId'] );
 	
-					if ( ! empty( $attributes['blockStyles'] ) && is_array( $attributes['blockStyles'] ) ) {
+					if ( ! empty( $unique_id ) && ! empty( $attributes['blockStyles'] ) && is_array( $attributes['blockStyles'] ) ) {
 						// print css
 						printf(
 							'<style id="' . $prefix . '-block-inline-css-%1$s">.' . $prefix . '-%1$s { %2$s }</style>',
-							$attributes['uniqueId'],
+							esc_attr( $unique_id ),
 							$this->render_css( $attributes['blockStyles'] ),
 						);
 					}
 	
-					if ( 'core/button' === $block['blockName'] && ! empty( $attributes['btnIconSVG'] ) ) { ?>
-						<style id="gutena-advanced-button-inline-css-<?php esc_attr_e( $attributes['uniqueId'] ); ?>">
-							.<?php esc_attr_e( $prefix ); ?>-<?php esc_attr_e( $attributes['uniqueId'] ); ?>.has-icon .wp-block-button__link:<?php esc_attr_e( $attributes['btnIconPosition'] ); ?> {
+					if ( ! empty( $unique_id ) && 'core/button' === $block['blockName'] && ! empty( $attributes['btnIconSVG'] ) ) { ?>
+						<style id="gutena-advanced-button-inline-css-<?php esc_attr_e( $unique_id ); ?>">
+							.<?php esc_attr_e( $prefix ); ?>-<?php esc_attr_e( $unique_id ); ?>.has-icon .wp-block-button__link:<?php esc_attr_e( $attributes['btnIconPosition'] ); ?> {
 								content: '';
 								-webkit-mask-image: url( 'data:image/svg+xml; utf8, <?php echo $attributes['btnIconSVG']; ?>' );
 								mask-image: url( 'data:image/svg+xml; utf8, <?php echo $attributes['btnIconSVG']; ?>' );
