@@ -89,6 +89,8 @@ If you like this plugin, consider exploring our other themes and plugins:
 Thanks to merlinwp, we have used code from [merlinwp](https://github.com/richtabor/MerlinWP) for demo import.
 
 == Changelog ==
+= 2.0.8 | 18th May 2026 =
+* Fixed: A vulnerability reported by Patchstack
 
 = 2.0.7 | 29th April 2024 =
 * Fixed: Php notices
